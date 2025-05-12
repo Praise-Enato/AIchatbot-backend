@@ -1,25 +1,13 @@
-import logging
-import os
 from collections.abc import Awaitable, Callable
 
 from fastapi import FastAPI, Request, Response
 from mangum import Mangum
 from pydantic import BaseModel
 
+from chatbot_backend.custom_logger import get_logger
+
 # Configure logging
-logger = logging.getLogger("app")
-logger.setLevel(logging.INFO)
-
-# Check if running in AWS Lambda environment
-in_lambda = "AWS_LAMBDA_FUNCTION_NAME" in os.environ
-
-# Setup console handler for local development
-if not in_lambda:
-    console_handler = logging.StreamHandler()
-    console_handler.setLevel(logging.INFO)
-    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-    console_handler.setFormatter(formatter)
-    logger.addHandler(console_handler)
+logger = get_logger("app")
 
 
 class ResponseModel(BaseModel):
@@ -54,11 +42,11 @@ async def world(request: Request) -> ResponseModel:
 @app.middleware("http")
 async def log_requests(request: Request, call_next: Callable[[Request], Awaitable[Response]]) -> Response:
     """Log basic information about requests and responses."""
-    logger.info("middleware", extra={"path": request.url.path, "method": request.method})
+    logger.info("middleware start", extra={"path": request.url.path, "method": request.method})
 
     response = await call_next(request)
 
-    logger.info(f"Response status code: {response.status_code}")
+    logger.info("middleware end", extra={"status_code": response.status_code})
     return response
 
 

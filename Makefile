@@ -39,7 +39,7 @@ build: ## Generate requirements.txt and build the SAM application
 
 .PHONY: deploy-guided
 deploy-guided: build ## Deploy the SAM application to AWS with guided setup
-	@echo "🚀 Deploying to AWS with guided setup"
+	@echo "🚀 Deploying to AWS with guided setup (first time only)"
 	@sam deploy --guided
 
 .PHONY: deploy
