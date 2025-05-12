@@ -37,15 +37,20 @@ build: ## Generate requirements.txt and build the SAM application
 	@echo "🚀 Building SAM application"
 	@sam build
 
+.PHONY: deploy-guided
+deploy-guided: build ## Deploy the SAM application to AWS with guided setup
+	@echo "🚀 Deploying to AWS with guided setup"
+	@sam deploy --guided
+
 .PHONY: deploy
 deploy: build ## Deploy the SAM application to AWS
 	@echo "🚀 Deploying to AWS"
 	@sam deploy
 
-.PHONY: deploy-guided
-deploy-guided: build ## Deploy the SAM application to AWS with guided setup
-	@echo "🚀 Deploying to AWS with guided setup"
-	@sam deploy --guided
+.PHONY: logs
+logs: ## Get the logs of the SAM application
+	@echo "🚀 Getting logs"
+	@sam logs --stack-name chatbot-backend --tail
 
 .PHONY: delete
 delete: ## Delete the CloudFormation stack
