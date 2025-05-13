@@ -39,6 +39,16 @@ Developers can use this as a foundation for building their own serverless API ap
 make install
 ```
 
+### API Key Configuration
+
+To use the `/api/chat` endpoint, you need to create a `.env` file in the project root with your OpenAI API key:
+
+```
+OPENAI_API_KEY=your-api-key-here
+```
+
+This key is loaded automatically when you run the application.
+
 ### Local Development
 
 ```bash
@@ -48,6 +58,8 @@ make run
 # In a separate terminal, test the API
 curl http://localhost:8000/hello
 ```
+
+We use [Bruno](https://www.usebruno.com/) to test and document our API. You can find API collection files in the `/bruno` directory.
 
 ### Building and Deploying
 

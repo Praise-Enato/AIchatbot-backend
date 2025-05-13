@@ -1,0 +1,19 @@
+meta {
+  name: hello
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8000/api/chat
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {"messages":[{"role":"user","content":"Hello, how are you today?"}]}
+}

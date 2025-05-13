@@ -19,7 +19,9 @@ classifiers = [
 dependencies = [
     "fastapi>=0.115.12",
     "mangum>=0.19.0",
+    "openai>=1.78.1",
     "pydantic>=2.11.4",
+    "python-dotenv>=1.1.0",
 ]
 
 [build-system]
@@ -121,7 +123,9 @@ module = [
     "fastapi.*",
     "mangum.*",
     "uvicorn.*",
-    "requests.*"
+    "requests.*",
+    "openai.*",
+    "dotenv"
 ]
 ignore_missing_imports = true
 

@@ -1,10 +1,17 @@
 from collections.abc import Awaitable, Callable
 
-from fastapi import FastAPI, Request, Response
+from dotenv import load_dotenv
+from fastapi import FastAPI, Query, Request, Response
+from fastapi.responses import StreamingResponse
 from mangum import Mangum
 from pydantic import BaseModel
 
 from chatbot_backend.custom_logger import get_logger
+from chatbot_backend.models import ChatRequest
+from chatbot_backend.providers.openai import convert_messages, get_client, stream_response
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Configure logging
 logger = get_logger("app")
@@ -23,6 +30,10 @@ app = FastAPI(
     version="0.1.0",
 )
 
+client = get_client()
+
+# Example of a simple endpoint
+
 
 @app.get("/hello", response_model=ResponseModel)
 async def hello(request: Request) -> ResponseModel:
@@ -31,11 +42,7 @@ async def hello(request: Request) -> ResponseModel:
     return ResponseModel(input="hello", output="world")
 
 
-@app.get("/world", response_model=ResponseModel)
-async def world(request: Request) -> ResponseModel:
-    """World endpoint that returns a simple response."""
-    logger.info("World", extra={"path": request.url.path, "method": request.method})
-    return ResponseModel(input="world", output="hello")
+# Example of a simple middleware
 
 
 # Simple middleware to log requests
@@ -47,6 +54,19 @@ async def log_requests(request: Request, call_next: Callable[[Request], Awaitabl
     response = await call_next(request)
 
     logger.info("middleware end", extra={"status_code": response.status_code})
+    return response
+
+
+# Streaming chat endpoint
+
+
+@app.post("/api/chat")
+async def handle_chat_data(request: ChatRequest, protocol: str = Query("data")) -> StreamingResponse:
+    messages = request.messages
+    provider_messages = convert_messages(messages)
+
+    response = StreamingResponse(stream_response(client, provider_messages, protocol))
+    response.headers["x-vercel-ai-data-stream"] = "v1"
     return response
 
 

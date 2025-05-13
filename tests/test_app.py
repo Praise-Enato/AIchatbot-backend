@@ -11,11 +11,3 @@ def test_hello_endpoint() -> None:
     assert response.status_code == 200
     data = response.json()
     assert data == {"input": "hello", "output": "world"}
-
-
-def test_world_endpoint() -> None:
-    """Test the /world endpoint."""
-    response = client.get("/world")
-    assert response.status_code == 200
-    data = response.json()
-    assert data == {"input": "world", "output": "hello"}
