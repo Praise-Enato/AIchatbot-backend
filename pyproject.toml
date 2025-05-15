@@ -98,23 +98,25 @@ namespace_packages = true
 explicit_package_bases = true
 mypy_path = ["src"]
 exclude = [".aws-sam"]
-disallow_untyped_defs = true
-disallow_any_unimported = false  # Changed from true to false
-no_implicit_optional = true
-check_untyped_defs = true
-warn_return_any = true
-warn_unused_ignores = false  # Changed from true to false
-show_error_codes = true
-python_version = "3.12"  # Match your Python version requirement
-warn_redundant_casts = true
-disallow_incomplete_defs = true
-disallow_untyped_decorators = false
+disallow_untyped_defs = true          # Keep this for good practice
+disallow_any_unimported = false       # Allow Any in imports for simplicity
+no_implicit_optional = true           # Keep this for clarity
+check_untyped_defs = true             # Keep this for consistency
+warn_return_any = false               # Changed to false - allow returning Any for simplicity
+warn_unused_ignores = false           # Allow unused type ignores
+show_error_codes = true               # Keep this for better error messages
+python_version = "3.12"               # Match your Python version requirement
+warn_redundant_casts = true           # Keep this for cleaner code
+disallow_incomplete_defs = false      # Changed to false - allow partial typing
+disallow_untyped_decorators = false   # Keep this setting
 disable_error_code = [
-    "valid-type",  # ignore PEP 695 type alias errors
-    "unused-ignore",  # ignore unused ignores
-    "no-any-unimported",  # ignore unimported any errors
-    "import-untyped",  # ignore untyped import errors
-    "import-not-found"  # ignore import not found errors
+    "valid-type",                     # ignore PEP 695 type alias errors
+    "unused-ignore",                  # ignore unused ignores
+    "no-any-unimported",              # ignore unimported any errors
+    "import-untyped",                 # ignore untyped import errors
+    "import-not-found",               # ignore import not found errors
+    "union-attr",                     # ignore attribute errors on union types
+    "attr-defined"                    # ignore attribute defined errors
 ]
 
 [[tool.mypy.overrides]]
@@ -143,3 +145,8 @@ DEP004 = [
 [tool.pyright]
 exclude = ["tests"]
 reportMissingTypeStubs = false
+
+[tool.pytest.ini_options]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+]

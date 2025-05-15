@@ -21,8 +21,13 @@ check: ## Run code quality tools.
 	@uv run deptry .
 
 .PHONY: test
-test: ## Test the code with pytest
-	@echo "🚀 Testing code: Running pytest"
+test: ## Test the code with pytest (skips slow tests)
+	@echo "🚀 Testing code: Running pytest (excluding slow tests)"
+	@uv run python -m pytest -m "not slow"
+
+.PHONY: test-all
+test-all: ## Run all tests including slow tests
+	@echo "🚀 Running all tests including slow tests"
 	@uv run python -m pytest
 
 .PHONY: run

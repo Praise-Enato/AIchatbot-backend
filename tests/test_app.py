@@ -5,9 +5,9 @@ from chatbot_backend.app import app
 client = TestClient(app)
 
 
-def test_hello_endpoint() -> None:
-    """Test the /hello endpoint."""
-    response = client.get("/hello")
+def test_health_endpoint() -> None:
+    """Test the /health endpoint."""
+    response = client.get("/health")
     assert response.status_code == 200
     data = response.json()
-    assert data == {"input": "hello", "output": "world"}
+    assert data == {"status": "healthy"}

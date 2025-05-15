@@ -39,15 +39,22 @@ Developers can use this as a foundation for building their own serverless API ap
 make install
 ```
 
-### API Key Configuration
+### Environment Variables
 
-To use the `/api/chat` endpoint, you need to create a `.env` file in the project root with your OpenAI API key:
+To use the API endpoints, you need to set up the following environment variables in a `.env` file in the project root:
 
 ```
-OPENAI_API_KEY=your-api-key-here
+# Required for authentication to the API endpoints
+API_SECRET=your-secret-key-here
+
+# Required for OpenAI API access
+OPENAI_API_KEY=your-openai-api-key-here
+
+# Optional: Specify which LLM provider to use (defaults to 'openai')
+PROVIDER_NAME=openai
 ```
 
-This key is loaded automatically when you run the application.
+An `.env.example` file is provided as a template. These environment variables are loaded automatically when you run the application.
 
 ### Local Development
 
