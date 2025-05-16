@@ -74,32 +74,54 @@ async def format_error_stream(message: str) -> AsyncGenerator[bytes, None]:
     yield f"d:{json.dumps({'message': message})}\n\n".encode()
 
 
-async def stream_chat_chunks(chunks: AsyncGenerator[str, None]) -> AsyncGenerator[bytes, None]:
+async def stream_chat_chunks(chunks: AsyncGenerator[str | dict, None]) -> AsyncGenerator[bytes, None]:
     """
     Format chat chunks as a streaming response.
 
     Args:
-        chunks: An async generator of text chunks.
+        chunks: An async generator of text chunks or usage information.
+               Text chunks are strings.
+               Usage information is a dictionary with the format:
+               {"usage": {"promptTokens": int, "completionTokens": int}}
 
     Yields:
         Formatted chat chunks with the format:
         - 0:[json-encoded-text]\n  for normal text chunks
         - 3:[json-encoded-error-message]\n  for error message chunks
-        - d:{"finishReason":"stop"}\n  for finish chunk
+        - d:{"finishReason":"stop","usage":{"promptTokens":X,"completionTokens":Y}}\n  for finish chunk
     """
     try:
+        # Store usage information if found
+        usage_info = None
+
         # Stream each chunk with the proper format
         async for chunk in chunks:
-            if chunk and chunk.startswith("Error:"):
-                # Handle error chunks with code 3
+            # If the chunk is a dictionary, it contains usage information
+            if isinstance(chunk, dict) and "usage" in chunk:
+                logger.info(f"Usage Chunk: {chunk}")
+                # Store the usage information for the final chunk
+                usage_info = chunk["usage"]
+                continue
+
+            # Handle error chunks with code 3
+            elif isinstance(chunk, str) and chunk.startswith("Error:"):
                 error_message = chunk.replace("Error:", "").strip()
                 yield f"3:{json.dumps(error_message)}\n".encode()
+
+            # Handle normal text chunks with code 0
             elif chunk:
-                # Handle normal text chunks with code 0
                 yield f"0:{json.dumps(chunk)}\n".encode()
 
         # Send the finish message when complete with the new format
-        yield b'd:{"finishReason":"stop"}\n'
+        # Include usage information if available
+        logger.info(f"Usage info: {usage_info}")
+        if usage_info:
+            finish_data = {"finishReason": "stop", "usage": usage_info}
+            yield f"d:{json.dumps(finish_data)}\n".encode()
+        else:
+            # Fallback if no usage information was provided
+            yield b'd:{"finishReason":"stop"}\n'
+
     except Exception as e:
         # Handle any errors during streaming
         logger.error(f"Error streaming chat: {e}")
@@ -107,12 +129,14 @@ async def stream_chat_chunks(chunks: AsyncGenerator[str, None]) -> AsyncGenerato
         yield f"3:{json.dumps(error_message)}\n".encode()
 
 
-def create_streaming_response(chunks: AsyncGenerator[str, None]) -> StreamingResponse:
+def create_streaming_response(chunks: AsyncGenerator[str | dict, None]) -> StreamingResponse:
     """
     Create a StreamingResponse with the correct headers.
 
     Args:
-        chunks: An async generator of text chunks.
+        chunks: An async generator of text chunks or usage information.
+               Text chunks are strings.
+               Usage information is a dictionary with usage data.
 
     Returns:
         A StreamingResponse object.

@@ -60,11 +60,30 @@ def test_chat_endpoint_success(test_client, auth_headers, chat_request_data):
 
     # Check that chunks are properly formatted
     chunks = content.split("\n")
-    for chunk in chunks[:-1]:  # Exclude the last empty chunk after split
-        assert chunk.startswith('0:"') or chunk.startswith('3:"') or chunk == 'd:{"finishReason":"stop"}'
+    for chunk in chunks[:-2]:  # Exclude the last chunk and the empty chunk after split
+        assert chunk.startswith('0:"')
 
-    # Check for the completion message
-    assert 'd:{"finishReason":"stop"}' in content
+    # Check for the completion message with usage information
+    finish_chunk = chunks[-2]
+    assert "finishReason" in finish_chunk
+
+    # Check for usage information in the completion message
+    # The actual usage information may vary, but tokens should be meaningful
+    assert "usage" in finish_chunk
+    # Convert JSON string to dict to check token values
+    import json
+
+    finish_data = json.loads(finish_chunk.replace("d:", ""))
+
+    # Check that token counts are present and have reasonable values
+    assert "promptTokens" in finish_data["usage"]
+    assert "completionTokens" in finish_data["usage"]
+
+    # Ensure token counts are greater than 10
+    prompt_tokens = finish_data["usage"]["promptTokens"]
+    assert prompt_tokens > 10, f"Expected promptTokens > 10, got: {prompt_tokens}"
+    completion_tokens = finish_data["usage"]["completionTokens"]
+    assert completion_tokens > 10, f"Expected completionTokens > 10, got: {completion_tokens}"
 
 
 def test_chat_endpoint_invalid_request(test_client, auth_headers):

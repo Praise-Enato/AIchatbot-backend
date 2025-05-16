@@ -47,15 +47,17 @@ async def handle_chat_data(request: ChatRequest) -> StreamingResponse:
         provider_messages = default_provider.format_messages_from_request(request)
 
         # Create a streaming response
-        async def generate() -> AsyncGenerator[str, None]:
+        async def generate() -> AsyncGenerator[str | dict, None]:
             try:
                 chunk_count = 0
                 for chunk in default_provider.stream_chat_response(
                     provider_messages, system_message=CHAT_SYSTEM_PROMPT
                 ):
-                    chunk_count += 1
+                    # Only count text chunks, not usage information
+                    if isinstance(chunk, str):
+                        chunk_count += 1
                     yield chunk
-                logger.info(f"Generation complete - yielded {chunk_count} chunks")
+                logger.info(f"Generation complete - yielded {chunk_count} text chunks")
             except Exception as e:
                 logger.error(f"Error generating response: {e}")
                 yield f"Error: {e}"

@@ -45,7 +45,7 @@ class LLMProvider(Protocol):
         system_message: str | None = None,
         model: str | None = None,
         tool_definitions: list[dict[str, Any]] | None = None,
-    ) -> Iterator[str]:
+    ) -> Iterator[str | dict[str, Any]]:
         """
         Stream a chat response from the provider.
 
@@ -56,7 +56,10 @@ class LLMProvider(Protocol):
             tool_definitions: Optional tool definitions.
 
         Yields:
-            Text chunks from the provider's API.
+            Text chunks from the provider's API, or dictionaries with usage information.
+            Text chunks are returned as strings.
+            Usage information is returned as a dictionary with the following format:
+            {"usage": {"promptTokens": int, "completionTokens": int}}
         """
         ...
 

@@ -12,8 +12,13 @@ from typing import Any
 
 from openai import OpenAI
 
+from chatbot_backend.custom_logger import get_logger
+
 # OpenAI-specific configuration
 DEFAULT_MODEL = "gpt-4o-mini"
+
+# Configure logging
+logger = get_logger("openai")
 
 
 @lru_cache
@@ -69,7 +74,7 @@ class OpenAIProvider:
         system_message: str | None = None,
         model: str | None = None,
         tool_definitions: list[dict[str, Any]] | None = None,
-    ) -> Iterator[str]:
+    ) -> Iterator[str | dict]:
         """
         Stream a chat response from OpenAI.
 
@@ -80,7 +85,10 @@ class OpenAIProvider:
             tool_definitions: Optional tool definitions.
 
         Yields:
-            Text chunks from the OpenAI response.
+            Text chunks or usage information from the OpenAI response.
+            Text chunks are returned as strings.
+            Usage information is returned as a dictionary with the following format:
+            {"usage": {"promptTokens": int, "completionTokens": int, "totalTokens": int}}
         """
         # Get a client instance
         client = self.get_client()
@@ -102,26 +110,33 @@ class OpenAIProvider:
                 system_msg = {"role": "system", "content": system_message}
                 messages = [system_msg, *messages]
 
-        # Create a streaming chat completion
+        # Create a streaming response using the responses endpoint
         # Note: We use Any for types with the OpenAI API to keep code simple
-        stream = client.chat.completions.create(  # type: ignore
-            messages=messages,  # type: ignore
+        stream = client.responses.create(
+            input=messages,  # type: ignore # For the responses API, we pass messages as 'input'
             model=model,
             stream=True,
-            tools=tool_definitions,
-            tool_choice="auto" if tool_definitions else "none",
+            tools=tool_definitions if tool_definitions else None,  # type: ignore
+            store=False,
         )
 
         # Process each chunk in the stream
-        for chunk in stream:
-            # Check each choice in the response
-            for choice in chunk.choices:
-                # Skip if this choice is finished
-                if choice.finish_reason == "stop":
-                    continue
-                # Extract the content if available
-                if choice.delta.content:
-                    yield choice.delta.content
+        for event in stream:
+            # Text delta events - yield the text content
+            if hasattr(event, "type") and event.type == "response.output_text.delta":
+                yield event.delta
+
+            # Usage events - yield a dictionary with usage information
+            # Response usage events - yield a dictionary with usage information
+            elif hasattr(event, "response") and hasattr(event.response, "usage") and event.response.usage is not None:
+                # Convert to camelCase for consistency with the frontend
+                usage_info = {
+                    "usage": {
+                        "promptTokens": event.response.usage.input_tokens,
+                        "completionTokens": event.response.usage.output_tokens,
+                    }
+                }
+                yield usage_info
 
     def get_response(
         self,
@@ -149,13 +164,12 @@ class OpenAIProvider:
             {"role": "user", "content": user_message},
         ]
 
-        # Create a non-streaming chat completion
-        # Note: We use simple type handling for OpenAI API for readability
-        response = client.chat.completions.create(  # type: ignore
-            messages=messages,  # type: ignore
+        # Create a response using the responses endpoint
+        response = client.responses.create(
             model=model,
-            stream=False,
+            input=messages,  # type: ignore
+            store=False,
         )
 
-        # Extract and return the message content
-        return response.choices[0].message.content or ""  # type: ignore
+        # Extract and return the response content
+        return response.output_text
