@@ -2,6 +2,7 @@
 Tests for the chat endpoint.
 """
 
+import json
 import os
 import uuid
 
@@ -55,13 +56,23 @@ def test_chat_endpoint_success(test_client, auth_headers, chat_request_data):
     content = response.content.decode("utf-8")
 
     # Check the streaming format
-    # Normal chunks should start with 0:" and end with "\n
-    assert '0:"' in content
-
-    # Check that chunks are properly formatted
     chunks = content.split("\n")
-    for chunk in chunks[:-2]:  # Exclude the last chunk and the empty chunk after split
-        assert chunk.startswith('0:"')
+
+    # Check for the first chunk with message ID
+    first_chunk = chunks[0]
+    assert first_chunk.startswith('f:{"messageId":"')
+    assert first_chunk.endswith('"}')
+
+    # Verify messageId format (should be UUID)
+    message_id_data = json.loads(first_chunk.replace("f:", ""))
+    assert "messageId" in message_id_data
+    assert len(message_id_data["messageId"]) == 36  # UUID length
+
+    # Check that normal chunks are properly formatted
+    # Start from index 1 to skip the first message ID chunk
+    for chunk in chunks[1:-2]:  # Exclude the first chunk, last chunk and the empty chunk after split
+        if chunk.startswith("0:"):
+            assert chunk.startswith('0:"')
 
     # Check for the completion message with usage information
     finish_chunk = chunks[-2]
@@ -70,9 +81,8 @@ def test_chat_endpoint_success(test_client, auth_headers, chat_request_data):
     # Check for usage information in the completion message
     # The actual usage information may vary, but tokens should be meaningful
     assert "usage" in finish_chunk
-    # Convert JSON string to dict to check token values
-    import json
 
+    # Convert JSON string to dict to check token values
     finish_data = json.loads(finish_chunk.replace("d:", ""))
 
     # Check that token counts are present and have reasonable values

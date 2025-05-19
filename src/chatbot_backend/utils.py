@@ -3,6 +3,7 @@ Utility functions for the chatbot backend.
 """
 
 import json
+import random
 from collections.abc import AsyncGenerator
 
 from fastapi import Request, status
@@ -13,6 +14,25 @@ from chatbot_backend.custom_logger import get_logger
 
 # Configure logging
 logger = get_logger("utils")
+
+
+def generate_uuid() -> str:
+    """
+    Generate a UUID v4 string.
+
+    Returns:
+        A UUID string in the format xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx.
+    """
+    # Python's uuid module already provides this functionality,
+    # but we can recreate the TypeScript logic for compatibility
+    template = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
+
+    def replace_char(c: str) -> str:
+        r = random.randint(0, 15)
+        v = r if c == "x" else (r & 0x3) | 0x8
+        return format(v, "x")
+
+    return "".join(replace_char(c) if c in ["x", "y"] else c for c in template)
 
 
 # Function moved to config.py
@@ -86,11 +106,16 @@ async def stream_chat_chunks(chunks: AsyncGenerator[str | dict, None]) -> AsyncG
 
     Yields:
         Formatted chat chunks with the format:
+        - f:{"messageId":"<uuid>"}\n  for first chunk with message ID
         - 0:[json-encoded-text]\n  for normal text chunks
         - 3:[json-encoded-error-message]\n  for error message chunks
         - d:{"finishReason":"stop","usage":{"promptTokens":X,"completionTokens":Y}}\n  for finish chunk
     """
     try:
+        # Send the first chunk with a message ID
+        message_id = generate_uuid()
+        yield f'f:{{"messageId":"{message_id}"}}\n'.encode()
+
         # Store usage information if found
         usage_info = None
 
