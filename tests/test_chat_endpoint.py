@@ -70,9 +70,16 @@ def test_chat_endpoint_success(test_client, auth_headers, chat_request_data):
 
     # Check that normal chunks are properly formatted
     # Start from index 1 to skip the first message ID chunk
-    for chunk in chunks[1:-2]:  # Exclude the first chunk, last chunk and the empty chunk after split
-        if chunk.startswith("0:"):
-            assert chunk.startswith('0:"')
+    for chunk in chunks[1:-3]:  # Exclude the first chunk, last 2 chunks and the empty chunk after split
+        assert chunk.startswith('0:"')
+
+    # check the step finish chunk
+    step_finish_chunk = chunks[-3]
+    assert step_finish_chunk.startswith("e:")
+    step_finish_data = json.loads(step_finish_chunk.replace("e:", ""))
+    assert "finishReason" in step_finish_data
+    assert "usage" in step_finish_data
+    assert "isContinued" in step_finish_data
 
     # Check for the completion message with usage information
     finish_chunk = chunks[-2]

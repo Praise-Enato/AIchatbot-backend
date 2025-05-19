@@ -109,6 +109,8 @@ async def stream_chat_chunks(chunks: AsyncGenerator[str | dict, None]) -> AsyncG
         - f:{"messageId":"<uuid>"}\n  for first chunk with message ID
         - 0:[json-encoded-text]\n  for normal text chunks
         - 3:[json-encoded-error-message]\n  for error message chunks
+        - e:{"finishReason":"stop","usage":{"promptTokens":X,"completionTokens":Y},"isContinued":false}\n
+            for step finish chunk
         - d:{"finishReason":"stop","usage":{"promptTokens":X,"completionTokens":Y}}\n  for finish chunk
     """
     try:
@@ -141,10 +143,13 @@ async def stream_chat_chunks(chunks: AsyncGenerator[str | dict, None]) -> AsyncG
         # Include usage information if available
         logger.info(f"Usage info: {usage_info}")
         if usage_info:
+            step_finish_data = {"finishReason": "stop", "usage": usage_info, "isContinued": False}
+            yield f"e:{json.dumps(step_finish_data)}\n".encode()
             finish_data = {"finishReason": "stop", "usage": usage_info}
             yield f"d:{json.dumps(finish_data)}\n".encode()
         else:
             # Fallback if no usage information was provided
+            yield b'e:{"finishReason":"stop","isContinued":false}\n'
             yield b'd:{"finishReason":"stop"}\n'
 
     except Exception as e:
