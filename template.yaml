@@ -29,6 +29,19 @@ Resources:
         Cors:
           AllowOrigins:
             - "*"
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName:
+              Ref: UsersTable
+        - DynamoDBCrudPolicy:
+            TableName:
+              Ref: ChatsTable
+      Environment:
+        Variables:
+          USERS_TABLE:
+            Ref: UsersTable
+          CHATS_TABLE:
+            Ref: ChatsTable
 
   ApplicationResourceGroup:
     Type: AWS::ResourceGroups::Group
@@ -43,6 +56,127 @@ Resources:
       ResourceGroupName:
         Ref: ApplicationResourceGroup
       AutoConfigurationEnabled: "true"
+
+  UsersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Users
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: UserId
+          AttributeType: S
+        - AttributeName: Email
+          AttributeType: S
+        - AttributeName: Type
+          AttributeType: S
+        - AttributeName: CreatedAt
+          AttributeType: S
+        - AttributeName: StripeCustomerId
+          AttributeType: S
+        - AttributeName: ActiveSubscriptionId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: UserId
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: GSI1-Email
+          KeySchema:
+            - AttributeName: Email
+              KeyType: HASH
+          Projection:
+            ProjectionType: INCLUDE
+            NonKeyAttributes:
+              - UserId
+              - PasswordHash
+              - CreatedAt
+        - IndexName: GSI2-UsersByType
+          KeySchema:
+            - AttributeName: Type
+              KeyType: HASH
+            - AttributeName: CreatedAt
+              KeyType: RANGE
+          Projection:
+            ProjectionType: INCLUDE
+            NonKeyAttributes:
+              - UserId
+        - IndexName: GSI3-StripeCustomer
+          KeySchema:
+            - AttributeName: StripeCustomerId
+              KeyType: HASH
+          Projection:
+            ProjectionType: INCLUDE
+            NonKeyAttributes:
+              - UserId
+              - ActiveSubscriptionId
+              - SubscriptionStatus
+        - IndexName: GSI4-Subscription
+          KeySchema:
+            - AttributeName: ActiveSubscriptionId
+              KeyType: HASH
+          Projection:
+            ProjectionType: INCLUDE
+            NonKeyAttributes:
+              - UserId
+              - StripeCustomerId
+              - SubscriptionStatus
+
+  ChatsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Chats
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: ChatId
+          AttributeType: S
+        - AttributeName: SK
+          AttributeType: S
+        - AttributeName: UserId
+          AttributeType: S
+        - AttributeName: ChatCreatedAt
+          AttributeType: S
+        - AttributeName: MessageId
+          AttributeType: S
+        - AttributeName: CreatedAt
+          AttributeType: S
+      KeySchema:
+        - AttributeName: ChatId
+          KeyType: HASH
+        - AttributeName: SK
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: GSI1-ChatsByUser
+          KeySchema:
+            - AttributeName: UserId
+              KeyType: HASH
+            - AttributeName: ChatCreatedAt
+              KeyType: RANGE
+          Projection:
+            ProjectionType: INCLUDE
+            NonKeyAttributes:
+              - ChatId
+              - Title
+              - Visibility
+              - ChatCreatedAt
+        - IndexName: GSI2-MessageById
+          KeySchema:
+            - AttributeName: MessageId
+              KeyType: HASH
+            - AttributeName: CreatedAt
+              KeyType: RANGE
+          Projection:
+            ProjectionType: KEYS_ONLY
+        - IndexName: GSI3-MsgsByUser
+          KeySchema:
+            - AttributeName: UserId
+              KeyType: HASH
+            - AttributeName: CreatedAt
+              KeyType: RANGE
+          Projection:
+            ProjectionType: INCLUDE
+            NonKeyAttributes:
+              - MessageId
+              - Role
+
 Outputs:
   ChatbotBackendFunctionUrl:
     Description: URL for the Chatbot Backend Lambda function

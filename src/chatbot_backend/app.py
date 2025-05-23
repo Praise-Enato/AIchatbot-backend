@@ -12,7 +12,7 @@ from mangum import Mangum
 from chatbot_backend.custom_logger import get_logger
 from chatbot_backend.middleware.auth import auth_middleware
 from chatbot_backend.middleware.logging import log_requests
-from chatbot_backend.routes import chat, health, title
+from chatbot_backend.routes import chat, health, title, user
 
 # Load environment variables from .env file
 load_dotenv()
@@ -34,6 +34,7 @@ app.middleware("http")(log_requests)
 # Include routers
 app.include_router(chat.router)
 app.include_router(title.router)
+app.include_router(user.router)
 app.include_router(health.router)
 
 # AWS Lambda handler - integrates FastAPI with AWS Lambda

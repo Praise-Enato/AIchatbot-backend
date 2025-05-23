@@ -3,9 +3,10 @@ Utility functions for the chatbot backend.
 """
 
 import json
-import random
+import uuid
 from collections.abc import AsyncGenerator
 
+import bcrypt
 from fastapi import Request, status
 from fastapi.responses import JSONResponse, StreamingResponse
 
@@ -16,26 +17,17 @@ from chatbot_backend.custom_logger import get_logger
 logger = get_logger("utils")
 
 
-def generate_uuid() -> str:
+def hash_password(password: str) -> str:
     """
-    Generate a UUID v4 string.
+    Hash a password using bcrypt.
+
+    Args:
+        password: The password to hash.
 
     Returns:
-        A UUID string in the format xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx.
+        A hashed password.
     """
-    # Python's uuid module already provides this functionality,
-    # but we can recreate the TypeScript logic for compatibility
-    template = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
-
-    def replace_char(c: str) -> str:
-        r = random.randint(0, 15)
-        v = r if c == "x" else (r & 0x3) | 0x8
-        return format(v, "x")
-
-    return "".join(replace_char(c) if c in ["x", "y"] else c for c in template)
-
-
-# Function moved to config.py
+    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
 
 async def verify_api_key(request: Request) -> bool:
@@ -115,7 +107,7 @@ async def stream_chat_chunks(chunks: AsyncGenerator[str | dict, None]) -> AsyncG
     """
     try:
         # Send the first chunk with a message ID
-        message_id = generate_uuid()
+        message_id = str(uuid.uuid4())
         yield f'f:{{"messageId":"{message_id}"}}\n'.encode()
 
         # Store usage information if found
