@@ -6,7 +6,6 @@ import json
 import uuid
 from collections.abc import AsyncGenerator
 
-import bcrypt
 from fastapi import Request, status
 from fastapi.responses import JSONResponse, StreamingResponse
 
@@ -15,19 +14,6 @@ from chatbot_backend.custom_logger import get_logger
 
 # Configure logging
 logger = get_logger("utils")
-
-
-def hash_password(password: str) -> str:
-    """
-    Hash a password using bcrypt.
-
-    Args:
-        password: The password to hash.
-
-    Returns:
-        A hashed password.
-    """
-    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
 
 async def verify_api_key(request: Request) -> bool:

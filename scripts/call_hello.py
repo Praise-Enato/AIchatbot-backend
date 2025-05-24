@@ -16,7 +16,7 @@ def call_hello_endpoint(base_uri: str) -> dict[str, Any]:
     """
         Call the /hello endpoint of the Chatbot API.
     Args:
-        base_uri: The base URI of the API (e.g., http://localhost:8000 or Lambda function URL)
+        base_uri: The base URI of the API (e.g., http://localhost:8080 or Lambda function URL)
     Returns:
         The JSON response from the API
     """
@@ -39,7 +39,7 @@ def call_hello_endpoint(base_uri: str) -> dict[str, Any]:
 def main() -> None:
     """Main function to parse arguments and call the API."""
     parser = argparse.ArgumentParser(description="Call the /hello endpoint of the Chatbot API")
-    parser.add_argument("base_uri", help="Base URI of the API (e.g., http://localhost:8000 or Lambda function URL)")
+    parser.add_argument("base_uri", help="Base URI of the API (e.g., http://localhost:8080 or Lambda function URL)")
     args = parser.parse_args()
 
     result = call_hello_endpoint(args.base_uri)

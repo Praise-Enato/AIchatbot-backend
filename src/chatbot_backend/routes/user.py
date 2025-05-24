@@ -10,13 +10,12 @@ from pydantic import ValidationError
 
 from chatbot_backend import db
 from chatbot_backend.custom_logger import get_logger
-from chatbot_backend.models.chat import (
-    ChatListResponse,
+from chatbot_backend.models.chat import ChatListResponse, MessageCountResponse
+from chatbot_backend.models.user import (
+    CreateEmailUserRequest,
     CreateOAuthUserRequest,
-    CreateUserRequest,
-    MessageCountResponse,
+    User,
 )
-from chatbot_backend.models.user import User
 
 # Configure logging
 logger = get_logger("user_routes")
@@ -25,25 +24,36 @@ logger = get_logger("user_routes")
 router = APIRouter(prefix="/api")
 
 
-@router.get("/users/{email}", response_model=User)
+@router.get("/users/{email}", response_model=User, response_model_exclude_none=True)
 async def get_user_by_email(email: str) -> User:
     """Get user by email address."""
     try:
         user = db.get_user(email)
-        if not user:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with email '{email}' not found")
-        return user
     except Exception as err:
         logger.error("Failed to get user by email %s: %s", email, err)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error") from err
 
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with email '{email}' not found")
 
-@router.post("/users", response_model=User, status_code=status.HTTP_201_CREATED)
-async def create_user(request: CreateUserRequest) -> User:
-    """Create a new regular user."""
+    return user
+
+
+@router.post("/users", response_model=User, status_code=status.HTTP_201_CREATED, response_model_exclude_none=True)
+async def create_user(request: CreateEmailUserRequest) -> User:
+    """Create a new email user."""
     try:
-        user = db.create_user(request.email, request.password)
+        # Check if user already exists
+        existing_user = db.get_user(request.email)
+        if existing_user:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT, detail=f"User with email '{request.email}' already exists"
+            )
+
+        user = db.create_user(request.email, request.password_hash)
         return user
+    except HTTPException:
+        raise  # Re-raise HTTPException as-is
     except ValidationError as err:
         logger.error("Validation error creating user: %s", err)
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Invalid user data") from err
@@ -52,7 +62,7 @@ async def create_user(request: CreateUserRequest) -> User:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error") from err
 
 
-@router.post("/users/guest", response_model=User, status_code=status.HTTP_201_CREATED)
+@router.post("/users/guest", response_model=User, status_code=status.HTTP_201_CREATED, response_model_exclude_none=True)
 async def create_guest_user() -> User:
     """Create a new guest user."""
     try:
@@ -63,7 +73,7 @@ async def create_guest_user() -> User:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error") from err
 
 
-@router.post("/users/oauth", response_model=User, status_code=status.HTTP_201_CREATED)
+@router.post("/users/oauth", response_model=User, status_code=status.HTTP_201_CREATED, response_model_exclude_none=True)
 async def create_oauth_user(request: CreateOAuthUserRequest) -> User:
     """Create or get a user via OAuth."""
     try:

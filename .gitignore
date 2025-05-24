@@ -101,3 +101,7 @@ node_modules/
 
 # claude uses .claude
 **/.claude/
+
+# DynamoDB Local
+tests/dynamodb-local/
+dynamodb-local-metadata.json

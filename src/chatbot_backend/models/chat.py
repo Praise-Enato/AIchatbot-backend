@@ -6,139 +6,118 @@ This module contains models for chat messages and requests.
 
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import Field
+
+from chatbot_backend.models.common import SnakeOrAliasModel
 
 
-class WireMessage(BaseModel):
+class Chat(SnakeOrAliasModel):
+    """Chat model representing a chat entity in the database."""
+
+    chat_id: str = Field(alias="chatId")
+    user_id: str = Field(alias="userId")
+    chat_created_at: str = Field(alias="chatCreatedAt")
+    title: str = Field(alias="title")
+    visibility: str = Field(alias="visibility")
+
+
+class Message(SnakeOrAliasModel):
+    """Message model representing a message entity in the database."""
+
+    chat_id: str = Field(alias="chatId")
+    created_at: str = Field(alias="createdAt")
+    role: Literal["user", "assistant"] = Field(alias="role")
+    parts: list[Any] = Field(alias="parts")
+    attachments: list[Any] = Field(alias="attachments")
+    message_id: str = Field(alias="messageId")
+
+
+class Vote(SnakeOrAliasModel):
+    """Vote model representing a vote entity in the database."""
+
+    chat_id: str = Field(alias="chatId")
+    message_id: str = Field(alias="messageId")
+    is_upvoted: bool = Field(alias="isUpvoted")
+
+
+class Stream(SnakeOrAliasModel):
+    """Stream model representing a stream entity in the database."""
+
+    chat_id: str = Field(alias="chatId")
+    stream_id: str = Field(alias="streamId")
+    created_at: str = Field(alias="createdAt")
+
+
+#
+# Request and response models for API endpoints
+#
+
+
+class WireMessage(SnakeOrAliasModel):
     """Wire message model for the chat request format."""
 
-    role: Literal["user", "assistant", "system"]  # TODO: remove system
-    content: str
-    id: str | None = None
+    role: Literal["user", "assistant", "system"] = Field(alias="role")  # TODO: remove system
+    content: str = Field(alias="content")
+    id: str | None = Field(default=None, alias="id")
     created_at: str | None = Field(default=None, alias="createdAt")
 
 
-class ChatRequest(BaseModel):
+class ChatRequest(SnakeOrAliasModel):
     """Request model for the chat endpoint."""
 
-    messages: list[WireMessage]
-    system: str | None = None  # TODO: remove this
+    messages: list[WireMessage] = Field(alias="messages")
     user_id: str = Field(alias="userId")
-    user_type: str = Field(alias="userType")  # TODO: remove this
     chat_id: str = Field(alias="chatId")
 
 
-class Chat(BaseModel):
-    """Chat model representing a chat entity in the database."""
-
-    chat_id: str = Field(alias="ChatId")
-    user_id: str = Field(alias="UserId")
-    chat_created_at: str = Field(alias="ChatCreatedAt")
-    title: str = Field(alias="Title")
-    visibility: str = Field(alias="Visibility")
-
-    model_config = ConfigDict(populate_by_name=True)
-
-
-class Message(BaseModel):
-    """Message model representing a message entity in the database."""
-
-    chat_id: str = Field(alias="ChatId")
-    created_at: str = Field(alias="CreatedAt")
-    role: Literal["user", "assistant", "system"] = Field(alias="Role")
-    parts: list[Any] = Field(alias="Parts")
-    attachments: list[Any] = Field(alias="Attachments")
-    message_id: str = Field(alias="MessageId")
-
-    model_config = ConfigDict(populate_by_name=True)
-
-
-class Vote(BaseModel):
-    """Vote model representing a vote entity in the database."""
-
-    chat_id: str = Field(alias="ChatId")
-    message_id: str = Field(alias="MessageId")
-    is_upvoted: bool = Field(alias="IsUpvoted")
-
-    model_config = ConfigDict(populate_by_name=True)
-
-
-class Stream(BaseModel):
-    """Stream model representing a stream entity in the database."""
-
-    chat_id: str = Field(alias="ChatId")
-    created_at: str = Field(alias="CreatedAt")
-    stream_id: str = Field(alias="StreamId")
-
-    model_config = ConfigDict(populate_by_name=True)
-
-
-class ChatListResponse(BaseModel):
-    """Response model for paginated chat list."""
-
-    chats: list[Chat]
-    has_more: bool
-
-
-# Request models for API endpoints
-
-
-class CreateUserRequest(BaseModel):
-    """Request model for creating a regular user."""
-
-    email: str
-    password: str
-
-
-class CreateOAuthUserRequest(BaseModel):
-    """Request model for creating a user via OAuth."""
-
-    email: str | None = None
-    provider: str
-    provider_account_id: str
-
-
-class CreateChatRequest(BaseModel):
+class CreateChatRequest(SnakeOrAliasModel):
     """Request model for creating a new chat."""
 
-    chat_id: str
-    user_id: str
-    title: str
-    visibility: str
+    chat_id: str = Field(alias="chatId")
+    user_id: str = Field(alias="userId")
+    title: str = Field(alias="title")
+    visibility: str = Field(alias="visibility")
 
 
-class SaveMessagesRequest(BaseModel):
+class SaveMessagesRequest(SnakeOrAliasModel):
     """Request model for saving messages to a chat."""
 
-    user_id: str
-    messages: list[Message]
+    user_id: str = Field(alias="userId")
+    messages: list[Message] = Field(alias="messages")
 
 
-class VoteMessageRequest(BaseModel):
+class VoteMessageRequest(SnakeOrAliasModel):
     """Request model for voting on a message."""
 
-    vote_type: str  # 'up' or 'down'
+    vote_type: str = Field(alias="voteType")  # 'up' or 'down'
 
 
-class CreateStreamRequest(BaseModel):
+class CreateStreamRequest(SnakeOrAliasModel):
     """Request model for creating a stream ID."""
 
-    stream_id: str
+    stream_id: str = Field(alias="streamId")
 
 
-class UpdateChatVisibilityRequest(BaseModel):
+class UpdateChatVisibilityRequest(SnakeOrAliasModel):
     """Request model for updating chat visibility."""
 
-    visibility: str
+    visibility: str = Field(alias="visibility")
 
 
-class MessageCountResponse(BaseModel):
-    """Response model for message count."""
-
-    count: int
-
-
-class StreamIdsResponse(BaseModel):
+class StreamIdsResponse(SnakeOrAliasModel):
     """Response model for stream IDs list."""
 
-    stream_ids: list[str]
+    stream_ids: list[str] = Field(default_factory=list, alias="streamIds")
+
+
+class ChatListResponse(SnakeOrAliasModel):
+    """Response model for paginated chat list."""
+
+    chats: list[Chat] = Field(alias="chats")
+    has_more: bool = Field(default=False, alias="hasMore")
+
+
+class MessageCountResponse(SnakeOrAliasModel):
+    """Response model for message count."""
+
+    count: int = Field(alias="count")

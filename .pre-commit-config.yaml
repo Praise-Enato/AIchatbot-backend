@@ -44,6 +44,7 @@ repos:
       - id: mypy
         exclude: "^tests/"
         args: ["--config-file=./pyproject.toml"]
+        additional_dependencies: [pydantic>=2.11.4]
 
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: "v4.0.0-alpha.8"

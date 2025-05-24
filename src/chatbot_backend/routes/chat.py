@@ -93,7 +93,7 @@ async def handle_chat_data(request: ChatRequest) -> StreamingResponse:
 # Database endpoints for chats, messages, votes, and streams
 
 
-@router.get("/api/chats/{chat_id}", response_model=Chat)
+@router.get("/api/chats/{chat_id}", response_model=Chat, response_model_exclude_none=True)
 async def get_chat(chat_id: str) -> Chat:
     """Get chat by ID."""
     try:
@@ -106,7 +106,7 @@ async def get_chat(chat_id: str) -> Chat:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error") from err
 
 
-@router.post("/api/chats", response_model=Chat, status_code=status.HTTP_201_CREATED)
+@router.post("/api/chats", response_model=Chat, status_code=status.HTTP_201_CREATED, response_model_exclude_none=True)
 async def create_chat(request: CreateChatRequest) -> Chat:
     """Create a new chat."""
     try:
@@ -139,7 +139,7 @@ async def update_chat_visibility(chat_id: str, request: UpdateChatVisibilityRequ
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error") from err
 
 
-@router.get("/api/chats/{chat_id}/messages", response_model=list[Message])
+@router.get("/api/chats/{chat_id}/messages", response_model=list[Message], response_model_exclude_none=True)
 async def get_chat_messages(chat_id: str) -> list[Message]:
     """Get all messages for a chat."""
     try:
@@ -149,7 +149,7 @@ async def get_chat_messages(chat_id: str) -> list[Message]:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error") from err
 
 
-@router.get("/api/messages/{message_id}", response_model=Message)
+@router.get("/api/messages/{message_id}", response_model=Message, response_model_exclude_none=True)
 async def get_message(message_id: str) -> Message:
     """Get a specific message by ID."""
     try:
@@ -211,7 +211,7 @@ async def vote_on_message(chat_id: str, message_id: str, request: VoteMessageReq
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error") from err
 
 
-@router.get("/api/chats/{chat_id}/votes", response_model=list[Vote])
+@router.get("/api/chats/{chat_id}/votes", response_model=list[Vote], response_model_exclude_none=True)
 async def get_chat_votes(chat_id: str) -> list[Vote]:
     """Get all votes for a chat."""
     try:
@@ -221,7 +221,12 @@ async def get_chat_votes(chat_id: str) -> list[Vote]:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error") from err
 
 
-@router.post("/api/chats/{chat_id}/streams", response_model=Stream, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/api/chats/{chat_id}/streams",
+    response_model=Stream,
+    status_code=status.HTTP_201_CREATED,
+    response_model_exclude_none=True,
+)
 async def create_stream(chat_id: str, request: CreateStreamRequest) -> Stream:
     """Create a stream ID for a chat."""
     try:
@@ -234,7 +239,7 @@ async def create_stream(chat_id: str, request: CreateStreamRequest) -> Stream:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error") from err
 
 
-@router.get("/api/chats/{chat_id}/streams", response_model=StreamIdsResponse)
+@router.get("/api/chats/{chat_id}/streams", response_model=StreamIdsResponse, response_model_exclude_none=True)
 async def get_chat_streams(chat_id: str) -> StreamIdsResponse:
     """Get all stream IDs for a chat."""
     try:

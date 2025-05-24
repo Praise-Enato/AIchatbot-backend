@@ -30,6 +30,8 @@ Developers can use this as a foundation for building their own serverless API ap
 
 - [uv](https://github.com/astral-sh/uv) - Modern Python package manager
 - [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html) - For deployment
+- [Java Runtime Environment (JRE)](https://www.oracle.com/java/technologies/downloads/) - Required for DynamoDB Local testing
+- [yq](https://github.com/mikefarah/yq) - YAML processor for extracting table schemas
 - AWS credentials configured
 
 ### Environment Setup
@@ -63,7 +65,7 @@ An `.env.example` file is provided as a template. These environment variables ar
 make run
 
 # In a separate terminal, test the API
-curl http://localhost:8000/hello
+curl http://localhost:8080/hello
 ```
 
 We use [Bruno](https://www.usebruno.com/) to test and document our API. You can find API collection files in the `/bruno` directory.
@@ -90,6 +92,46 @@ make deploy-guided
 5. **Test**: Run `make test` to run the test suite
 6. **Deploy**: Run `make deploy` to deploy to AWS
 
+## Testing
+
+This project includes both unit tests and integration tests:
+
+### Running Tests
+
+```bash
+# Run fast unit tests only (excludes integration tests)
+make test
+
+# Run all tests including integration tests with DynamoDB Local
+make test-all
+```
+
+### Integration Tests with DynamoDB Local
+
+The `make test-all` command automatically:
+
+1. **Downloads and starts DynamoDB Local** on port 8000 (if not already running)
+2. **Creates the required database tables** from the SAM template
+3. **Runs all tests** including slow integration tests that use real database operations
+4. **Stops DynamoDB Local** when tests complete
+
+### Troubleshooting DynamoDB Local
+
+If you encounter issues with DynamoDB Local during testing (such as "port already in use" errors), you can manually manage the DynamoDB Local instance:
+
+```bash
+# Stop any running DynamoDB Local instance
+make dynamodb-local-stop
+
+# Check DynamoDB Local status
+make dynamodb-local-status
+
+# Manually start DynamoDB Local and create tables
+make dynamodb-local-start
+```
+
+The integration tests require DynamoDB Local to be running and will automatically connect to it using the `TESTING_MODE=True` environment variable.
+
 ## Working with Dependencies
 
 This project uses `uv` to manage dependencies, which is significantly faster than pip:
@@ -115,16 +157,17 @@ make install
 make help
 ```
 
-| Command              | Description                                                      |
-| -------------------- | ---------------------------------------------------------------- |
-| `make install`       | Set up Python 3.12 virtual environment and install dependencies  |
-| `make check`         | Run all code quality checks (linting, formatting, type checking) |
-| `make test`          | Run the test suite                                               |
-| `make run`           | Run the FastAPI application locally with auto-reload             |
-| `make build`         | Generate requirements.txt and build the SAM application          |
-| `make deploy`        | Deploy the application to AWS                                    |
-| `make deploy-guided` | Deploy with interactive prompts (for first deployment)           |
-| `make delete`        | Delete the AWS CloudFormation stack                              |
+| Command              | Description                                                        |
+| -------------------- | ------------------------------------------------------------------ |
+| `make install`       | Set up Python 3.12 virtual environment and install dependencies    |
+| `make check`         | Run all code quality checks (linting, formatting, type checking)   |
+| `make test`          | Run the test suite (excludes slow integration tests)               |
+| `make test-all`      | Run all tests including slow integration tests with DynamoDB Local |
+| `make run`           | Run the FastAPI application locally with auto-reload               |
+| `make build`         | Generate requirements.txt and build the SAM application            |
+| `make deploy`        | Deploy the application to AWS                                      |
+| `make deploy-guided` | Deploy with interactive prompts (for first deployment)             |
+| `make delete`        | Delete the AWS CloudFormation stack                                |
 
 ## Project Structure
 

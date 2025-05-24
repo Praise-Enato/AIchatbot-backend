@@ -58,10 +58,6 @@ class OpenAIProvider:
         """
         formatted_messages = []
 
-        # Add system message if provided
-        if request.system is not None:
-            formatted_messages.append({"role": "system", "content": request.system})
-
         # Add the messages from the request
         for message in request.messages:
             formatted_messages.append({"role": message.role, "content": message.content})
