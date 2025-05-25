@@ -98,12 +98,12 @@ async def get_chat(chat_id: str) -> Chat:
     """Get chat by ID."""
     try:
         chat = db.get_chat_by_id(chat_id)
-        if not chat:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Chat with ID '{chat_id}' not found")
-        return chat
     except Exception as err:
         logger.error("Failed to get chat %s: %s", chat_id, err)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error") from err
+    if not chat:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Chat with ID '{chat_id}' not found")
+    return chat
 
 
 @router.post("/api/chats", response_model=Chat, status_code=status.HTTP_201_CREATED, response_model_exclude_none=True)
@@ -154,14 +154,12 @@ async def get_message(message_id: str) -> Message:
     """Get a specific message by ID."""
     try:
         message = db.get_message_by_id(message_id)
-        if not message:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail=f"Message with ID '{message_id}' not found"
-            )
-        return message
     except Exception as err:
         logger.error("Failed to get message %s: %s", message_id, err)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error") from err
+    if not message:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Message with ID '{message_id}' not found")
+    return message
 
 
 @router.post("/api/chats/{chat_id}/messages", status_code=status.HTTP_201_CREATED)

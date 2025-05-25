@@ -14,38 +14,38 @@ from chatbot_backend.models.common import SnakeOrAliasModel
 class Chat(SnakeOrAliasModel):
     """Chat model representing a chat entity in the database."""
 
-    chat_id: str = Field(alias="chatId")
-    user_id: str = Field(alias="userId")
-    chat_created_at: str = Field(alias="chatCreatedAt")
-    title: str = Field(alias="title")
-    visibility: str = Field(alias="visibility")
+    chat_id: str = Field(alias="chatId", min_length=1)
+    user_id: str = Field(alias="userId", min_length=1)
+    chat_created_at: str = Field(alias="chatCreatedAt", min_length=1)
+    title: str = Field(alias="title", min_length=1)
+    visibility: str = Field(alias="visibility", min_length=1)
 
 
 class Message(SnakeOrAliasModel):
     """Message model representing a message entity in the database."""
 
-    chat_id: str = Field(alias="chatId")
-    created_at: str = Field(alias="createdAt")
+    chat_id: str = Field(alias="chatId", min_length=1)
+    created_at: str = Field(alias="createdAt", min_length=1)
     role: Literal["user", "assistant"] = Field(alias="role")
     parts: list[Any] = Field(alias="parts")
     attachments: list[Any] = Field(alias="attachments")
-    message_id: str = Field(alias="messageId")
+    message_id: str = Field(alias="messageId", min_length=1)
 
 
 class Vote(SnakeOrAliasModel):
     """Vote model representing a vote entity in the database."""
 
-    chat_id: str = Field(alias="chatId")
-    message_id: str = Field(alias="messageId")
+    chat_id: str = Field(alias="chatId", min_length=1)
+    message_id: str = Field(alias="messageId", min_length=1)
     is_upvoted: bool = Field(alias="isUpvoted")
 
 
 class Stream(SnakeOrAliasModel):
     """Stream model representing a stream entity in the database."""
 
-    chat_id: str = Field(alias="chatId")
-    stream_id: str = Field(alias="streamId")
-    created_at: str = Field(alias="createdAt")
+    chat_id: str = Field(alias="chatId", min_length=1)
+    stream_id: str = Field(alias="streamId", min_length=1)
+    created_at: str = Field(alias="createdAt", min_length=1)
 
 
 #
@@ -66,42 +66,42 @@ class ChatRequest(SnakeOrAliasModel):
     """Request model for the chat endpoint."""
 
     messages: list[WireMessage] = Field(alias="messages")
-    user_id: str = Field(alias="userId")
-    chat_id: str = Field(alias="chatId")
+    user_id: str = Field(alias="userId", min_length=1)
+    chat_id: str = Field(alias="chatId", min_length=1)
 
 
 class CreateChatRequest(SnakeOrAliasModel):
     """Request model for creating a new chat."""
 
-    chat_id: str = Field(alias="chatId")
-    user_id: str = Field(alias="userId")
-    title: str = Field(alias="title")
-    visibility: str = Field(alias="visibility")
+    chat_id: str = Field(alias="chatId", min_length=1)
+    user_id: str = Field(alias="userId", min_length=1)
+    title: str = Field(alias="title", min_length=1)
+    visibility: str = Field(alias="visibility", min_length=1)
 
 
 class SaveMessagesRequest(SnakeOrAliasModel):
     """Request model for saving messages to a chat."""
 
-    user_id: str = Field(alias="userId")
+    user_id: str = Field(alias="userId", min_length=1)
     messages: list[Message] = Field(alias="messages")
 
 
 class VoteMessageRequest(SnakeOrAliasModel):
     """Request model for voting on a message."""
 
-    vote_type: str = Field(alias="voteType")  # 'up' or 'down'
+    vote_type: Literal["up", "down"] = Field(alias="voteType")
 
 
 class CreateStreamRequest(SnakeOrAliasModel):
     """Request model for creating a stream ID."""
 
-    stream_id: str = Field(alias="streamId")
+    stream_id: str = Field(alias="streamId", min_length=1)
 
 
 class UpdateChatVisibilityRequest(SnakeOrAliasModel):
     """Request model for updating chat visibility."""
 
-    visibility: str = Field(alias="visibility")
+    visibility: str = Field(alias="visibility", min_length=1)
 
 
 class StreamIdsResponse(SnakeOrAliasModel):

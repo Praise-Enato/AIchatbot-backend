@@ -356,7 +356,7 @@ def get_message_count_by_user_id(user_id: str, difference_in_hours: int) -> int:
         resp = chats_table.query(
             IndexName="GSI3-MsgsByUser",
             KeyConditionExpression=Key("userId").eq(user_id) & Key("createdAt").gte(cutoff),
-            FilterExpression=Attr("type").eq("MESSAGE") & Attr("role").eq("user"),
+            FilterExpression=Attr("role").eq("user"),
             Select="COUNT",
         )
         return resp.get("Count", 0)

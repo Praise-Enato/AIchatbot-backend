@@ -1,16 +1,57 @@
 """
-Integration tests for user routes.
+Tests for user operations.
 
-These tests verify end-to-end functionality of user operations
-including creation, retrieval, and OAuth user management.
+This module tests user CRUD operations, OAuth functionality,
+and related error scenarios.
 """
 
 import json
+import os
+import uuid
 
 import pytest
+from fastapi.testclient import TestClient
+
+from chatbot_backend.app import app
 
 
-@pytest.mark.slow
+@pytest.fixture
+def test_client():
+    """Test client fixture."""
+    return TestClient(app)
+
+
+@pytest.fixture
+def auth_headers():
+    """Get the auth headers."""
+    api_secret = os.environ.get("API_SECRET", "secret_key")
+    return {"Authorization": f"Bearer {api_secret}"}
+
+
+@pytest.fixture
+def test_data_generator():
+    """Test data generator fixture."""
+
+    class TestDataGenerator:
+        @staticmethod
+        def unique_email():
+            return f"test-{uuid.uuid4()}@example.com"
+
+        @staticmethod
+        def test_password_hash():
+            return "test-password-hash"
+
+        @staticmethod
+        def oauth_provider_data():
+            return {"provider": "google", "providerAccountId": str(uuid.uuid4())}
+
+        @staticmethod
+        def unique_id():
+            return str(uuid.uuid4())
+
+    return TestDataGenerator()
+
+
 def test_create_and_get_user_with_password(test_client, test_data_generator, auth_headers):
     """Test creating a user with email/password and retrieving it."""
     # Generate test data
@@ -44,7 +85,6 @@ def test_create_and_get_user_with_password(test_client, test_data_generator, aut
     assert retrieved_user["passwordHash"] == password_hash
 
 
-@pytest.mark.slow
 def test_create_and_get_guest_user(test_client, auth_headers):
     """Test creating a guest user and retrieving it."""
     # Create guest user via POST /api/users/guest
@@ -76,7 +116,6 @@ def test_create_and_get_guest_user(test_client, auth_headers):
     assert "passwordHash" not in retrieved_user
 
 
-@pytest.mark.slow
 def test_create_and_get_oauth_user(test_client, test_data_generator, auth_headers):
     """Test creating an OAuth user and retrieving it."""
     # Generate test data
@@ -116,7 +155,6 @@ def test_create_and_get_oauth_user(test_client, test_data_generator, auth_header
     assert "passwordHash" not in retrieved_user
 
 
-@pytest.mark.slow
 def test_create_chat_appears_in_user_chats(test_client, test_data_generator, auth_headers):
     """Test creating a chat and verifying it appears in user's chat list."""
     # First, create a user
@@ -163,7 +201,9 @@ def test_create_chat_appears_in_user_chats(test_client, test_data_generator, aut
     assert "chatCreatedAt" in chat_in_list
 
 
-@pytest.mark.slow
+# Error handling tests for user operations
+
+
 def test_get_nonexistent_user_returns_404(test_client, test_data_generator, auth_headers):
     """Test that getting a non-existent user returns 404."""
     nonexistent_email = test_data_generator.unique_email()
@@ -173,7 +213,6 @@ def test_get_nonexistent_user_returns_404(test_client, test_data_generator, auth
     assert "not found" in response.json()["detail"].lower()
 
 
-@pytest.mark.slow
 def test_create_user_with_duplicate_email_handling(test_client, test_data_generator, auth_headers):
     """Test creating users with duplicate emails (should handle gracefully)."""
     email = test_data_generator.unique_email()
@@ -193,3 +232,59 @@ def test_create_user_with_duplicate_email_handling(test_client, test_data_genera
 
     # Accept 4xx error (conflict)
     assert second_response.status_code == 409
+
+
+def test_invalid_user_creation_data(test_client, auth_headers):
+    """Test user creation with invalid data."""
+    # Missing required fields
+    response = test_client.post(
+        "/api/users",
+        json={},
+        headers=auth_headers,
+    )
+    assert response.status_code == 422  # Unprocessable Entity
+
+    # Invalid field types
+    response = test_client.post(
+        "/api/users",
+        json={
+            "email": 123,  # Should be string
+            "passwordHash": "valid-hash",
+        },
+        headers=auth_headers,
+    )
+    assert response.status_code == 422
+
+    # Empty email string
+    response = test_client.post(
+        "/api/users",
+        json={
+            "email": "",  # Empty string
+            "passwordHash": "valid-hash",
+        },
+        headers=auth_headers,
+    )
+    assert response.status_code == 422
+
+
+def test_invalid_oauth_user_creation_data(test_client, auth_headers):
+    """Test OAuth user creation with invalid data."""
+    # Missing required provider fields
+    response = test_client.post(
+        "/api/users/oauth",
+        json={"email": "test@example.com"},  # Missing provider and providerAccountId
+        headers=auth_headers,
+    )
+    assert response.status_code == 422
+
+    # Empty provider string
+    response = test_client.post(
+        "/api/users/oauth",
+        json={
+            "email": "test@example.com",
+            "provider": "",  # Empty string
+            "providerAccountId": "valid-id",
+        },
+        headers=auth_headers,
+    )
+    assert response.status_code == 422

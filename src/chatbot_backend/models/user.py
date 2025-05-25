@@ -14,11 +14,11 @@ from chatbot_backend.models.common import SnakeOrAliasModel
 class User(SnakeOrAliasModel):
     """User model representing a user entity in the database."""
 
-    user_id: str = Field(alias="userId")
-    email: str = Field(alias="email")
+    user_id: str = Field(alias="userId", min_length=1)
+    email: str = Field(alias="email", min_length=1)
     password_hash: str | None = Field(alias="passwordHash", default=None)
     source: Literal["email", "guest", "oauth"] = Field(alias="source")
-    created_at: str = Field(alias="createdAt")
+    created_at: str = Field(alias="createdAt", min_length=1)
     provider: str | None = Field(alias="provider", default=None)
     provider_account_id: str | None = Field(alias="providerAccountId", default=None)
     stripe_customer_id: str | None = Field(alias="stripeCustomerId", default=None)
@@ -33,13 +33,13 @@ class User(SnakeOrAliasModel):
 class CreateEmailUserRequest(SnakeOrAliasModel):
     """Request model for creating a email user."""
 
-    email: str = Field(alias="email")
-    password_hash: str = Field(alias="passwordHash")
+    email: str = Field(alias="email", min_length=1)
+    password_hash: str = Field(alias="passwordHash", min_length=1)
 
 
 class CreateOAuthUserRequest(SnakeOrAliasModel):
     """Request model for creating a user via OAuth."""
 
     email: str | None = Field(default=None, alias="email")
-    provider: str = Field(alias="provider")
-    provider_account_id: str = Field(alias="providerAccountId")
+    provider: str = Field(alias="provider", min_length=1)
+    provider_account_id: str = Field(alias="providerAccountId", min_length=1)

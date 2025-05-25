@@ -23,16 +23,16 @@ check: ## Run code quality tools.
 	@uv run deptry .
 
 .PHONY: test
-test: ## Test the code with pytest (skips slow tests)
-	@echo "🚀 Testing code: Running pytest (excluding slow tests)"
-	@uv run python -m pytest -m "not slow"
+test: ## Test the code with pytest (fast tests only)
+	@echo "🚀 Testing code: Running fast tests"
+	@uv run python -m pytest tests/fast/
 
 .PHONY: test-all
-test-all: ## Run all tests including slow tests with DynamoDB Local
-	@echo "🚀 Running all tests including slow tests with DynamoDB Local"
+test-all: ## Run all tests with DynamoDB Local
+	@echo "🚀 Running all tests with DynamoDB Local"
 	@./setup/start_dynamodb_local.sh start
 	@./setup/create_tables.sh
-	@TESTING_MODE=True uv run python -m pytest || (./setup/start_dynamodb_local.sh stop && exit 1)
+	@TESTING_MODE=True uv run python -m pytest tests/ || (./setup/start_dynamodb_local.sh stop && exit 1)
 	@./setup/start_dynamodb_local.sh stop
 
 .PHONY: dynamodb-local-start

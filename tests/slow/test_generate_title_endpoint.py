@@ -31,7 +31,6 @@ def test_generate_title_empty_message(test_client, auth_headers):
     assert "empty" in response.json()["detail"].lower()
 
 
-@pytest.mark.slow
 def test_generate_title_success(test_client, auth_headers):
     """Test generate_title endpoint with successful response (slow test - makes API call)."""
     test_message = "I need help setting up a Python development environment for a new web project."
