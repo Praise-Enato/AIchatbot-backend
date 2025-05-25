@@ -24,9 +24,12 @@ if os.environ.get("TESTING_MODE") == "True":
 else:
     dynamodb = boto3.resource("dynamodb")
 
-# Table names are hardcoded to match SAM template
-users_table = dynamodb.Table("Users")
-chats_table = dynamodb.Table("Chats")
+# Get table names from environment variables with defaults
+users_table_name = os.environ.get("USERS_TABLE", "Users")
+chats_table_name = os.environ.get("CHATS_TABLE", "Chats")
+
+users_table = dynamodb.Table(users_table_name)
+chats_table = dynamodb.Table(chats_table_name)
 
 # Users
 # - PK=userId
