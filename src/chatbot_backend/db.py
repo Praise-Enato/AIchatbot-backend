@@ -15,21 +15,12 @@ from chatbot_backend.models.user import User
 logger = get_logger("db")
 
 # Initialize DynamoDB resource and tables
-# Use local DynamoDB when in testing mode
-if os.environ.get("TESTING_MODE") == "True":
-    dynamodb = boto3.resource(
-        "dynamodb",
-        endpoint_url="http://localhost:8000",
-    )
-else:
-    dynamodb = boto3.resource("dynamodb")
-
+# Use local DynamoDB when DYNAMODB_URL is set
+dynamodb_url = os.environ.get("DYNAMODB_URL")
+dynamodb = boto3.resource("dynamodb", endpoint_url=dynamodb_url) if dynamodb_url else boto3.resource("dynamodb")
 # Get table names from environment variables with defaults
-users_table_name = os.environ.get("USERS_TABLE", "Users")
-chats_table_name = os.environ.get("CHATS_TABLE", "Chats")
-
-users_table = dynamodb.Table(users_table_name)
-chats_table = dynamodb.Table(chats_table_name)
+users_table = dynamodb.Table(os.environ.get("USERS_TABLE", "Users"))
+chats_table = dynamodb.Table(os.environ.get("CHATS_TABLE", "Chats"))
 
 # Users
 # - PK=userId

@@ -4,7 +4,7 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DYNAMODB_DIR="$SCRIPT_DIR/../tests/dynamodb-local"
+DYNAMODB_DIR="$SCRIPT_DIR/../dynamodb-local"
 JAR_PATH="$DYNAMODB_DIR/DynamoDBLocal.jar"
 
 # Check if JAR already exists

@@ -30,29 +30,51 @@ test: ## Test the code with pytest (fast tests only)
 .PHONY: test-all
 test-all: ## Run all tests with DynamoDB Local
 	@echo "🚀 Running all tests with DynamoDB Local"
-	@./setup/start_dynamodb_local.sh start
+	@./setup/start_dynamodb_local.sh status > /dev/null 2>&1 && (echo "❌ DynamoDB Local is already running. Please run 'make dynamodb-stop' first." && exit 1) || true
+	@./setup/start_dynamodb_local.sh start --mode inmemory
 	@./setup/create_tables.sh
-	@TESTING_MODE=True uv run python -m pytest tests/ || (./setup/start_dynamodb_local.sh stop && exit 1)
+	@DYNAMODB_URL=http://localhost:8000 uv run python -m pytest tests/ || (./setup/start_dynamodb_local.sh stop && exit 1)
 	@./setup/start_dynamodb_local.sh stop
 
-.PHONY: dynamodb-local-start
-dynamodb-local-start: ## Start DynamoDB Local and create tables
-	@echo "🚀 Starting DynamoDB Local"
-	@./setup/start_dynamodb_local.sh start
-	@./setup/create_tables.sh
+.PHONY: dynamodb-start
+dynamodb-start: ## Start DynamoDB Local with persistent storage
+	@echo "🚀 Starting DynamoDB Local with persistent storage"
+	@./setup/start_dynamodb_local.sh start --mode persistent
 
-.PHONY: dynamodb-local-stop
-dynamodb-local-stop: ## Stop DynamoDB Local
+.PHONY: dynamodb-start-inmemory
+dynamodb-start-inmemory: ## Start DynamoDB Local in-memory
+	@echo "🚀 Starting DynamoDB Local in-memory"
+	@./setup/start_dynamodb_local.sh start --mode inmemory
+
+.PHONY: dynamodb-stop
+dynamodb-stop: ## Stop DynamoDB Local
 	@echo "🛑 Stopping DynamoDB Local"
 	@./setup/start_dynamodb_local.sh stop
 
-.PHONY: dynamodb-local-status
-dynamodb-local-status: ## Check DynamoDB Local status
+.PHONY: dynamodb-status
+dynamodb-status: ## Check DynamoDB Local status
 	@./setup/start_dynamodb_local.sh status
+
+.PHONY: dynamodb-setup
+dynamodb-setup: ## Start DynamoDB Local with persistent storage and create tables
+	@echo "🚀 Setting up DynamoDB Local with tables"
+	@./setup/start_dynamodb_local.sh start --mode persistent
+	@./setup/create_tables.sh
+	@echo "✅ DynamoDB Local is ready with tables created"
+
+.PHONY: dynamodb-reset
+dynamodb-reset: ## Reset DynamoDB Local (delete data, restart, create tables)
+	@echo "🔄 Resetting DynamoDB Local"
+	@./setup/start_dynamodb_local.sh stop
+	@rm -rf dynamodb-local/data/*
+	@./setup/start_dynamodb_local.sh start --mode persistent
+	@./setup/create_tables.sh
+	@echo "✅ DynamoDB Local has been reset"
 
 .PHONY: run
 run: ## Run the FastAPI application with auto-reload
 	@echo "🚀 Starting API server with auto-reload"
+	@./setup/start_dynamodb_local.sh status || (echo "❌ DynamoDB Local is not running. Please run 'make dynamodb-setup' first." && exit 1)
 	@uv run uvicorn src.chatbot_backend.app:app --reload --host 0.0.0.0 --port 8080
 
 .PHONY: build

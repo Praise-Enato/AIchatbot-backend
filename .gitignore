@@ -103,5 +103,5 @@ node_modules/
 **/.claude/
 
 # DynamoDB Local
-tests/dynamodb-local/
+/dynamodb-local/
 dynamodb-local-metadata.json

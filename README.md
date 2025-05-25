@@ -54,18 +54,45 @@ OPENAI_API_KEY=your-openai-api-key-here
 
 # Optional: Specify which LLM provider to use (defaults to 'openai')
 PROVIDER_NAME=openai
+
+# Required for DynamoDB Local development
+DYNAMODB_URL=http://localhost:8000
 ```
 
 An `.env.example` file is provided as a template. These environment variables are loaded automatically when you run the application.
 
-### Local Development
+### Local Development with DynamoDB
+
+For local development with persistent data:
 
 ```bash
-# Run the FastAPI application locally with hot-reload
+# Initial setup: Start DynamoDB Local and create tables
+make dynamodb-setup
+
+# Run the FastAPI application (requires DynamoDB to be running)
 make run
 
 # In a separate terminal, test the API
 curl http://localhost:8080/hello
+```
+
+To manage DynamoDB Local:
+
+```bash
+# Start DynamoDB with persistent storage
+make dynamodb-start
+
+# Start DynamoDB in-memory (no persistence)
+make dynamodb-start-inmemory
+
+# Check if DynamoDB is running
+make dynamodb-status
+
+# Stop DynamoDB
+make dynamodb-stop
+
+# Reset DynamoDB (delete all data and recreate tables)
+make dynamodb-reset
 ```
 
 We use [Bruno](https://www.usebruno.com/) to test and document our API. You can find API collection files in the `/bruno` directory.
@@ -121,16 +148,16 @@ If you encounter issues with DynamoDB Local during testing (such as "port alread
 
 ```bash
 # Stop any running DynamoDB Local instance
-make dynamodb-local-stop
+make dynamodb-stop
 
 # Check DynamoDB Local status
-make dynamodb-local-status
+make dynamodb-status
 
-# Manually start DynamoDB Local and create tables
-make dynamodb-local-start
+# Kill any process using port 8000 (if needed)
+lsof -ti:8000 | xargs kill -9
 ```
 
-The integration tests require DynamoDB Local to be running and will automatically connect to it using the `TESTING_MODE=True` environment variable.
+The integration tests use DynamoDB Local in-memory mode and will automatically connect to it using the `DYNAMODB_URL` environment variable from your `.env` file.
 
 ## Working with Dependencies
 
