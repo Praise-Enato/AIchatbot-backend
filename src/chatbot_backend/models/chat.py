@@ -11,6 +11,13 @@ from pydantic import Field
 from chatbot_backend.models.common import SnakeOrAliasModel
 
 
+class MessagePart(SnakeOrAliasModel):
+    """Part of a message with type and content."""
+
+    type: Literal["text"] = Field(alias="type")
+    text: str = Field(alias="text")
+
+
 class Chat(SnakeOrAliasModel):
     """Chat model representing a chat entity in the database."""
 
@@ -27,7 +34,7 @@ class Message(SnakeOrAliasModel):
     chat_id: str = Field(alias="chatId", min_length=1)
     created_at: str = Field(alias="createdAt", min_length=1)
     role: Literal["user", "assistant"] = Field(alias="role")
-    parts: list[Any] = Field(alias="parts")
+    parts: list[MessagePart] = Field(alias="parts")
     attachments: list[Any] = Field(alias="attachments")
     message_id: str = Field(alias="id", min_length=1)
 
@@ -57,7 +64,7 @@ class WireMessage(SnakeOrAliasModel):
     """Wire message model for the chat request format."""
 
     role: Literal["user", "assistant", "system"] = Field(alias="role")  # TODO: remove system
-    content: str = Field(alias="content")
+    parts: list[MessagePart] = Field(alias="parts")
     id: str | None = Field(default=None, alias="id")
     created_at: str | None = Field(default=None, alias="createdAt")
 

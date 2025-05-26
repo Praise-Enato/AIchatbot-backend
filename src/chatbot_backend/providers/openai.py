@@ -60,7 +60,9 @@ class OpenAIProvider:
 
         # Add the messages from the request
         for message in request.messages:
-            formatted_messages.append({"role": message.role, "content": message.content})
+            # Combine all text parts into a single content string
+            content = "".join(part.text for part in message.parts if part.type == "text")
+            formatted_messages.append({"role": message.role, "content": content})
 
         return formatted_messages
 

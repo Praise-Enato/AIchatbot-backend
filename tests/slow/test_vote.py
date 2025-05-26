@@ -60,7 +60,7 @@ def test_vote_on_message(test_client, auth_headers):
             "chatId": chat_id,
             "createdAt": created_at,
             "role": "assistant",
-            "parts": ["This is a message to vote on"],
+            "parts": [{"type": "text", "text": "This is a message to vote on"}],
             "attachments": [],
             "id": message_id,
         }
@@ -133,7 +133,7 @@ def test_vote_down_on_message(test_client, auth_headers):
             "chatId": chat_id,
             "createdAt": created_at,
             "role": "assistant",
-            "parts": ["This is a message to vote down"],
+            "parts": [{"type": "text", "text": "This is a message to vote down"}],
             "attachments": [],
             "id": message_id,
         }

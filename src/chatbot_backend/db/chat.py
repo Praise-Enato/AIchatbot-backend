@@ -141,7 +141,7 @@ def save_messages(user_id: str, messages: list[Message]) -> None:
                     "user_id": user_id,
                     "created_at": m.created_at,
                     "role": m.role,
-                    "parts": m.parts,
+                    "parts": [part.model_dump() for part in m.parts],
                     "attachments": m.attachments,
                     "message_id": m.message_id,
                 }

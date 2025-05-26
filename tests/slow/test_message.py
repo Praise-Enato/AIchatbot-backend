@@ -66,7 +66,7 @@ def test_create_message_and_verify_in_chat_and_count(test_client, auth_headers):
             "chatId": chat_id,
             "createdAt": created_at,
             "role": "user",
-            "parts": ["Hello, this is a test message"],
+            "parts": [{"type": "text", "text": "Hello, this is a test message"}],
             "attachments": [],
             "id": message_id,
         }
@@ -87,7 +87,7 @@ def test_create_message_and_verify_in_chat_and_count(test_client, auth_headers):
     assert retrieved_message["id"] == message_id
     assert retrieved_message["chatId"] == chat_id
     assert retrieved_message["role"] == "user"
-    assert retrieved_message["parts"] == ["Hello, this is a test message"]
+    assert retrieved_message["parts"] == [{"type": "text", "text": "Hello, this is a test message"}]
     assert retrieved_message["attachments"] == []
 
     # Verify message appears in chat messages via GET /api/chats/{chat_id}/messages
@@ -97,7 +97,7 @@ def test_create_message_and_verify_in_chat_and_count(test_client, auth_headers):
     assert len(chat_messages) == 1
     assert chat_messages[0]["id"] == message_id
     assert chat_messages[0]["role"] == "user"
-    assert chat_messages[0]["parts"] == ["Hello, this is a test message"]
+    assert chat_messages[0]["parts"] == [{"type": "text", "text": "Hello, this is a test message"}]
 
     # Verify user message count increased via GET /api/users/{user_id}/message-count
     final_count_response = test_client.get(f"/api/users/{user_id}/message-count", headers=auth_headers)
@@ -148,7 +148,7 @@ def test_delete_messages_after_timestamp(test_client, auth_headers):
             "chatId": chat_id,
             "createdAt": early_time.isoformat(),
             "role": "user",
-            "parts": ["Early message"],
+            "parts": [{"type": "text", "text": "Early message"}],
             "attachments": [],
             "id": early_message_id,
         },
@@ -156,7 +156,7 @@ def test_delete_messages_after_timestamp(test_client, auth_headers):
             "chatId": chat_id,
             "createdAt": middle_time.isoformat(),
             "role": "assistant",
-            "parts": ["Middle message"],
+            "parts": [{"type": "text", "text": "Middle message"}],
             "attachments": [],
             "id": middle_message_id,
         },
@@ -164,7 +164,7 @@ def test_delete_messages_after_timestamp(test_client, auth_headers):
             "chatId": chat_id,
             "createdAt": late_time.isoformat(),
             "role": "user",
-            "parts": ["Late message"],
+            "parts": [{"type": "text", "text": "Late message"}],
             "attachments": [],
             "id": late_message_id,
         },
@@ -204,7 +204,7 @@ def test_delete_messages_after_timestamp(test_client, auth_headers):
     # Verify the remaining message is the early one
     remaining_message = final_messages[0]
     assert remaining_message["id"] == early_message_id
-    assert remaining_message["parts"] == ["Early message"]
+    assert remaining_message["parts"] == [{"type": "text", "text": "Early message"}]
 
 
 # Error handling tests for message operations
@@ -222,7 +222,7 @@ def test_invalid_data_save_messages(test_client, auth_headers):
             "messages": [
                 {
                     "role": "invalid_role",  # Should be user or assistant
-                    "parts": ["Test message"],
+                    "parts": [{"type": "text", "text": "Test message"}],
                     "attachments": [],
                 }
             ],

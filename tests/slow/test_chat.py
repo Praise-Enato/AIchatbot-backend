@@ -31,7 +31,9 @@ def auth_headers():
 def chat_request_data():
     """Get chat request data."""
     return {
-        "messages": [{"role": "user", "content": "Hello, how are you today?", "id": str(uuid.uuid4())}],
+        "messages": [
+            {"role": "user", "parts": [{"type": "text", "text": "Hello, how are you today?"}], "id": str(uuid.uuid4())}
+        ],
         "userId": "test-user",
     }
 
