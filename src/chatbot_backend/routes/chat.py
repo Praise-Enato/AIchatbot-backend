@@ -38,7 +38,7 @@ router = APIRouter()
 
 
 @router.post(
-    "/api/chat",
+    "/api/chats/{chat_id}/responses",
     status_code=status.HTTP_200_OK,
     responses={
         401: {"model": ErrorResponse, "description": "Unauthorized"},
@@ -46,11 +46,12 @@ router = APIRouter()
         500: {"model": ErrorResponse, "description": "Internal Server Error"},
     },
 )
-async def handle_chat_data(request: ChatRequest) -> StreamingResponse:
+async def handle_chat_data(chat_id: str, request: ChatRequest) -> StreamingResponse:  # noqa: ARG001
     """
     Chat endpoint that processes messages and returns a streaming response.
 
     Args:
+        chat_id: The ID of the chat (not currently used)
         request: The chat request containing messages and metadata.
 
     Returns:

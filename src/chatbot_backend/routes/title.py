@@ -20,7 +20,7 @@ router = APIRouter()
 
 
 @router.post(
-    "/api/generate_title",
+    "/api/titles/generate",
     response_model=TextResponse,
     responses={
         401: {"model": ErrorResponse, "description": "Unauthorized"},

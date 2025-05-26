@@ -67,7 +67,6 @@ class ChatRequest(SnakeOrAliasModel):
 
     messages: list[WireMessage] = Field(alias="messages")
     user_id: str = Field(alias="userId", min_length=1)
-    chat_id: str = Field(alias="chatId", min_length=1)
 
 
 class CreateChatRequest(SnakeOrAliasModel):

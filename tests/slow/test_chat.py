@@ -33,21 +33,26 @@ def chat_request_data():
     return {
         "messages": [{"role": "user", "content": "Hello, how are you today?", "id": str(uuid.uuid4())}],
         "userId": "test-user",
-        "chatId": str(uuid.uuid4()),
     }
 
 
-def test_chat_endpoint_no_auth(test_client, chat_request_data):
+@pytest.fixture
+def chat_id():
+    """Get a test chat ID."""
+    return str(uuid.uuid4())
+
+
+def test_chat_endpoint_no_auth(test_client, chat_request_data, chat_id):
     """Test chat endpoint without authentication."""
-    response = test_client.post("/api/chat", json=chat_request_data)
+    response = test_client.post(f"/api/chats/{chat_id}/responses", json=chat_request_data)
     assert response.status_code == 401
     assert "message" in response.json()
     assert "Invalid or missing API key" in response.json()["message"]
 
 
-def test_chat_endpoint_success(test_client, auth_headers, chat_request_data):
+def test_chat_endpoint_success(test_client, auth_headers, chat_request_data, chat_id):
     """Test chat endpoint with successful response (slow test - makes API call)."""
-    response = test_client.post("/api/chat", headers=auth_headers, json=chat_request_data)
+    response = test_client.post(f"/api/chats/{chat_id}/responses", headers=auth_headers, json=chat_request_data)
 
     assert response.status_code == 200
     assert "text/event-stream" in response.headers["content-type"]
@@ -103,12 +108,12 @@ def test_chat_endpoint_success(test_client, auth_headers, chat_request_data):
     assert completion_tokens > 10, f"Expected completionTokens > 10, got: {completion_tokens}"
 
 
-def test_chat_endpoint_invalid_request(test_client, auth_headers):
+def test_chat_endpoint_invalid_request(test_client, auth_headers, chat_id):
     """Test chat endpoint with invalid request."""
     # Missing required fields
     invalid_data = {"messages": []}
 
-    response = test_client.post("/api/chat", headers=auth_headers, json=invalid_data)
+    response = test_client.post(f"/api/chats/{chat_id}/responses", headers=auth_headers, json=invalid_data)
 
     assert response.status_code == 422  # Validation error
 
