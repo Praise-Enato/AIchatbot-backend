@@ -47,7 +47,7 @@ def test_create_message_and_verify_in_chat_and_count(test_client, auth_headers):
 
     chat_response = test_client.post(
         "/api/chats",
-        json={"chatId": chat_id, "userId": user_id, "title": chat_title, "visibility": "private"},
+        json={"id": chat_id, "userId": user_id, "title": chat_title, "visibility": "private"},
         headers=auth_headers,
     )
     assert chat_response.status_code == 201
@@ -68,7 +68,7 @@ def test_create_message_and_verify_in_chat_and_count(test_client, auth_headers):
             "role": "user",
             "parts": ["Hello, this is a test message"],
             "attachments": [],
-            "messageId": message_id,
+            "id": message_id,
         }
     ]
 
@@ -84,7 +84,7 @@ def test_create_message_and_verify_in_chat_and_count(test_client, auth_headers):
     message_response = test_client.get(f"/api/messages/{message_id}", headers=auth_headers)
     assert message_response.status_code == 200
     retrieved_message = message_response.json()
-    assert retrieved_message["messageId"] == message_id
+    assert retrieved_message["id"] == message_id
     assert retrieved_message["chatId"] == chat_id
     assert retrieved_message["role"] == "user"
     assert retrieved_message["parts"] == ["Hello, this is a test message"]
@@ -95,7 +95,7 @@ def test_create_message_and_verify_in_chat_and_count(test_client, auth_headers):
     assert chat_messages_response.status_code == 200
     chat_messages = chat_messages_response.json()
     assert len(chat_messages) == 1
-    assert chat_messages[0]["messageId"] == message_id
+    assert chat_messages[0]["id"] == message_id
     assert chat_messages[0]["role"] == "user"
     assert chat_messages[0]["parts"] == ["Hello, this is a test message"]
 
@@ -125,7 +125,7 @@ def test_delete_messages_after_timestamp(test_client, auth_headers):
 
     chat_response = test_client.post(
         "/api/chats",
-        json={"chatId": chat_id, "userId": user_id, "title": chat_title, "visibility": "private"},
+        json={"id": chat_id, "userId": user_id, "title": chat_title, "visibility": "private"},
         headers=auth_headers,
     )
     assert chat_response.status_code == 201
@@ -150,7 +150,7 @@ def test_delete_messages_after_timestamp(test_client, auth_headers):
             "role": "user",
             "parts": ["Early message"],
             "attachments": [],
-            "messageId": early_message_id,
+            "id": early_message_id,
         },
         {
             "chatId": chat_id,
@@ -158,7 +158,7 @@ def test_delete_messages_after_timestamp(test_client, auth_headers):
             "role": "assistant",
             "parts": ["Middle message"],
             "attachments": [],
-            "messageId": middle_message_id,
+            "id": middle_message_id,
         },
         {
             "chatId": chat_id,
@@ -166,7 +166,7 @@ def test_delete_messages_after_timestamp(test_client, auth_headers):
             "role": "user",
             "parts": ["Late message"],
             "attachments": [],
-            "messageId": late_message_id,
+            "id": late_message_id,
         },
     ]
 
@@ -203,7 +203,7 @@ def test_delete_messages_after_timestamp(test_client, auth_headers):
 
     # Verify the remaining message is the early one
     remaining_message = final_messages[0]
-    assert remaining_message["messageId"] == early_message_id
+    assert remaining_message["id"] == early_message_id
     assert remaining_message["parts"] == ["Early message"]
 
 

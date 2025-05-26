@@ -46,7 +46,7 @@ def test_vote_on_message(test_client, auth_headers):
 
     chat_response = test_client.post(
         "/api/chats",
-        json={"chatId": chat_id, "userId": user_id, "title": chat_title, "visibility": "private"},
+        json={"id": chat_id, "userId": user_id, "title": chat_title, "visibility": "private"},
         headers=auth_headers,
     )
     assert chat_response.status_code == 201
@@ -62,7 +62,7 @@ def test_vote_on_message(test_client, auth_headers):
             "role": "assistant",
             "parts": ["This is a message to vote on"],
             "attachments": [],
-            "messageId": message_id,
+            "id": message_id,
         }
     ]
 
@@ -119,7 +119,7 @@ def test_vote_down_on_message(test_client, auth_headers):
 
     chat_response = test_client.post(
         "/api/chats",
-        json={"chatId": chat_id, "userId": user_id, "title": chat_title, "visibility": "private"},
+        json={"id": chat_id, "userId": user_id, "title": chat_title, "visibility": "private"},
         headers=auth_headers,
     )
     assert chat_response.status_code == 201
@@ -135,7 +135,7 @@ def test_vote_down_on_message(test_client, auth_headers):
             "role": "assistant",
             "parts": ["This is a message to vote down"],
             "attachments": [],
-            "messageId": message_id,
+            "id": message_id,
         }
     ]
 

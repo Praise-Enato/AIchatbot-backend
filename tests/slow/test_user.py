@@ -174,12 +174,12 @@ def test_create_chat_appears_in_user_chats(test_client, test_data_generator, aut
 
     chat_response = test_client.post(
         "/api/chats",
-        json={"chatId": chat_id, "userId": user_id, "title": chat_title, "visibility": "private"},
+        json={"id": chat_id, "userId": user_id, "title": chat_title, "visibility": "private"},
         headers=auth_headers,
     )
     assert chat_response.status_code == 201
     created_chat = chat_response.json()
-    assert created_chat["chatId"] == chat_id
+    assert created_chat["id"] == chat_id
     assert created_chat["userId"] == user_id
     assert created_chat["title"] == chat_title
     assert created_chat["visibility"] == "private"
@@ -194,11 +194,11 @@ def test_create_chat_appears_in_user_chats(test_client, test_data_generator, aut
 
     # Verify the chat appears in the list with correct data
     chat_in_list = chats_data["chats"][0]
-    assert chat_in_list["chatId"] == chat_id
+    assert chat_in_list["id"] == chat_id
     assert chat_in_list["userId"] == user_id
     assert chat_in_list["title"] == chat_title
     assert chat_in_list["visibility"] == "private"
-    assert "chatCreatedAt" in chat_in_list
+    assert "createdAt" in chat_in_list
 
 
 # Error handling tests for user operations

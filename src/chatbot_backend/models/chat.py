@@ -14,9 +14,9 @@ from chatbot_backend.models.common import SnakeOrAliasModel
 class Chat(SnakeOrAliasModel):
     """Chat model representing a chat entity in the database."""
 
-    chat_id: str = Field(alias="chatId", min_length=1)
+    chat_id: str = Field(alias="id", min_length=1)
     user_id: str = Field(alias="userId", min_length=1)
-    chat_created_at: str = Field(alias="chatCreatedAt", min_length=1)
+    chat_created_at: str = Field(alias="createdAt", min_length=1)
     title: str = Field(alias="title", min_length=1)
     visibility: str = Field(alias="visibility", min_length=1)
 
@@ -29,7 +29,7 @@ class Message(SnakeOrAliasModel):
     role: Literal["user", "assistant"] = Field(alias="role")
     parts: list[Any] = Field(alias="parts")
     attachments: list[Any] = Field(alias="attachments")
-    message_id: str = Field(alias="messageId", min_length=1)
+    message_id: str = Field(alias="id", min_length=1)
 
 
 class Vote(SnakeOrAliasModel):
@@ -44,7 +44,7 @@ class Stream(SnakeOrAliasModel):
     """Stream model representing a stream entity in the database."""
 
     chat_id: str = Field(alias="chatId", min_length=1)
-    stream_id: str = Field(alias="streamId", min_length=1)
+    stream_id: str = Field(alias="id", min_length=1)
     created_at: str = Field(alias="createdAt", min_length=1)
 
 
@@ -72,7 +72,7 @@ class ChatRequest(SnakeOrAliasModel):
 class CreateChatRequest(SnakeOrAliasModel):
     """Request model for creating a new chat."""
 
-    chat_id: str = Field(alias="chatId", min_length=1)
+    chat_id: str = Field(alias="id", min_length=1)
     user_id: str = Field(alias="userId", min_length=1)
     title: str = Field(alias="title", min_length=1)
     visibility: str = Field(alias="visibility", min_length=1)
@@ -94,7 +94,7 @@ class VoteMessageRequest(SnakeOrAliasModel):
 class CreateStreamRequest(SnakeOrAliasModel):
     """Request model for creating a stream ID."""
 
-    stream_id: str = Field(alias="streamId", min_length=1)
+    stream_id: str = Field(alias="id", min_length=1)
 
 
 class UpdateChatVisibilityRequest(SnakeOrAliasModel):
@@ -106,7 +106,7 @@ class UpdateChatVisibilityRequest(SnakeOrAliasModel):
 class StreamIdsResponse(SnakeOrAliasModel):
     """Response model for stream IDs list."""
 
-    stream_ids: list[str] = Field(default_factory=list, alias="streamIds")
+    stream_ids: list[str] = Field(default_factory=list, alias="ids")
 
 
 class ChatListResponse(SnakeOrAliasModel):

@@ -23,39 +23,39 @@ users_table = dynamodb.Table(os.environ.get("USERS_TABLE", "Users"))
 chats_table = dynamodb.Table(os.environ.get("CHATS_TABLE", "Chats"))
 
 # Users
-# - PK=userId
-#   - createdAt = ISO-8601 string
-#   - stripeCustomerId = nullable string
-#   - activeSubscriptionId = nullable string
-#   - subscriptionStatus = nullable active | canceled
-#   - planId = nullable string
-#   - currentPeriodStart = nullable ISO-8601 string
-#   - currentPeriodEnd = nullable ISO-8601 string
-#   - cancelAtPeriodEnd = bool
-# GSI1-Email: email -> userId, passwordHash, createdAt
-# GSI2-UsersByType: Type + CreatedAt -> userId
-# GSI3-StripeCustomer: stripeCustomerId -> userId, activeSubscriptionId, subscriptionStatus
-# GSI4-Subscription: activeSubscriptionId -> userId, stripeCustomerId, subscriptionStatus
+# - PK=user_id
+#   - created_at = ISO-8601 string
+#   - stripe_customer_id = nullable string
+#   - active_subscription_id = nullable string
+#   - subscription_status = nullable active | canceled
+#   - plan_id = nullable string
+#   - current_period_start = nullable ISO-8601 string
+#   - current_period_end = nullable ISO-8601 string
+#   - cancel_at_period_end = bool
+# GSI1-Email: email -> user_id, password_hash, created_at
+# GSI2-UsersByType: Type + CreatedAt -> user_id
+# GSI3-StripeCustomer: stripe_customer_id -> user_id, active_subscription_id, subscription_status
+# GSI4-Subscription: active_subscription_id -> user_id, stripe_customer_id, subscription_status
 
 # Chats
-# - PK=chatId
+# - PK=chat_id
 # - Attributes
 #   - sK= META | MSG#CreatedAt#MessageId | VOTE#MessageId | STR#CreatedAt#StreamId
 #   - type = CHAT | MESSAGE | VOTE | STREAM
-#   - userId = in CHAT + MESSAGE
-#   - chatCreatedAt = ISO-8601 in CHAT
-#   - createdAt = ISO-8601 in MESSAGE + STREAM
+#   - user_id = in CHAT + MESSAGE
+#   - chat_created_at = ISO-8601 in CHAT
+#   - created_at = ISO-8601 in MESSAGE + STREAM
 #   - title = CHAT title
 #   - visibility = public | private in CHAT
 #   - role = user | assistant in MESSAGE
 #   - parts = JSON blob in MESSAGE
 #   - attachments = JSON blob in MESSAGE
-#   - messageId = UUID in MESSAGE + VOTE
-#   - isUpvoted = bool in VOTE
-#   - streamId = UUID in STREAM
-# GSI1-ChatsByUser: userId + chatCreatedAt -> chatId, title, visibility, chatCreatedAt
-# GSI2-MessageById: messageId + createdAt -> all MESSAGE attrs
-# GSI3-MsgsByUser: userId + createdAt -> messageId, role
+#   - message_id = UUID in MESSAGE + VOTE
+#   - is_upvoted = bool in VOTE
+#   - stream_id = UUID in STREAM
+# GSI1-ChatsByUser: user_id + chat_created_at -> chat_id, title, visibility, chat_created_at
+# GSI2-MessageById: message_id + created_at -> all MESSAGE attrs
+# GSI3-MsgsByUser: user_id + created_at -> message_id, role
 
 
 def get_user(email: str) -> User | None:
@@ -71,12 +71,12 @@ def create_user(email: str, password_hash: str) -> User:
     user_id = str(uuid.uuid4())
     now = datetime.now(UTC).isoformat()
     item = {
-        "userId": user_id,
+        "user_id": user_id,
         "email": email,
         "source": "email",
-        "passwordHash": password_hash,
-        "createdAt": now,
-        "cancelAtPeriodEnd": False,
+        "password_hash": password_hash,
+        "created_at": now,
+        "cancel_at_period_end": False,
     }
     try:
         users_table.put_item(Item=item)
@@ -93,11 +93,11 @@ def create_guest_user() -> User:
     now_iso = now.isoformat()
     email = f"guest-{int(now.timestamp() * 1000)}"
     item = {
-        "userId": user_id,
+        "user_id": user_id,
         "email": email,
         "source": "guest",
-        "createdAt": now_iso,
-        "cancelAtPeriodEnd": False,
+        "created_at": now_iso,
+        "cancel_at_period_end": False,
     }
     try:
         users_table.put_item(Item=item)
@@ -117,13 +117,13 @@ def get_or_create_user_from_oauth(email: str | None, provider: str, provider_acc
     user_id = str(uuid.uuid4())
     now = datetime.now(UTC).isoformat()
     item = {
-        "userId": user_id,
+        "user_id": user_id,
         "email": email,
         "source": "oauth",
         "provider": provider,
-        "providerAccountId": provider_account_id,
-        "createdAt": now,
-        "cancelAtPeriodEnd": False,
+        "provider_account_id": provider_account_id,
+        "created_at": now,
+        "cancel_at_period_end": False,
     }
     try:
         users_table.put_item(Item=item, ConditionExpression="attribute_not_exists(email)")
@@ -143,11 +143,11 @@ def save_chat(chat_id: str, user_id: str, title: str, visibility: str) -> Chat:
     """Save a new chat."""
     now = datetime.now(UTC).isoformat()
     item = {
-        "chatId": chat_id,
+        "chat_id": chat_id,
         "sk": "META",
         "type": "CHAT",
-        "userId": user_id,
-        "chatCreatedAt": now,
+        "user_id": user_id,
+        "chat_created_at": now,
         "title": title,
         "visibility": visibility,
     }
@@ -162,10 +162,10 @@ def save_chat(chat_id: str, user_id: str, title: str, visibility: str) -> Chat:
 def delete_chat_by_id(chat_id: str) -> None:
     """Delete a chat and all its related items."""
     try:
-        resp = chats_table.query(KeyConditionExpression=Key("chatId").eq(chat_id))
+        resp = chats_table.query(KeyConditionExpression=Key("chat_id").eq(chat_id))
         with chats_table.batch_writer() as batch:
             for item in resp.get("Items", []):
-                batch.delete_item(Key={"chatId": item["chatId"], "sk": item["sk"]})
+                batch.delete_item(Key={"chat_id": item["chat_id"], "sk": item["sk"]})
     except ClientError as err:
         logger.error("Failed to delete chat %s: %s", chat_id, err)
         raise RuntimeError("Could not delete chat from database") from err
@@ -183,7 +183,7 @@ def get_chats_by_user_id(
         def query_chat(cond: Any) -> dict[str, Any]:
             params = {
                 "IndexName": idx,
-                "KeyConditionExpression": Key("userId").eq(user_id) & cond,
+                "KeyConditionExpression": Key("user_id").eq(user_id) & cond,
                 "ScanIndexForward": False,
                 "Limit": extended_limit,
             }
@@ -194,18 +194,18 @@ def get_chats_by_user_id(
             if not chat:
                 raise ValueError(f"Chat with id {starting_after} not found")
             cutoff = chat.chat_created_at
-            resp = query_chat(Key("chatCreatedAt").gt(cutoff))
+            resp = query_chat(Key("chat_created_at").gt(cutoff))
 
         elif ending_before:
             chat = get_chat_by_id(ending_before)
             if not chat:
                 raise ValueError(f"Chat with id {ending_before} not found")
             cutoff = chat.chat_created_at
-            resp = query_chat(Key("chatCreatedAt").lt(cutoff))
+            resp = query_chat(Key("chat_created_at").lt(cutoff))
 
         else:
             # no cursor → fetch newest first
-            resp = query_chat(Key("chatCreatedAt").gt("1970-01-01T00:00:00+00:00"))
+            resp = query_chat(Key("chat_created_at").gt("1970-01-01T00:00:00+00:00"))
 
         items = resp.get("Items", [])
         has_more = len(items) > limit
@@ -220,7 +220,7 @@ def get_chat_by_id(chat_id: str) -> Chat | None:
     """Get chat metadata by id."""
     pk = chat_id
     try:
-        resp = chats_table.get_item(Key={"chatId": pk, "sk": "META"})
+        resp = chats_table.get_item(Key={"chat_id": pk, "sk": "META"})
         item = resp.get("Item")
         return Chat.model_validate(item) if item else None
     except ClientError as err:
@@ -236,15 +236,15 @@ def save_messages(user_id: str, messages: list[Message]) -> None:
                 pk = m.chat_id
                 sk = f"MSG#{m.created_at}#{m.message_id}"
                 item = {
-                    "chatId": pk,
+                    "chat_id": pk,
                     "sk": sk,
                     "type": "MESSAGE",
-                    "userId": user_id,
-                    "createdAt": m.created_at,
+                    "user_id": user_id,
+                    "created_at": m.created_at,
                     "role": m.role,
                     "parts": m.parts,
                     "attachments": m.attachments,
-                    "messageId": m.message_id,
+                    "message_id": m.message_id,
                 }
                 batch.put_item(Item=item)
     except ClientError as err:
@@ -257,7 +257,7 @@ def get_messages_by_chat_id(chat_id: str) -> list[Message]:
     pk = chat_id
     try:
         resp = chats_table.query(
-            KeyConditionExpression=Key("chatId").eq(pk) & Key("sk").begins_with("MSG#"), ScanIndexForward=True
+            KeyConditionExpression=Key("chat_id").eq(pk) & Key("sk").begins_with("MSG#"), ScanIndexForward=True
         )
         items = resp.get("Items", [])
         return [Message.model_validate(item) for item in items]
@@ -272,7 +272,7 @@ def vote_message(chat_id: str, message_id: str, vote_type: str) -> None:
     sk = f"VOTE#{message_id}"
     try:
         chats_table.put_item(
-            Item={"chatId": pk, "sk": sk, "type": "VOTE", "messageId": message_id, "isUpvoted": (vote_type == "up")}
+            Item={"chat_id": pk, "sk": sk, "type": "VOTE", "message_id": message_id, "is_upvoted": (vote_type == "up")}
         )
     except ClientError as err:
         logger.error("Failed to vote message: %s", err)
@@ -283,7 +283,7 @@ def get_votes_by_chat_id(chat_id: str) -> list[Vote]:
     """Get all votes for a chat."""
     pk = chat_id
     try:
-        resp = chats_table.query(KeyConditionExpression=Key("chatId").eq(pk) & Key("sk").begins_with("VOTE#"))
+        resp = chats_table.query(KeyConditionExpression=Key("chat_id").eq(pk) & Key("sk").begins_with("VOTE#"))
         items = resp.get("Items", [])
         return [Vote.model_validate(item) for item in items]
     except ClientError as err:
@@ -294,13 +294,13 @@ def get_votes_by_chat_id(chat_id: str) -> list[Vote]:
 def get_message_by_id(message_id: str) -> Message | None:
     """Fetch message by its ID (rare)."""
     try:
-        resp = chats_table.query(IndexName="GSI2-MessageById", KeyConditionExpression=Key("messageId").eq(message_id))
+        resp = chats_table.query(IndexName="GSI2-MessageById", KeyConditionExpression=Key("message_id").eq(message_id))
         items = resp.get("Items", [])
         if not items:
             return None
         # retrieve full item using projected table keys - this is a rare operation
         rec = items[0]
-        get_resp = chats_table.get_item(Key={"chatId": rec["chatId"], "sk": rec["sk"]})
+        get_resp = chats_table.get_item(Key={"chat_id": rec["chat_id"], "sk": rec["sk"]})
         item = get_resp.get("Item")
         return Message.model_validate(item) if item else None
     except ClientError as err:
@@ -315,15 +315,15 @@ def delete_messages_by_chat_id_after_timestamp(chat_id: str, timestamp: str) -> 
     end = "\uffff"
     try:
         resp = chats_table.query(
-            KeyConditionExpression=Key("chatId").eq(pk) & Key("sk").between(f"MSG#{start}", f"MSG#{end}")
+            KeyConditionExpression=Key("chat_id").eq(pk) & Key("sk").between(f"MSG#{start}", f"MSG#{end}")
         )
         items = resp.get("Items", [])
         with chats_table.batch_writer() as batch:
             for m in items:
                 # delete message record
-                batch.delete_item(Key={"chatId": m["chatId"], "sk": m["sk"]})
+                batch.delete_item(Key={"chat_id": m["chat_id"], "sk": m["sk"]})
                 # delete vote record
-                batch.delete_item(Key={"chatId": m["chatId"], "sk": f"VOTE#{m['messageId']}"})
+                batch.delete_item(Key={"chat_id": m["chat_id"], "sk": f"VOTE#{m['message_id']}"})
     except ClientError as err:
         logger.error("Failed to delete messages by chat id after timestamp %s: %s", chat_id, err)
         raise RuntimeError("Could not delete messages from database") from err
@@ -334,7 +334,7 @@ def update_chat_visibility_by_id(chat_id: str, visibility: str) -> None:
     pk = chat_id
     try:
         chats_table.update_item(
-            Key={"chatId": pk, "sk": "META"},
+            Key={"chat_id": pk, "sk": "META"},
             UpdateExpression="SET visibility = :v",
             ExpressionAttributeValues={":v": visibility},
         )
@@ -349,7 +349,7 @@ def get_message_count_by_user_id(user_id: str, difference_in_hours: int) -> int:
     try:
         resp = chats_table.query(
             IndexName="GSI3-MsgsByUser",
-            KeyConditionExpression=Key("userId").eq(user_id) & Key("createdAt").gte(cutoff),
+            KeyConditionExpression=Key("user_id").eq(user_id) & Key("created_at").gte(cutoff),
             FilterExpression=Attr("role").eq("user"),
             Select="COUNT",
         )
@@ -364,7 +364,13 @@ def create_stream_id(stream_id: str, chat_id: str) -> Stream:
     pk = chat_id
     now = datetime.now(UTC).isoformat()
     try:
-        item = {"chatId": pk, "sk": f"STR#{now}#{stream_id}", "type": "STREAM", "createdAt": now, "streamId": stream_id}
+        item = {
+            "chat_id": pk,
+            "sk": f"STR#{now}#{stream_id}",
+            "type": "STREAM",
+            "created_at": now,
+            "stream_id": stream_id,
+        }
         chats_table.put_item(Item=item)
         return Stream.model_validate(item)
     except ClientError as err:
@@ -377,9 +383,9 @@ def get_stream_ids_by_chat_id(chat_id: str) -> list[str]:
     pk = chat_id
     try:
         resp = chats_table.query(
-            KeyConditionExpression=Key("chatId").eq(pk) & Key("sk").begins_with("STR#"), ScanIndexForward=True
+            KeyConditionExpression=Key("chat_id").eq(pk) & Key("sk").begins_with("STR#"), ScanIndexForward=True
         )
-        return [item["streamId"] for item in resp.get("Items", [])]
+        return [item["stream_id"] for item in resp.get("Items", [])]
     except ClientError as err:
         logger.error("Failed to get stream ids by chat id: %s", err)
         raise RuntimeError("Could not get stream ids from database") from err

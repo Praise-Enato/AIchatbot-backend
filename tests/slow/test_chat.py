@@ -65,13 +65,13 @@ def test_chat_endpoint_success(test_client, auth_headers, chat_request_data, cha
 
     # Check for the first chunk with message ID
     first_chunk = chunks[0]
-    assert first_chunk.startswith('f:{"messageId":"')
+    assert first_chunk.startswith('f:{"id":"')
     assert first_chunk.endswith('"}')
 
     # Verify messageId format (should be UUID)
     message_id_data = json.loads(first_chunk.replace("f:", ""))
-    assert "messageId" in message_id_data
-    assert len(message_id_data["messageId"]) == 36  # UUID length
+    assert "id" in message_id_data
+    assert len(message_id_data["id"]) == 36  # UUID length
 
     # Check that normal chunks are properly formatted
     # Start from index 1 to skip the first message ID chunk
@@ -137,12 +137,12 @@ def test_create_and_delete_chat(test_client, auth_headers):
 
     chat_response = test_client.post(
         "/api/chats",
-        json={"chatId": chat_id, "userId": user_id, "title": chat_title, "visibility": "public"},
+        json={"id": chat_id, "userId": user_id, "title": chat_title, "visibility": "public"},
         headers=auth_headers,
     )
     assert chat_response.status_code == 201
     created_chat = chat_response.json()
-    assert created_chat["chatId"] == chat_id
+    assert created_chat["id"] == chat_id
 
     # Verify chat exists via GET /api/chats/{chat_id}
     get_chat_response = test_client.get(f"/api/chats/{chat_id}", headers=auth_headers)
@@ -153,7 +153,7 @@ def test_create_and_delete_chat(test_client, auth_headers):
     assert user_chats_response.status_code == 200
     user_chats = user_chats_response.json()
     assert len(user_chats["chats"]) == 1
-    assert user_chats["chats"][0]["chatId"] == chat_id
+    assert user_chats["chats"][0]["id"] == chat_id
 
     # Delete the chat via DELETE /api/chats/{chat_id}
     delete_response = test_client.delete(f"/api/chats/{chat_id}", headers=auth_headers)
@@ -189,7 +189,7 @@ def test_update_chat_visibility(test_client, auth_headers):
 
     chat_response = test_client.post(
         "/api/chats",
-        json={"chatId": chat_id, "userId": user_id, "title": chat_title, "visibility": "private"},
+        json={"id": chat_id, "userId": user_id, "title": chat_title, "visibility": "private"},
         headers=auth_headers,
     )
     assert chat_response.status_code == 201
@@ -209,7 +209,7 @@ def test_update_chat_visibility(test_client, auth_headers):
     assert get_chat_response.status_code == 200
     updated_chat = get_chat_response.json()
     assert updated_chat["visibility"] == "public"
-    assert updated_chat["chatId"] == chat_id
+    assert updated_chat["id"] == chat_id
     assert updated_chat["title"] == chat_title
 
 
@@ -230,7 +230,7 @@ def test_invalid_data_create_chat(test_client, auth_headers):
     response = test_client.post(
         "/api/chats",
         json={
-            "chatId": 123,  # Should be string
+            "id": 123,  # Should be string
             "userId": "valid-user-id",
             "title": "Test Chat",
             "visibility": "public",
@@ -258,7 +258,7 @@ def test_chat_constraint_scenarios(test_client, auth_headers):
 
     create_chat_response = test_client.post(
         "/api/chats",
-        json={"chatId": chat_id, "userId": user_id, "title": "Test Chat", "visibility": "public"},
+        json={"id": chat_id, "userId": user_id, "title": "Test Chat", "visibility": "public"},
         headers=auth_headers,
     )
     assert create_chat_response.status_code == 201
@@ -267,7 +267,7 @@ def test_chat_constraint_scenarios(test_client, auth_headers):
     very_long_title = "x" * 10000
     response = test_client.post(
         "/api/chats",
-        json={"chatId": str(uuid.uuid4()), "userId": user_id, "title": very_long_title, "visibility": "public"},
+        json={"id": str(uuid.uuid4()), "userId": user_id, "title": very_long_title, "visibility": "public"},
         headers=auth_headers,
     )
     assert response.status_code == 201
@@ -276,7 +276,7 @@ def test_chat_constraint_scenarios(test_client, auth_headers):
     response = test_client.post(
         "/api/chats",
         json={
-            "chatId": "",  # Empty string
+            "id": "",  # Empty string
             "userId": user_id,
             "title": "Test Chat",
             "visibility": "public",
@@ -289,7 +289,7 @@ def test_chat_constraint_scenarios(test_client, auth_headers):
     # Test null/None values
     response = test_client.post(
         "/api/chats",
-        json={"chatId": None, "userId": user_id, "title": "Test Chat", "visibility": "public"},
+        json={"id": None, "userId": user_id, "title": "Test Chat", "visibility": "public"},
         headers=auth_headers,
     )
     assert response.status_code == 422

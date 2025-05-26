@@ -45,7 +45,7 @@ def test_create_and_get_streams(test_client, auth_headers):
 
     chat_response = test_client.post(
         "/api/chats",
-        json={"chatId": chat_id, "userId": user_id, "title": chat_title, "visibility": "private"},
+        json={"id": chat_id, "userId": user_id, "title": chat_title, "visibility": "private"},
         headers=auth_headers,
     )
     assert chat_response.status_code == 201
@@ -54,19 +54,19 @@ def test_create_and_get_streams(test_client, auth_headers):
     initial_streams_response = test_client.get(f"/api/chats/{chat_id}/streams", headers=auth_headers)
     assert initial_streams_response.status_code == 200
     initial_streams = initial_streams_response.json()
-    assert len(initial_streams["streamIds"]) == 0
+    assert len(initial_streams["ids"]) == 0
 
     # Create a stream
     stream_id = str(uuid.uuid4())
 
     create_stream_response = test_client.post(
         f"/api/chats/{chat_id}/streams",
-        json={"streamId": stream_id},
+        json={"id": stream_id},
         headers=auth_headers,
     )
     assert create_stream_response.status_code == 201
     created_stream = create_stream_response.json()
-    assert created_stream["streamId"] == stream_id
+    assert created_stream["id"] == stream_id
     assert created_stream["chatId"] == chat_id
     assert "createdAt" in created_stream
 
@@ -74,15 +74,15 @@ def test_create_and_get_streams(test_client, auth_headers):
     final_streams_response = test_client.get(f"/api/chats/{chat_id}/streams", headers=auth_headers)
     assert final_streams_response.status_code == 200
     final_streams = final_streams_response.json()
-    assert len(final_streams["streamIds"]) == 1
-    assert final_streams["streamIds"][0] == stream_id
+    assert len(final_streams["ids"]) == 1
+    assert final_streams["ids"][0] == stream_id
 
     # Create a second stream to verify multiple streams work
     stream_id_2 = str(uuid.uuid4())
 
     create_stream_2_response = test_client.post(
         f"/api/chats/{chat_id}/streams",
-        json={"streamId": stream_id_2},
+        json={"id": stream_id_2},
         headers=auth_headers,
     )
     assert create_stream_2_response.status_code == 201
@@ -91,9 +91,9 @@ def test_create_and_get_streams(test_client, auth_headers):
     multi_streams_response = test_client.get(f"/api/chats/{chat_id}/streams", headers=auth_headers)
     assert multi_streams_response.status_code == 200
     multi_streams = multi_streams_response.json()
-    assert len(multi_streams["streamIds"]) == 2
-    assert stream_id in multi_streams["streamIds"]
-    assert stream_id_2 in multi_streams["streamIds"]
+    assert len(multi_streams["ids"]) == 2
+    assert stream_id in multi_streams["ids"]
+    assert stream_id_2 in multi_streams["ids"]
 
 
 def test_create_multiple_streams_different_chats(test_client, auth_headers):
@@ -116,7 +116,7 @@ def test_create_multiple_streams_different_chats(test_client, auth_headers):
     for chat_id in [chat_id_1, chat_id_2]:
         chat_response = test_client.post(
             "/api/chats",
-            json={"chatId": chat_id, "userId": user_id, "title": f"Chat {chat_id}", "visibility": "private"},
+            json={"id": chat_id, "userId": user_id, "title": f"Chat {chat_id}", "visibility": "private"},
             headers=auth_headers,
         )
         assert chat_response.status_code == 201
@@ -128,7 +128,7 @@ def test_create_multiple_streams_different_chats(test_client, auth_headers):
     # Stream in first chat
     response_1 = test_client.post(
         f"/api/chats/{chat_id_1}/streams",
-        json={"streamId": stream_id_1},
+        json={"id": stream_id_1},
         headers=auth_headers,
     )
     assert response_1.status_code == 201
@@ -136,7 +136,7 @@ def test_create_multiple_streams_different_chats(test_client, auth_headers):
     # Stream in second chat
     response_2 = test_client.post(
         f"/api/chats/{chat_id_2}/streams",
-        json={"streamId": stream_id_2},
+        json={"id": stream_id_2},
         headers=auth_headers,
     )
     assert response_2.status_code == 201
@@ -145,14 +145,14 @@ def test_create_multiple_streams_different_chats(test_client, auth_headers):
     streams_1_response = test_client.get(f"/api/chats/{chat_id_1}/streams", headers=auth_headers)
     assert streams_1_response.status_code == 200
     streams_1 = streams_1_response.json()
-    assert len(streams_1["streamIds"]) == 1
-    assert streams_1["streamIds"][0] == stream_id_1
+    assert len(streams_1["ids"]) == 1
+    assert streams_1["ids"][0] == stream_id_1
 
     streams_2_response = test_client.get(f"/api/chats/{chat_id_2}/streams", headers=auth_headers)
     assert streams_2_response.status_code == 200
     streams_2 = streams_2_response.json()
-    assert len(streams_2["streamIds"]) == 1
-    assert streams_2["streamIds"][0] == stream_id_2
+    assert len(streams_2["ids"]) == 1
+    assert streams_2["ids"][0] == stream_id_2
 
 
 # Error handling tests for stream operations
@@ -173,7 +173,7 @@ def test_invalid_data_create_stream(test_client, auth_headers):
     # Invalid stream ID type
     response = test_client.post(
         f"/api/chats/{chat_id}/streams",
-        json={"streamId": 123},  # Should be string
+        json={"id": 123},  # Should be string
         headers=auth_headers,
     )
     assert response.status_code == 422
@@ -186,4 +186,4 @@ def test_stream_operations_with_nonexistent_chat(test_client, auth_headers):
     # Get streams for non-existent chat
     response = test_client.get(f"/api/chats/{non_existent_chat_id}/streams", headers=auth_headers)
     assert response.status_code == 200  # Returns empty list, not 404
-    assert response.json()["streamIds"] == []
+    assert response.json()["ids"] == []

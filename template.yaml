@@ -63,20 +63,20 @@ Resources:
       TableName: Users
       BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
-        - AttributeName: userId
+        - AttributeName: user_id
           AttributeType: S
         - AttributeName: email
           AttributeType: S
         - AttributeName: source
           AttributeType: S
-        - AttributeName: createdAt
+        - AttributeName: created_at
           AttributeType: S
-        - AttributeName: stripeCustomerId
+        - AttributeName: stripe_customer_id
           AttributeType: S
-        - AttributeName: activeSubscriptionId
+        - AttributeName: active_subscription_id
           AttributeType: S
       KeySchema:
-        - AttributeName: userId
+        - AttributeName: user_id
           KeyType: HASH
       GlobalSecondaryIndexes:
         - IndexName: GSI1-Email
@@ -89,32 +89,32 @@ Resources:
           KeySchema:
             - AttributeName: source
               KeyType: HASH
-            - AttributeName: createdAt
+            - AttributeName: created_at
               KeyType: RANGE
           Projection:
             ProjectionType: INCLUDE
             NonKeyAttributes:
-              - userId
+              - user_id
         - IndexName: GSI3-StripeCustomer
           KeySchema:
-            - AttributeName: stripeCustomerId
+            - AttributeName: stripe_customer_id
               KeyType: HASH
           Projection:
             ProjectionType: INCLUDE
             NonKeyAttributes:
-              - userId
-              - activeSubscriptionId
-              - subscriptionStatus
+              - user_id
+              - active_subscription_id
+              - subscription_status
         - IndexName: GSI4-Subscription
           KeySchema:
-            - AttributeName: activeSubscriptionId
+            - AttributeName: active_subscription_id
               KeyType: HASH
           Projection:
             ProjectionType: INCLUDE
             NonKeyAttributes:
-              - userId
-              - stripeCustomerId
-              - subscriptionStatus
+              - user_id
+              - stripe_customer_id
+              - subscription_status
     PointInTimeRecoverySpecification:
       PointInTimeRecoveryEnabled: true
       RecoveryPeriodInDays: 35
@@ -125,55 +125,55 @@ Resources:
       TableName: Chats
       BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
-        - AttributeName: chatId
+        - AttributeName: chat_id
           AttributeType: S
         - AttributeName: sk
           AttributeType: S
-        - AttributeName: userId
+        - AttributeName: user_id
           AttributeType: S
-        - AttributeName: chatCreatedAt
+        - AttributeName: chat_created_at
           AttributeType: S
-        - AttributeName: messageId
+        - AttributeName: message_id
           AttributeType: S
-        - AttributeName: createdAt
+        - AttributeName: created_at
           AttributeType: S
       KeySchema:
-        - AttributeName: chatId
+        - AttributeName: chat_id
           KeyType: HASH
         - AttributeName: sk
           KeyType: RANGE
       GlobalSecondaryIndexes:
         - IndexName: GSI1-ChatsByUser
           KeySchema:
-            - AttributeName: userId
+            - AttributeName: user_id
               KeyType: HASH
-            - AttributeName: chatCreatedAt
+            - AttributeName: chat_created_at
               KeyType: RANGE
           Projection:
             ProjectionType: INCLUDE
             NonKeyAttributes:
-              - chatId
+              - chat_id
               - title
               - visibility
-              - chatCreatedAt
+              - chat_created_at
         - IndexName: GSI2-MessageById
           KeySchema:
-            - AttributeName: messageId
+            - AttributeName: message_id
               KeyType: HASH
-            - AttributeName: createdAt
+            - AttributeName: created_at
               KeyType: RANGE
           Projection:
             ProjectionType: KEYS_ONLY
         - IndexName: GSI3-MsgsByUser
           KeySchema:
-            - AttributeName: userId
+            - AttributeName: user_id
               KeyType: HASH
-            - AttributeName: createdAt
+            - AttributeName: created_at
               KeyType: RANGE
           Projection:
             ProjectionType: INCLUDE
             NonKeyAttributes:
-              - messageId
+              - message_id
               - role
     PointInTimeRecoverySpecification:
       PointInTimeRecoveryEnabled: true
