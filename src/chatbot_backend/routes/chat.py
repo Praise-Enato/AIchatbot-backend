@@ -10,8 +10,21 @@ from fastapi import APIRouter, HTTPException, Query, status
 from fastapi.responses import StreamingResponse
 from pydantic import ValidationError
 
-from chatbot_backend import db
 from chatbot_backend.custom_logger import get_logger
+from chatbot_backend.db.chat import (
+    create_stream_id,
+    delete_chat_by_id,
+    delete_messages_by_chat_id_after_timestamp,
+    get_chat_by_id,
+    get_message_by_id,
+    get_messages_by_chat_id,
+    get_stream_ids_by_chat_id,
+    get_votes_by_chat_id,
+    save_chat,
+    save_messages,
+    update_chat_visibility_by_id,
+    vote_message,
+)
 from chatbot_backend.models.chat import (
     Chat,
     ChatRequest,
@@ -98,7 +111,7 @@ async def handle_chat_data(chat_id: str, request: ChatRequest) -> StreamingRespo
 async def get_chat(chat_id: str) -> Chat:
     """Get chat by ID."""
     try:
-        chat = db.get_chat_by_id(chat_id)
+        chat = get_chat_by_id(chat_id)
     except Exception as err:
         logger.error("Failed to get chat %s: %s", chat_id, err)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error") from err
@@ -111,7 +124,7 @@ async def get_chat(chat_id: str) -> Chat:
 async def create_chat(request: CreateChatRequest) -> Chat:
     """Create a new chat."""
     try:
-        return db.save_chat(request.chat_id, request.user_id, request.title, request.visibility)
+        return save_chat(request.chat_id, request.user_id, request.title, request.visibility)
     except ValidationError as err:
         logger.error("Validation error creating chat: %s", err)
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Invalid chat data") from err
@@ -124,7 +137,7 @@ async def create_chat(request: CreateChatRequest) -> Chat:
 async def delete_chat(chat_id: str) -> None:
     """Delete a chat and all its related items."""
     try:
-        db.delete_chat_by_id(chat_id)
+        delete_chat_by_id(chat_id)
     except Exception as err:
         logger.error("Failed to delete chat %s: %s", chat_id, err)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error") from err
@@ -134,7 +147,7 @@ async def delete_chat(chat_id: str) -> None:
 async def update_chat_visibility(chat_id: str, request: UpdateChatVisibilityRequest) -> None:
     """Update chat visibility."""
     try:
-        db.update_chat_visibility_by_id(chat_id, request.visibility)
+        update_chat_visibility_by_id(chat_id, request.visibility)
     except Exception as err:
         logger.error("Failed to update chat visibility %s: %s", chat_id, err)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error") from err
@@ -144,7 +157,7 @@ async def update_chat_visibility(chat_id: str, request: UpdateChatVisibilityRequ
 async def get_chat_messages(chat_id: str) -> list[Message]:
     """Get all messages for a chat."""
     try:
-        return db.get_messages_by_chat_id(chat_id)
+        return get_messages_by_chat_id(chat_id)
     except Exception as err:
         logger.error("Failed to get messages for chat %s: %s", chat_id, err)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error") from err
@@ -154,7 +167,7 @@ async def get_chat_messages(chat_id: str) -> list[Message]:
 async def get_message(message_id: str) -> Message:
     """Get a specific message by ID."""
     try:
-        message = db.get_message_by_id(message_id)
+        message = get_message_by_id(message_id)
     except Exception as err:
         logger.error("Failed to get message %s: %s", message_id, err)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error") from err
@@ -167,7 +180,7 @@ async def get_message(message_id: str) -> Message:
 async def save_chat_messages(chat_id: str, request: SaveMessagesRequest) -> None:
     """Save messages to a chat."""
     try:
-        db.save_messages(request.user_id, request.messages)
+        save_messages(request.user_id, request.messages)
     except ValidationError as err:
         logger.error("Validation error saving messages: %s", err)
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Invalid message data") from err
@@ -186,7 +199,7 @@ async def delete_chat_messages_after_timestamp(
         from datetime import datetime
 
         datetime.fromisoformat(timestamp.replace("Z", "+00:00"))  # Just for validation
-        db.delete_messages_by_chat_id_after_timestamp(chat_id, timestamp)
+        delete_messages_by_chat_id_after_timestamp(chat_id, timestamp)
     except ValueError as err:
         logger.error("Invalid timestamp format: %s", err)
         raise HTTPException(
@@ -201,7 +214,7 @@ async def delete_chat_messages_after_timestamp(
 async def vote_on_message(chat_id: str, message_id: str, request: VoteMessageRequest) -> None:
     """Vote on a message."""
     try:
-        db.vote_message(chat_id, message_id, request.vote_type)
+        vote_message(chat_id, message_id, request.vote_type)
     except ValidationError as err:
         logger.error("Validation error voting on message: %s", err)
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Invalid vote data") from err
@@ -214,7 +227,7 @@ async def vote_on_message(chat_id: str, message_id: str, request: VoteMessageReq
 async def get_chat_votes(chat_id: str) -> list[Vote]:
     """Get all votes for a chat."""
     try:
-        return db.get_votes_by_chat_id(chat_id)
+        return get_votes_by_chat_id(chat_id)
     except Exception as err:
         logger.error("Failed to get votes for chat %s: %s", chat_id, err)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error") from err
@@ -229,7 +242,7 @@ async def get_chat_votes(chat_id: str) -> list[Vote]:
 async def create_stream(chat_id: str, request: CreateStreamRequest) -> Stream:
     """Create a stream ID for a chat."""
     try:
-        return db.create_stream_id(request.stream_id, chat_id)
+        return create_stream_id(request.stream_id, chat_id)
     except ValidationError as err:
         logger.error("Validation error creating stream: %s", err)
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Invalid stream data") from err
@@ -242,7 +255,7 @@ async def create_stream(chat_id: str, request: CreateStreamRequest) -> Stream:
 async def get_chat_streams(chat_id: str) -> StreamIdsResponse:
     """Get all stream IDs for a chat."""
     try:
-        stream_ids = db.get_stream_ids_by_chat_id(chat_id)
+        stream_ids = get_stream_ids_by_chat_id(chat_id)
         return StreamIdsResponse(stream_ids=stream_ids)
     except Exception as err:
         logger.error("Failed to get streams for chat %s: %s", chat_id, err)

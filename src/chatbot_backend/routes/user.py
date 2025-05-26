@@ -8,8 +8,9 @@ retrieval, and OAuth user management.
 from fastapi import APIRouter, HTTPException, Query, status
 from pydantic import ValidationError
 
-from chatbot_backend import db
 from chatbot_backend.custom_logger import get_logger
+from chatbot_backend.db.chat import get_chats_by_user_id, get_message_count_by_user_id
+from chatbot_backend.db.user import create_guest_user, create_user, get_or_create_user_from_oauth, get_user
 from chatbot_backend.models.chat import ChatListResponse, MessageCountResponse
 from chatbot_backend.models.user import (
     CreateEmailUserRequest,
@@ -28,7 +29,7 @@ router = APIRouter(prefix="/api")
 async def get_user_by_email(email: str) -> User:
     """Get user by email address."""
     try:
-        user = db.get_user(email)
+        user = get_user(email)
     except Exception as err:
         logger.error("Failed to get user by email %s: %s", email, err)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error") from err
@@ -40,17 +41,17 @@ async def get_user_by_email(email: str) -> User:
 
 
 @router.post("/users", response_model=User, status_code=status.HTTP_201_CREATED, response_model_exclude_none=True)
-async def create_user(request: CreateEmailUserRequest) -> User:
+async def create_email_user_endpoint(request: CreateEmailUserRequest) -> User:
     """Create a new email user."""
     try:
         # Check if user already exists
-        existing_user = db.get_user(request.email)
+        existing_user = get_user(request.email)
         if existing_user:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT, detail=f"User with email '{request.email}' already exists"
             )
 
-        user = db.create_user(request.email, request.password_hash)
+        user = create_user(request.email, request.password_hash)
         return user
     except HTTPException:
         raise  # Re-raise HTTPException as-is
@@ -63,10 +64,10 @@ async def create_user(request: CreateEmailUserRequest) -> User:
 
 
 @router.post("/users/guest", response_model=User, status_code=status.HTTP_201_CREATED, response_model_exclude_none=True)
-async def create_guest_user() -> User:
+async def create_guest_user_endpoint() -> User:
     """Create a new guest user."""
     try:
-        user = db.create_guest_user()
+        user = create_guest_user()
         return user
     except Exception as err:
         logger.error("Failed to create guest user: %s", err)
@@ -77,7 +78,7 @@ async def create_guest_user() -> User:
 async def create_oauth_user(request: CreateOAuthUserRequest) -> User:
     """Create or get a user via OAuth."""
     try:
-        user = db.get_or_create_user_from_oauth(request.email, request.provider, request.provider_account_id)
+        user = get_or_create_user_from_oauth(request.email, request.provider, request.provider_account_id)
         return user
     except ValidationError as err:
         logger.error("Validation error creating OAuth user: %s", err)
@@ -96,7 +97,7 @@ async def get_user_chats(
 ) -> ChatListResponse:
     """Get chats for a user with pagination."""
     try:
-        return db.get_chats_by_user_id(user_id, limit, starting_after, ending_before)
+        return get_chats_by_user_id(user_id, limit, starting_after, ending_before)
     except Exception as err:
         logger.error("Failed to get chats for user %s: %s", user_id, err)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error") from err
@@ -108,7 +109,7 @@ async def get_user_message_count(
 ) -> MessageCountResponse:
     """Get message count for a user in the last N hours."""
     try:
-        count = db.get_message_count_by_user_id(user_id, hours)
+        count = get_message_count_by_user_id(user_id, hours)
         return MessageCountResponse(count=count)
     except Exception as err:
         logger.error("Failed to get message count for user %s: %s", user_id, err)
