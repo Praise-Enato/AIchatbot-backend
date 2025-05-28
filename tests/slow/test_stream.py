@@ -37,7 +37,7 @@ def test_create_and_get_streams(test_client, auth_headers):
     )
     assert user_response.status_code == 201
     user = user_response.json()
-    user_id = user["userId"]
+    user_id = user["id"]
 
     # Create a chat for this user
     chat_id = str(uuid.uuid4())
@@ -107,7 +107,7 @@ def test_create_multiple_streams_different_chats(test_client, auth_headers):
     )
     assert user_response.status_code == 201
     user = user_response.json()
-    user_id = user["userId"]
+    user_id = user["id"]
 
     # Create two different chats
     chat_id_1 = str(uuid.uuid4())

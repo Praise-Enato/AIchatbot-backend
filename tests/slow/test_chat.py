@@ -67,13 +67,13 @@ def test_chat_endpoint_success(test_client, auth_headers, chat_request_data, cha
 
     # Check for the first chunk with message ID
     first_chunk = chunks[0]
-    assert first_chunk.startswith('f:{"id":"')
+    assert first_chunk.startswith('f:{"messageId":"')
     assert first_chunk.endswith('"}')
 
     # Verify messageId format (should be UUID)
     message_id_data = json.loads(first_chunk.replace("f:", ""))
-    assert "id" in message_id_data
-    assert len(message_id_data["id"]) == 36  # UUID length
+    assert "messageId" in message_id_data
+    assert len(message_id_data["messageId"]) == 36  # UUID length
 
     # Check that normal chunks are properly formatted
     # Start from index 1 to skip the first message ID chunk
@@ -131,7 +131,7 @@ def test_create_and_delete_chat(test_client, auth_headers):
     )
     assert user_response.status_code == 201
     user = user_response.json()
-    user_id = user["userId"]
+    user_id = user["id"]
 
     # Create a chat for this user
     chat_id = str(uuid.uuid4())
@@ -183,7 +183,7 @@ def test_update_chat_visibility(test_client, auth_headers):
     )
     assert user_response.status_code == 201
     user = user_response.json()
-    user_id = user["userId"]
+    user_id = user["id"]
 
     # Create a chat with initial visibility "private"
     chat_id = str(uuid.uuid4())

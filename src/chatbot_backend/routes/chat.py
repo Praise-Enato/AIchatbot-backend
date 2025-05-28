@@ -4,6 +4,7 @@ Chat routes for the chatbot backend.
 This module contains the routes for chat-related endpoints.
 """
 
+import uuid
 from collections.abc import AsyncGenerator
 
 from fastapi import APIRouter, HTTPException, Query, Request, status
@@ -41,7 +42,7 @@ from chatbot_backend.models.chat import (
 from chatbot_backend.models.common import ErrorResponse
 from chatbot_backend.prompts import CHAT_SYSTEM_PROMPT
 from chatbot_backend.providers.factory import default_provider
-from chatbot_backend.utils import create_streaming_response
+from chatbot_backend.utils import stream_chat_chunks
 
 # Configure logging
 logger = get_logger("chat_route")
@@ -72,34 +73,67 @@ async def handle_chat_data(chat_id: str, request: ChatRequest, req: Request) -> 
     """
     logger.info(f"Starting chat response for chat_id: {chat_id}")
     try:
+        # Generate message ID immediately before any provider calls
+        message_id = str(uuid.uuid4())
+
         # Format messages for the provider
         provider_messages = default_provider.format_messages_from_request(request)
 
-        # Create a streaming response
-        async def generate() -> AsyncGenerator[str | dict, None]:
-            try:
-                chunk_count = 0
-                logger.info("Starting generation loop")
-                for chunk in default_provider.stream_chat_response(
-                    provider_messages, system_message=CHAT_SYSTEM_PROMPT
-                ):
-                    # check if client is disconnected
-                    if await req.is_disconnected():
-                        logger.info(f"Client disconnected after {chunk_count} chunks")
-                        break
-                    # Only count text chunks, not usage information
-                    if isinstance(chunk, str):
-                        chunk_count += 1
-                        if chunk_count % 10 == 0:  # Log every 10 chunks
-                            logger.info(f"Sent {chunk_count} chunks")
-                    yield chunk
-                logger.info(f"Generation complete - yielded {chunk_count} text chunks")
-            except Exception as e:
-                logger.error(f"Error generating response: {e}")
-                yield f"Error: {e}"
+        # Create generator for immediate first chunk
+        async def immediate_first_chunk() -> AsyncGenerator[bytes, None]:
+            yield f'f:{{"messageId":"{message_id}"}}\n'.encode()
 
-        # Return a streaming response with the correct media type
-        response = create_streaming_response(generate())
+        # Create generator for the rest of the chunks
+        async def delayed_chunks() -> AsyncGenerator[bytes, None]:
+            # Create a generator for the provider response
+            async def generate_provider_chunks() -> AsyncGenerator[str | dict, None]:
+                try:
+                    chunk_count = 0
+                    logger.info("Starting generation loop")
+                    for chunk in default_provider.stream_chat_response(
+                        provider_messages, system_message=CHAT_SYSTEM_PROMPT
+                    ):
+                        # check if client is disconnected
+                        if await req.is_disconnected():
+                            logger.info(f"Client disconnected after {chunk_count} chunks")
+                            break
+                        # Only count text chunks, not usage information
+                        if isinstance(chunk, str):
+                            chunk_count += 1
+                            if chunk_count % 10 == 0:  # Log every 10 chunks
+                                logger.info(f"Sent {chunk_count} chunks")
+                        yield chunk
+                    logger.info(f"Generation complete - yielded {chunk_count} text chunks")
+                except Exception as e:
+                    logger.error(f"Error generating response: {e}")
+                    yield f"Error: {e}"
+
+            # Stream the provider chunks through stream_chat_chunks (but skip the first chunk since we already sent it)
+            is_first = True
+            async for chunk in stream_chat_chunks(generate_provider_chunks()):
+                if is_first:
+                    # Skip the first chunk from stream_chat_chunks since we already sent the message ID
+                    is_first = False
+                    continue
+                yield chunk
+
+        # Combine both generators
+        async def combined_stream() -> AsyncGenerator[bytes, None]:
+            # First, yield the immediate message ID chunk
+            async for chunk in immediate_first_chunk():
+                yield chunk
+            # Then, yield all the delayed chunks
+            async for chunk in delayed_chunks():
+                yield chunk
+
+        # Return a streaming response with the combined stream
+        response = StreamingResponse(combined_stream(), media_type="text/event-stream")
+
+        # Add required headers
+        response.headers["Cache-Control"] = "no-cache"
+        response.headers["Connection"] = "keep-alive"
+        response.headers["x-vercel-ai-data-stream"] = "v1"
+
         logger.info("Returning streaming response")
         return response
 

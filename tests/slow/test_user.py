@@ -68,7 +68,7 @@ def test_create_and_get_user_with_password(test_client, test_data_generator, aut
     created_user = create_response.json()
     assert created_user["email"] == email
     assert created_user["source"] == "email"
-    assert "userId" in created_user
+    assert "id" in created_user
     assert "createdAt" in created_user
     assert "passwordHash" in created_user
 
@@ -80,7 +80,7 @@ def test_create_and_get_user_with_password(test_client, test_data_generator, aut
     retrieved_user = get_response.json()
     assert retrieved_user["email"] == email
     assert retrieved_user["source"] == "email"
-    assert retrieved_user["userId"] == created_user["userId"]
+    assert retrieved_user["id"] == created_user["id"]
     assert retrieved_user["createdAt"] == created_user["createdAt"]
     assert retrieved_user["passwordHash"] == password_hash
 
@@ -95,7 +95,7 @@ def test_create_and_get_guest_user(test_client, auth_headers):
     created_user = create_response.json()
     print(f"Created user: {json.dumps(created_user, indent=4)}")
     assert created_user["source"] == "guest"
-    assert "userId" in created_user
+    assert "id" in created_user
     assert "email" in created_user
     assert "createdAt" in created_user
 
@@ -111,7 +111,7 @@ def test_create_and_get_guest_user(test_client, auth_headers):
     print(f"Retrieved user: {json.dumps(retrieved_user, indent=4)}")
     assert retrieved_user["email"] == guest_email
     assert retrieved_user["source"] == "guest"
-    assert retrieved_user["userId"] == created_user["userId"]
+    assert retrieved_user["id"] == created_user["id"]
     assert retrieved_user["createdAt"] == created_user["createdAt"]
     assert "passwordHash" not in retrieved_user
 
@@ -136,7 +136,7 @@ def test_create_and_get_oauth_user(test_client, test_data_generator, auth_header
     assert created_user["source"] == "oauth"
     assert created_user["provider"] == oauth_data["provider"]
     assert created_user["providerAccountId"] == oauth_data["providerAccountId"]
-    assert "userId" in created_user
+    assert "id" in created_user
     assert "createdAt" in created_user
     assert "passwordHash" not in created_user
 
@@ -150,7 +150,7 @@ def test_create_and_get_oauth_user(test_client, test_data_generator, auth_header
     assert retrieved_user["source"] == "oauth"
     assert retrieved_user["provider"] == oauth_data["provider"]
     assert retrieved_user["providerAccountId"] == oauth_data["providerAccountId"]
-    assert retrieved_user["userId"] == created_user["userId"]
+    assert retrieved_user["id"] == created_user["id"]
     assert retrieved_user["createdAt"] == created_user["createdAt"]
     assert "passwordHash" not in retrieved_user
 
@@ -166,7 +166,7 @@ def test_create_chat_appears_in_user_chats(test_client, test_data_generator, aut
     )
     assert user_response.status_code == 201
     user = user_response.json()
-    user_id = user["userId"]
+    user_id = user["id"]
 
     # Create a chat for this user
     chat_id = test_data_generator.unique_id()

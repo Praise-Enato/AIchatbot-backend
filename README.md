@@ -200,8 +200,13 @@ make help
 
 - `src/chatbot_backend/`: Core application code
   - `app.py`: Main FastAPI application with Lambda handler
+- `dev/lab/`: Development and experimental code (excluded from production)
+  - Data processing for RAG systems
+  - Usage pattern analysis
+  - Prompt testing and experimentation
+  - Agentic system development
 - `scripts/`: Utility scripts for testing and development
-- `tests/`: Test suite
+- `tests/`: Test suite (covers both `src/chatbot_backend/` and `dev/lab/`)
 - `template.yaml`: AWS SAM template defining infrastructure
 
 ## Adding Your Own Routes

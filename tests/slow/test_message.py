@@ -39,7 +39,7 @@ def test_create_message_and_verify_in_chat_and_count(test_client, auth_headers):
     )
     assert user_response.status_code == 201
     user = user_response.json()
-    user_id = user["userId"]
+    user_id = user["id"]
 
     # Create a chat for this user
     chat_id = str(uuid.uuid4())
@@ -117,7 +117,7 @@ def test_delete_messages_after_timestamp(test_client, auth_headers):
     )
     assert user_response.status_code == 201
     user = user_response.json()
-    user_id = user["userId"]
+    user_id = user["id"]
 
     # Create a chat for this user
     chat_id = str(uuid.uuid4())
@@ -218,7 +218,7 @@ def test_invalid_data_save_messages(test_client, auth_headers):
     response = test_client.post(
         f"/api/chats/{chat_id}/messages",
         json={
-            "userId": "valid-user-id",
+            "id": "valid-user-id",
             "messages": [
                 {
                     "role": "invalid_role",  # Should be user or assistant
@@ -235,7 +235,7 @@ def test_invalid_data_save_messages(test_client, auth_headers):
     response = test_client.post(
         f"/api/chats/{chat_id}/messages",
         json={
-            "userId": "valid-user-id",
+            "id": "valid-user-id",
             "messages": [
                 {
                     "role": "user",

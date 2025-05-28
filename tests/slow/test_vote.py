@@ -38,7 +38,7 @@ def test_vote_on_message(test_client, auth_headers):
     )
     assert user_response.status_code == 201
     user = user_response.json()
-    user_id = user["userId"]
+    user_id = user["id"]
 
     # Create a chat for this user
     chat_id = str(uuid.uuid4())
@@ -111,7 +111,7 @@ def test_vote_down_on_message(test_client, auth_headers):
     )
     assert user_response.status_code == 201
     user = user_response.json()
-    user_id = user["userId"]
+    user_id = user["id"]
 
     # Create a chat for this user
     chat_id = str(uuid.uuid4())
