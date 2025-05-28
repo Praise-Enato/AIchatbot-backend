@@ -6,7 +6,7 @@ This module contains the routes for chat-related endpoints.
 
 from collections.abc import AsyncGenerator
 
-from fastapi import APIRouter, HTTPException, Query, status
+from fastapi import APIRouter, HTTPException, Query, Request, status
 from fastapi.responses import StreamingResponse
 from pydantic import ValidationError
 
@@ -59,7 +59,7 @@ router = APIRouter()
         500: {"model": ErrorResponse, "description": "Internal Server Error"},
     },
 )
-async def handle_chat_data(chat_id: str, request: ChatRequest) -> StreamingResponse:  # noqa: ARG001
+async def handle_chat_data(chat_id: str, request: ChatRequest, req: Request) -> StreamingResponse:
     """
     Chat endpoint that processes messages and returns a streaming response.
 
@@ -70,6 +70,7 @@ async def handle_chat_data(chat_id: str, request: ChatRequest) -> StreamingRespo
     Returns:
         A streaming response with chat completions.
     """
+    logger.info(f"Starting chat response for chat_id: {chat_id}")
     try:
         # Format messages for the provider
         provider_messages = default_provider.format_messages_from_request(request)
@@ -78,12 +79,19 @@ async def handle_chat_data(chat_id: str, request: ChatRequest) -> StreamingRespo
         async def generate() -> AsyncGenerator[str | dict, None]:
             try:
                 chunk_count = 0
+                logger.info("Starting generation loop")
                 for chunk in default_provider.stream_chat_response(
                     provider_messages, system_message=CHAT_SYSTEM_PROMPT
                 ):
+                    # check if client is disconnected
+                    if await req.is_disconnected():
+                        logger.info(f"Client disconnected after {chunk_count} chunks")
+                        break
                     # Only count text chunks, not usage information
                     if isinstance(chunk, str):
                         chunk_count += 1
+                        if chunk_count % 10 == 0:  # Log every 10 chunks
+                            logger.info(f"Sent {chunk_count} chunks")
                     yield chunk
                 logger.info(f"Generation complete - yielded {chunk_count} text chunks")
             except Exception as e:
@@ -92,6 +100,7 @@ async def handle_chat_data(chat_id: str, request: ChatRequest) -> StreamingRespo
 
         # Return a streaming response with the correct media type
         response = create_streaming_response(generate())
+        logger.info("Returning streaming response")
         return response
 
     except Exception as e:
@@ -198,7 +207,7 @@ async def delete_chat_messages_after_timestamp(
         # Validate timestamp format but keep as string
         from datetime import datetime
 
-        datetime.fromisoformat(timestamp.replace("Z", "+00:00"))  # Just for validation
+        datetime.fromisoformat(timestamp)  # Just for validation
         delete_messages_by_chat_id_after_timestamp(chat_id, timestamp)
     except ValueError as err:
         logger.error("Invalid timestamp format: %s", err)

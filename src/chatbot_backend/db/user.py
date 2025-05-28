@@ -34,7 +34,6 @@ logger = get_logger("db.user")
 def get_user(email: str) -> User | None:
     """Fetch user by email."""
     resp = users_table.query(IndexName="GSI1-Email", KeyConditionExpression=Key("email").eq(email))
-    logger.info(f"User response: {resp}")
     items = resp.get("Items", [])
     return User.model_validate(items[0]) if items else None
 
@@ -64,7 +63,7 @@ def create_guest_user() -> User:
     user_id = str(uuid.uuid4())
     now = datetime.now(UTC)
     now_iso = now.isoformat()
-    email = f"guest-{int(now.timestamp() * 1000)}"
+    email = f"guest-{int(now.timestamp() * 1000)}@local.com"
     item = {
         "user_id": user_id,
         "email": email,

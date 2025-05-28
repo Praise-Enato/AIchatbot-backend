@@ -40,12 +40,14 @@ start_dynamodb() {
         java -Djava.library.path="$DYNAMODB_DIR/DynamoDBLocal_lib" \
              -jar "$JAR_PATH" \
              -port 8000 \
+             -sharedDb \
              -dbPath "$DATA_DIR" \
              > "$LOG_FILE" 2>&1 &
     else
         java -Djava.library.path="$DYNAMODB_DIR/DynamoDBLocal_lib" \
              -jar "$JAR_PATH" \
              -port 8000 \
+             -sharedDb \
              -inMemory \
              > "$LOG_FILE" 2>&1 &
     fi

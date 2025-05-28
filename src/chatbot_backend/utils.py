@@ -94,7 +94,7 @@ async def stream_chat_chunks(chunks: AsyncGenerator[str | dict, None]) -> AsyncG
     try:
         # Send the first chunk with a message ID
         message_id = str(uuid.uuid4())
-        yield f'f:{{"id":"{message_id}"}}\n'.encode()
+        yield f'f:{{"messageId":"{message_id}"}}\n'.encode()
 
         # Store usage information if found
         usage_info = None

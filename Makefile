@@ -37,14 +37,22 @@ test-all: ## Run all tests with DynamoDB Local
 	@./setup/start_dynamodb_local.sh stop
 
 .PHONY: dynamodb-start
-dynamodb-start: ## Start DynamoDB Local with persistent storage
+dynamodb-start: ## Start DynamoDB Local with persistent storage and create tables if needed
 	@echo "🚀 Starting DynamoDB Local with persistent storage"
 	@./setup/start_dynamodb_local.sh start --mode persistent
+	@echo "🔍 Checking if tables exist..."
+	@if ! ./setup/check_tables.sh >/dev/null 2>&1; then \
+		echo "📋 Creating tables..."; \
+		./setup/create_tables.sh; \
+	else \
+		echo "✅ Tables already exist"; \
+	fi
 
 .PHONY: dynamodb-start-inmemory
 dynamodb-start-inmemory: ## Start DynamoDB Local in-memory
 	@echo "🚀 Starting DynamoDB Local in-memory"
 	@./setup/start_dynamodb_local.sh start --mode inmemory
+	@./setup/create_tables.sh
 
 .PHONY: dynamodb-stop
 dynamodb-stop: ## Stop DynamoDB Local
@@ -55,12 +63,6 @@ dynamodb-stop: ## Stop DynamoDB Local
 dynamodb-status: ## Check DynamoDB Local status
 	@./setup/start_dynamodb_local.sh status
 
-.PHONY: dynamodb-setup
-dynamodb-setup: ## Start DynamoDB Local with persistent storage and create tables
-	@echo "🚀 Setting up DynamoDB Local with tables"
-	@./setup/start_dynamodb_local.sh start --mode persistent
-	@./setup/create_tables.sh
-	@echo "✅ DynamoDB Local is ready with tables created"
 
 .PHONY: dynamodb-reset
 dynamodb-reset: ## Reset DynamoDB Local (delete data, restart, create tables)
@@ -74,8 +76,8 @@ dynamodb-reset: ## Reset DynamoDB Local (delete data, restart, create tables)
 .PHONY: run
 run: ## Run the FastAPI application with auto-reload
 	@echo "🚀 Starting API server with auto-reload"
-	@./setup/start_dynamodb_local.sh status || (echo "❌ DynamoDB Local is not running. Please run 'make dynamodb-setup' first." && exit 1)
-	@uv run uvicorn src.chatbot_backend.app:app --reload --host 0.0.0.0 --port 8080
+	@./setup/start_dynamodb_local.sh status || (echo "❌ DynamoDB Local is not running. Please run 'make dynamodb-start' first." && exit 1)
+	@uv run uvicorn src.chatbot_backend.local:app --reload --host 0.0.0.0 --port 8080
 
 .PHONY: build
 build: ## Generate requirements.txt and build the SAM application

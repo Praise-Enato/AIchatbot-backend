@@ -14,7 +14,7 @@ from chatbot_backend.models.common import SnakeOrAliasModel
 class User(SnakeOrAliasModel):
     """User model representing a user entity in the database."""
 
-    user_id: str = Field(alias="userId", min_length=1)
+    user_id: str = Field(alias="id", min_length=1)
     email: str = Field(alias="email", min_length=1)
     password_hash: str | None = Field(alias="passwordHash", default=None)
     source: Literal["email", "guest", "oauth"] = Field(alias="source")
