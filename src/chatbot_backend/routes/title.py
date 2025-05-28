@@ -11,7 +11,7 @@ from chatbot_backend.models.common import ErrorResponse, TextResponse
 from chatbot_backend.models.title import GenerateTitleRequest
 from chatbot_backend.prompts import GENERATE_TITLE_PROMPT
 from chatbot_backend.providers.factory import default_provider
-from chatbot_backend.providers.test import TEST_PROMPTS, test_provider
+from chatbot_backend.providers.test import is_test_prompt, test_provider
 
 # Configure logging
 logger = get_logger("title_route")
@@ -52,7 +52,7 @@ async def generate_title(request: GenerateTitleRequest) -> TextResponse:
 
     try:
         # Use test provider for test prompts, default provider otherwise
-        provider = test_provider if message_text in TEST_PROMPTS else default_provider
+        provider = test_provider if is_test_prompt(message_text) else default_provider
 
         # Call the get_response function with the system prompt and user message
         title = provider.get_response(system_message=GENERATE_TITLE_PROMPT, user_message=message_text)

@@ -98,7 +98,6 @@ async def stream_chat_chunks(chunks: AsyncGenerator[str | dict, None]) -> AsyncG
         async for chunk in chunks:
             # If the chunk is a dictionary, it contains usage information
             if isinstance(chunk, dict) and "usage" in chunk:
-                logger.info(f"Usage Chunk: {chunk}")
                 # Store the usage information for the final chunk
                 usage_info = chunk["usage"]
                 continue
@@ -114,7 +113,6 @@ async def stream_chat_chunks(chunks: AsyncGenerator[str | dict, None]) -> AsyncG
 
         # Send the finish message when complete with the new format
         # Include usage information if available
-        logger.info(f"Usage info: {usage_info}")
         if usage_info:
             step_finish_data = {"finishReason": "stop", "usage": usage_info, "isContinued": False}
             yield f"e:{json.dumps(step_finish_data)}\n".encode()

@@ -5,7 +5,26 @@ meta {
 }
 
 post {
-  url: http://localhost:8000/api/chats/1/responses
-  body: none
+  url: http://localhost:8080/api/chats/1/responses
+  body: json
   auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer secret_key
+  Accept: text/event-stream
+}
+
+body:json {
+  {
+        "userId": "test-user",
+        "messages": [
+          {
+            "role": "user",
+            "parts": [{"type": "text", "text": "Test prompt 1"}],
+            "id": "test-msg-1"
+          }
+        ]
+      }
 }

@@ -57,6 +57,12 @@ PROVIDER_NAME=openai
 
 # Required for DynamoDB Local development
 DYNAMODB_URL=http://localhost:8000
+
+# Optional: S3 bucket for data storage (include s3:// prefix)
+DATA_S3_BUCKET=s3://your-bucket-name/path
+
+# Optional: Set logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+LOG_LEVEL=DEBUG
 ```
 
 An `.env.example` file is provided as a template. These environment variables are loaded automatically when you run the application.
@@ -115,16 +121,79 @@ We use [Bruno](https://www.usebruno.com/) to test and document our API. You can 
 
 ### Building and Deploying
 
+Before deploying to AWS, you must set up the required secrets in AWS Systems Manager Parameter Store.
+
+#### 1. Set Up AWS Parameters (Required Before First Deployment)
+
+Create the required secure parameters in AWS Systems Manager:
+
+```bash
+# Set your API secret for authentication
+aws ssm put-parameter \
+  --name "/chatbot/api-secret" \
+  --value "your-secure-api-secret-here" \
+  --type "SecureString" \
+  --description "API secret for chatbot authentication"
+
+# Set your OpenAI API key
+aws ssm put-parameter \
+  --name "/chatbot/openai-api-key" \
+  --value "sk-your-openai-api-key-here" \
+  --type "SecureString" \
+  --description "OpenAI API key for chatbot responses"
+```
+
+**Important Notes:**
+
+- Replace `your-secure-api-secret-here` with a strong, unique secret
+- Replace `sk-your-openai-api-key-here` with your actual OpenAI API key
+- These parameters are encrypted at rest using AWS KMS
+- You only need to set these once per AWS account/region
+
+#### 2. Verify Parameters (Optional)
+
+```bash
+# List your parameters (values won't be shown)
+aws ssm describe-parameters --filters "Key=Name,Values=/chatbot/"
+
+# Test parameter access (will show decrypted value)
+aws ssm get-parameter --name "/chatbot/api-secret" --with-decryption
+```
+
+#### 3. Deploy the Application
+
 ```bash
 # Build the SAM application
 make build
 
-# Deploy to AWS (uses AWS credentials)
+# Deploy to AWS (uses AWS credentials and the parameters you created)
 make deploy
 
 # Deploy with guided setup (for first-time setup)
 make deploy-guided
 ```
+
+#### 4. Update Secrets (When Needed)
+
+To change secrets without redeploying:
+
+```bash
+# Update API secret
+aws ssm put-parameter \
+  --name "/chatbot/api-secret" \
+  --value "new-secret-value" \
+  --type "SecureString" \
+  --overwrite
+
+# Update OpenAI API key
+aws ssm put-parameter \
+  --name "/chatbot/openai-api-key" \
+  --value "sk-new-openai-key" \
+  --type "SecureString" \
+  --overwrite
+```
+
+The Lambda function will automatically use the new values without requiring a redeployment.
 
 ## Development Workflow
 
@@ -174,6 +243,105 @@ lsof -ti:8000 | xargs kill -9
 ```
 
 The integration tests use DynamoDB Local in-memory mode and will automatically connect to it using the `DYNAMODB_URL` environment variable from your `.env` file.
+
+### DynamoDB Workbench
+
+AWS provides DynamoDB Workbench, a GUI tool for examining and querying DynamoDB databases. This is useful for debugging and inspecting your local DynamoDB data.
+
+To use DynamoDB Workbench with your local DynamoDB:
+
+1. **Start DynamoDB Local first** - The database must be running before you can connect:
+
+   ```bash
+   make dynamodb-start  # For persistent storage
+   # or
+   make dynamodb-start-inmemory  # For temporary in-memory storage
+   ```
+
+2. **Download DynamoDB Workbench** from the [AWS documentation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/workbench.html)
+
+3. **Connect to Local DynamoDB**:
+
+   - Launch DynamoDB Workbench
+   - Click "Operation builder"
+   - Click "Add connection"
+   - Select "DynamoDB local"
+   - Click "Connect"
+
+4. **Use the Workbench** to:
+   - Browse table contents
+   - Run queries and scans
+   - Test access patterns
+   - Debug data issues
+
+Note: DynamoDB Workbench connects to the default local port (8000). Make sure no other services are using this port.
+
+## Data Management
+
+This project supports storing large datasets in AWS S3 that are excluded from Git. Data files should use explicit dates in filenames for versioning (e.g., `dataset_2024-01-15.json`).
+
+### Setup
+
+1. Add your S3 bucket to `.env`:
+
+   ```
+   DATA_S3_BUCKET=s3://your-bucket-name/path
+   ```
+
+2. Ensure you have AWS credentials configured with appropriate S3 permissions.
+
+### Data Commands
+
+```bash
+# Download data from S3 to local /data directory
+make data-down
+
+# Upload local data to S3
+make data-up
+
+# Preview what would be uploaded (dry run)
+make data-up-dry
+
+# Check local data directory sizes
+make data-size
+```
+
+**Important Notes:**
+
+- The `/data` directory is excluded from Git via `.gitignore`
+- `make data-down` uses the `--delete` flag to ensure local data matches S3 exactly
+- Always use explicit dates in filenames for version control
+- Consider S3 lifecycle policies for managing old data versions
+
+## Logging Configuration
+
+The application uses Python's standard logging module with configurable log levels:
+
+### Log Levels
+
+Set the `LOG_LEVEL` environment variable in your `.env` file:
+
+```
+LOG_LEVEL=DEBUG    # Show all logs (development)
+LOG_LEVEL=INFO     # Show info, warning, error logs (production default)
+LOG_LEVEL=WARNING  # Show only warnings and errors
+LOG_LEVEL=ERROR    # Show only errors
+```
+
+### Development vs Production
+
+- **Development**: Use `LOG_LEVEL=DEBUG` to see detailed debug information
+- **Production**: Use `LOG_LEVEL=INFO` or higher to reduce log noise
+- **AWS Lambda**: Set log levels via environment variables in your SAM template
+
+### Structured Logging
+
+The logger automatically appends extra context as JSON when provided:
+
+```python
+logger.info("Chat created", extra={"chat_id": chat_id, "user_id": user_id})
+# Output: 2024-01-15 10:30:00 - INFO - chat_route.Chat created - {"chat_id": "123", "user_id": "user456"}
+```
 
 ## Working with Dependencies
 

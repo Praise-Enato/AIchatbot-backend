@@ -3,6 +3,7 @@ Tests for test prompt functionality.
 """
 
 import json
+import os
 import time
 
 import pytest
@@ -20,7 +21,8 @@ def client():
 @pytest.fixture
 def auth_headers():
     """Get auth headers for testing."""
-    return {"Authorization": "Bearer secret_key"}
+    api_secret = os.environ.get("API_SECRET", "secret_key")
+    return {"Authorization": f"Bearer {api_secret}"}
 
 
 def test_generate_title_with_test_prompt_1(client, auth_headers):
@@ -55,7 +57,7 @@ def test_chat_streaming_with_test_prompt_1(client, auth_headers):
     assert lines[0].startswith('f:{"messageId":"')
 
     # Check we get the expected tokens
-    expected_tokens = ["Test ", "Response ", "1"]
+    expected_tokens = ["Test ", "response ", "1"]
     token_lines = []
 
     for line in lines[1:]:
@@ -69,4 +71,4 @@ def test_chat_streaming_with_test_prompt_1(client, auth_headers):
 
     # Check timing - should take at least 200ms for 3 tokens with 100ms delays
     elapsed = time.time() - start_time
-    assert elapsed >= 0.2  # Allow some margin for processing
+    assert elapsed >= 0.5  # Allow some margin for processing

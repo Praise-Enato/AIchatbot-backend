@@ -42,7 +42,7 @@ from chatbot_backend.models.chat import (
 from chatbot_backend.models.common import ErrorResponse
 from chatbot_backend.prompts import CHAT_SYSTEM_PROMPT
 from chatbot_backend.providers.factory import default_provider
-from chatbot_backend.providers.test import TEST_PROMPTS, test_provider
+from chatbot_backend.providers.test import is_test_prompt, test_provider
 from chatbot_backend.utils import stream_chat_chunks
 
 # Configure logging
@@ -72,14 +72,14 @@ async def handle_chat_data(chat_id: str, request: ChatRequest, req: Request) -> 
     Returns:
         A streaming response with chat completions.
     """
-    logger.info(f"Starting chat response for chat_id: {chat_id}")
+    logger.debug(f"Starting chat response for chat_id: {chat_id}")
     try:
         # Generate message ID immediately before any provider calls
         message_id = str(uuid.uuid4())
 
         # Check if the last message is a test prompt
         last_message_text = request.messages[-1].parts[0].text if request.messages else None
-        provider = test_provider if (last_message_text and last_message_text in TEST_PROMPTS) else default_provider
+        provider = test_provider if (last_message_text and is_test_prompt(last_message_text)) else default_provider
 
         # Format messages for the provider
         provider_messages = provider.format_messages_from_request(request)
@@ -94,19 +94,19 @@ async def handle_chat_data(chat_id: str, request: ChatRequest, req: Request) -> 
             async def generate_provider_chunks() -> AsyncGenerator[str | dict, None]:
                 try:
                     chunk_count = 0
-                    logger.info("Starting generation loop")
+                    logger.debug("Starting generation loop")
                     for chunk in provider.stream_chat_response(provider_messages, system_message=CHAT_SYSTEM_PROMPT):
                         # check if client is disconnected
                         if await req.is_disconnected():
-                            logger.info(f"Client disconnected after {chunk_count} chunks")
+                            logger.debug(f"Client disconnected after {chunk_count} chunks")
                             break
                         # Only count text chunks, not usage information
                         if isinstance(chunk, str):
                             chunk_count += 1
                             if chunk_count % 10 == 0:  # Log every 10 chunks
-                                logger.info(f"Sent {chunk_count} chunks")
+                                logger.debug(f"Sent {chunk_count} chunks")
                         yield chunk
-                    logger.info(f"Generation complete - yielded {chunk_count} text chunks")
+                    logger.debug(f"Generation complete - yielded {chunk_count} text chunks")
                 except Exception as e:
                     logger.error(f"Error generating response: {e}")
                     yield f"Error: {e}"
@@ -151,6 +151,7 @@ async def handle_chat_data(chat_id: str, request: ChatRequest, req: Request) -> 
 @router.get("/api/chats/{chat_id}", response_model=Chat, response_model_exclude_none=True)
 async def get_chat(chat_id: str) -> Chat:
     """Get chat by ID."""
+    logger.debug(f"Getting chat by ID: {chat_id}")
     try:
         chat = get_chat_by_id(chat_id)
     except Exception as err:
@@ -164,6 +165,7 @@ async def get_chat(chat_id: str) -> Chat:
 @router.post("/api/chats", response_model=Chat, status_code=status.HTTP_201_CREATED, response_model_exclude_none=True)
 async def create_chat(request: CreateChatRequest) -> Chat:
     """Create a new chat."""
+    logger.debug(f"Creating chat: {request}")
     try:
         return save_chat(request.chat_id, request.user_id, request.title, request.visibility)
     except ValidationError as err:

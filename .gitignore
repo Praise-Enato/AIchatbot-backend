@@ -105,3 +105,6 @@ node_modules/
 # DynamoDB Local
 /dynamodb-local/
 dynamodb-local-metadata.json
+
+# data
+data/

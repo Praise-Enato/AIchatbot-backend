@@ -54,16 +54,25 @@ def get_logger(name: str | None = None) -> logging.Logger:
     Get a logger that on local runs will print:
       timestamp - name - level - message - {"your":"extras"}
     In AWS Lambda (where AWS_..._FUNCTION_NAME is set) it leaves logging alone.
+
+    Log level is controlled by the LOG_LEVEL environment variable.
     """
     logger = logging.getLogger(name)
-    logger.setLevel(logging.INFO)
+
+    # Set log level from environment variable
+    log_level = os.getenv("LOG_LEVEL", "INFO").upper()
+    try:
+        level = getattr(logging, log_level)
+    except AttributeError:
+        level = logging.INFO
+    logger.setLevel(level)
 
     # If we're not in Lambda, install a console handler once
     if "AWS_LAMBDA_FUNCTION_NAME" not in os.environ and not any(
         isinstance(h, logging.StreamHandler) for h in logger.handlers
     ):
         console = logging.StreamHandler()
-        console.setLevel(logging.INFO)
+        console.setLevel(level)
         fmt = "%(asctime)s - %(levelname)s - %(name)s.%(message)s"
         console.setFormatter(ExtraFormatter(fmt))
         logger.addHandler(console)
