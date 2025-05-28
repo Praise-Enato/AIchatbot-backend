@@ -1,0 +1,19 @@
+meta {
+  name: Test title
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:8080/api/titles/generate
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {\"message\":{\"text\":\"Test prompt 1\",\"type\":\"text\"}}
+}

@@ -3,7 +3,6 @@ Utility functions for the chatbot backend.
 """
 
 import json
-import uuid
 from collections.abc import AsyncGenerator
 
 from fastapi import Request, status
@@ -84,7 +83,7 @@ async def stream_chat_chunks(chunks: AsyncGenerator[str | dict, None]) -> AsyncG
 
     Yields:
         Formatted chat chunks with the format:
-        - f:{"messageId":"<uuid>"}\n  for first chunk with message ID
+        - f:{"messageId":"<uuid>"}\n  for first chunk with message ID (already sent)
         - 0:[json-encoded-text]\n  for normal text chunks
         - 3:[json-encoded-error-message]\n  for error message chunks
         - e:{"finishReason":"stop","usage":{"promptTokens":X,"completionTokens":Y},"isContinued":false}\n
@@ -92,10 +91,6 @@ async def stream_chat_chunks(chunks: AsyncGenerator[str | dict, None]) -> AsyncG
         - d:{"finishReason":"stop","usage":{"promptTokens":X,"completionTokens":Y}}\n  for finish chunk
     """
     try:
-        # Send the first chunk with a message ID
-        message_id = str(uuid.uuid4())
-        yield f'f:{{"messageId":"{message_id}"}}\n'.encode()
-
         # Store usage information if found
         usage_info = None
 

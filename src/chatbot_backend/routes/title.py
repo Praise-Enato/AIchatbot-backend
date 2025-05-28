@@ -11,6 +11,7 @@ from chatbot_backend.models.common import ErrorResponse, TextResponse
 from chatbot_backend.models.title import GenerateTitleRequest
 from chatbot_backend.prompts import GENERATE_TITLE_PROMPT
 from chatbot_backend.providers.factory import default_provider
+from chatbot_backend.providers.test import TEST_PROMPTS, test_provider
 
 # Configure logging
 logger = get_logger("title_route")
@@ -42,16 +43,19 @@ async def generate_title(request: GenerateTitleRequest) -> TextResponse:
     Returns:
         A text response containing the generated title.
     """
-    # Extract the message text using our helper method
-    message_text = request.get_message_text()
+    # Extract the message text
+    message_text = request.text
 
     # Check for empty message before the try block
     if not message_text.strip():
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Message cannot be empty")
 
     try:
+        # Use test provider for test prompts, default provider otherwise
+        provider = test_provider if message_text in TEST_PROMPTS else default_provider
+
         # Call the get_response function with the system prompt and user message
-        title = default_provider.get_response(system_message=GENERATE_TITLE_PROMPT, user_message=message_text)
+        title = provider.get_response(system_message=GENERATE_TITLE_PROMPT, user_message=message_text)
 
         # Log the generated title
         logger.info(

@@ -42,6 +42,7 @@ from chatbot_backend.models.chat import (
 from chatbot_backend.models.common import ErrorResponse
 from chatbot_backend.prompts import CHAT_SYSTEM_PROMPT
 from chatbot_backend.providers.factory import default_provider
+from chatbot_backend.providers.test import TEST_PROMPTS, test_provider
 from chatbot_backend.utils import stream_chat_chunks
 
 # Configure logging
@@ -76,8 +77,12 @@ async def handle_chat_data(chat_id: str, request: ChatRequest, req: Request) -> 
         # Generate message ID immediately before any provider calls
         message_id = str(uuid.uuid4())
 
+        # Check if the last message is a test prompt
+        last_message_text = request.messages[-1].parts[0].text if request.messages else None
+        provider = test_provider if (last_message_text and last_message_text in TEST_PROMPTS) else default_provider
+
         # Format messages for the provider
-        provider_messages = default_provider.format_messages_from_request(request)
+        provider_messages = provider.format_messages_from_request(request)
 
         # Create generator for immediate first chunk
         async def immediate_first_chunk() -> AsyncGenerator[bytes, None]:
@@ -90,9 +95,7 @@ async def handle_chat_data(chat_id: str, request: ChatRequest, req: Request) -> 
                 try:
                     chunk_count = 0
                     logger.info("Starting generation loop")
-                    for chunk in default_provider.stream_chat_response(
-                        provider_messages, system_message=CHAT_SYSTEM_PROMPT
-                    ):
+                    for chunk in provider.stream_chat_response(provider_messages, system_message=CHAT_SYSTEM_PROMPT):
                         # check if client is disconnected
                         if await req.is_disconnected():
                             logger.info(f"Client disconnected after {chunk_count} chunks")
@@ -108,13 +111,8 @@ async def handle_chat_data(chat_id: str, request: ChatRequest, req: Request) -> 
                     logger.error(f"Error generating response: {e}")
                     yield f"Error: {e}"
 
-            # Stream the provider chunks through stream_chat_chunks (but skip the first chunk since we already sent it)
-            is_first = True
+            # Stream the provider chunks through stream_chat_chunks
             async for chunk in stream_chat_chunks(generate_provider_chunks()):
-                if is_first:
-                    # Skip the first chunk from stream_chat_chunks since we already sent the message ID
-                    is_first = False
-                    continue
                 yield chunk
 
         # Combine both generators

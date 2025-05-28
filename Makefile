@@ -30,11 +30,17 @@ test: ## Test the code with pytest (fast tests only)
 .PHONY: test-all
 test-all: ## Run all tests with DynamoDB Local
 	@echo "🚀 Running all tests with DynamoDB Local"
-	@./setup/start_dynamodb_local.sh status > /dev/null 2>&1 && (echo "❌ DynamoDB Local is already running. Please run 'make dynamodb-stop' first." && exit 1) || true
-	@./setup/start_dynamodb_local.sh start --mode inmemory
-	@./setup/create_tables.sh
-	@DYNAMODB_URL=http://localhost:8000 uv run python -m pytest tests/ || (./setup/start_dynamodb_local.sh stop && exit 1)
-	@./setup/start_dynamodb_local.sh stop
+	@STARTED_DYNAMODB=false; \
+	if ! ./setup/start_dynamodb_local.sh status > /dev/null 2>&1; then \
+		echo "🚀 Starting DynamoDB Local in-memory for tests"; \
+		./setup/start_dynamodb_local.sh start --mode inmemory; \
+		./setup/create_tables.sh; \
+		STARTED_DYNAMODB=true; \
+	else \
+		echo "✅ DynamoDB Local is already running"; \
+	fi; \
+	uv run python -m pytest tests/ || ($$STARTED_DYNAMODB && ./setup/start_dynamodb_local.sh stop; exit 1); \
+	$$STARTED_DYNAMODB && ./setup/start_dynamodb_local.sh stop
 
 .PHONY: dynamodb-start
 dynamodb-start: ## Start DynamoDB Local with persistent storage and create tables if needed
@@ -78,6 +84,22 @@ run: ## Run the FastAPI application with auto-reload
 	@echo "🚀 Starting API server with auto-reload"
 	@./setup/start_dynamodb_local.sh status || (echo "❌ DynamoDB Local is not running. Please run 'make dynamodb-start' first." && exit 1)
 	@uv run uvicorn src.chatbot_backend.local:app --reload --host 0.0.0.0 --port 8080
+
+.PHONY: dev
+dev: ## Start DynamoDB in-memory and run the server for frontend testing
+	@echo "🚀 Starting development environment for frontend testing"
+	@STARTED_DYNAMODB=false; \
+	if ! ./setup/start_dynamodb_local.sh status > /dev/null 2>&1; then \
+		echo "🚀 Starting DynamoDB Local in-memory for development"; \
+		./setup/start_dynamodb_local.sh start --mode inmemory; \
+		./setup/create_tables.sh; \
+		STARTED_DYNAMODB=true; \
+	else \
+		echo "✅ DynamoDB Local is already running"; \
+	fi; \
+	echo "🚀 Starting API server"; \
+	uvicorn src.chatbot_backend.local:app --reload --host 0.0.0.0 --port 8080 || ($$STARTED_DYNAMODB && ./setup/start_dynamodb_local.sh stop; exit 1); \
+	$$STARTED_DYNAMODB && echo "🛑 Stopping DynamoDB Local that was started for dev" && ./setup/start_dynamodb_local.sh stop
 
 .PHONY: build
 build: ## Generate requirements.txt and build the SAM application

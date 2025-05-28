@@ -10,7 +10,6 @@ from mangum import Mangum
 
 from chatbot_backend.custom_logger import get_logger
 from chatbot_backend.middleware.auth import auth_middleware
-from chatbot_backend.middleware.logging import log_requests
 from chatbot_backend.routes import chat, health, title, user
 
 # Configure logging
@@ -25,7 +24,7 @@ app = FastAPI(
 
 # Register middleware
 app.middleware("http")(auth_middleware)
-app.middleware("http")(log_requests)
+# app.middleware("http")(log_requests)
 
 # Include routers
 app.include_router(chat.router)

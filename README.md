@@ -76,6 +76,22 @@ make run
 curl http://localhost:8080/hello
 ```
 
+For frontend testing and quick development:
+
+```bash
+# Start DynamoDB in-memory and run the server in one command
+make dev
+
+# This automatically:
+# - Starts DynamoDB Local in in-memory mode
+# - Creates required database tables
+# - Starts the FastAPI server on 0.0.0.0:8080
+# - Perfect for running frontend tests or local development
+
+# Stop when done
+make dynamodb-stop
+```
+
 To manage DynamoDB Local:
 
 ```bash
@@ -191,6 +207,7 @@ make help
 | `make test`          | Run the test suite (excludes slow integration tests)               |
 | `make test-all`      | Run all tests including slow integration tests with DynamoDB Local |
 | `make run`           | Run the FastAPI application locally with auto-reload               |
+| `make dev`           | Start DynamoDB in-memory and run server (ideal for frontend tests) |
 | `make build`         | Generate requirements.txt and build the SAM application            |
 | `make deploy`        | Deploy the application to AWS                                      |
 | `make deploy-guided` | Deploy with interactive prompts (for first deployment)             |
