@@ -166,7 +166,7 @@ aws ssm get-parameter --name "/chatbot/api-secret" --with-decryption
 # Build the SAM application
 make build
 
-# Deploy to AWS (uses AWS credentials and the parameters you created)
+# Deploy to AWS (uses AWS credentials and SSM parameters)
 make deploy
 
 # Deploy with guided setup (for first-time setup)

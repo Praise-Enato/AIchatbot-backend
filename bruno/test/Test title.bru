@@ -12,8 +12,9 @@ post {
 
 headers {
   Content-Type: application/json
+  Authorization: Bearer secret_key
 }
 
 body:json {
-  {\"message\":{\"text\":\"Test prompt 1\",\"type\":\"text\"}}
+  {"text":"Test prompt 1"}
 }

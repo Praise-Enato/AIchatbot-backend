@@ -7,18 +7,6 @@ Description: >
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 
-Parameters:
-  ApiSecretParameter:
-    Type: AWS::SSM::Parameter::Value<String>
-    Default: /chatbot/api-secret
-    NoEcho: true
-    Description: SSM Parameter path for API secret
-
-  OpenAIKeyParameter:
-    Type: AWS::SSM::Parameter::Value<String>
-    Default: /chatbot/openai-api-key
-    NoEcho: true
-    Description: SSM Parameter path for OpenAI API key
 Globals:
   Function:
     Timeout: 3
@@ -49,16 +37,14 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName:
               Ref: ChatsTable
+        - SSMParameterReadPolicy:
+            ParameterName: chatbot/*
       Environment:
         Variables:
           USERS_TABLE:
             Ref: UsersTable
           CHATS_TABLE:
             Ref: ChatsTable
-          API_SECRET:
-            Ref: ApiSecretParameter
-          OPENAI_API_KEY:
-            Ref: OpenAIKeyParameter
           PROVIDER_NAME: openai
           LOG_LEVEL: INFO
 
@@ -134,9 +120,9 @@ Resources:
               - user_id
               - stripe_customer_id
               - subscription_status
-    PointInTimeRecoverySpecification:
-      PointInTimeRecoveryEnabled: true
-      RecoveryPeriodInDays: 35
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+        RecoveryPeriodInDays: 35
 
   ChatsTable:
     Type: AWS::DynamoDB::Table
@@ -194,9 +180,9 @@ Resources:
             NonKeyAttributes:
               - message_id
               - role
-    PointInTimeRecoverySpecification:
-      PointInTimeRecoveryEnabled: true
-      RecoveryPeriodInDays: 35
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+        RecoveryPeriodInDays: 35
 
 Outputs:
   ChatbotBackendFunctionUrl:

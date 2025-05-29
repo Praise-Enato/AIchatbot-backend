@@ -5,6 +5,39 @@ This module initializes the FastAPI application, configures middleware,
 and includes all routes.
 """
 
+import asyncio
+import os
+
+import boto3
+from dotenv import load_dotenv
+
+# Initialize secrets before any other imports that might use environment variables
+if "AWS_LAMBDA_FUNCTION_NAME" in os.environ:
+    # Running in Lambda - load secrets from SSM Parameter Store
+    async def load_secrets_from_ssm() -> None:
+        """Load secrets from SSM Parameter Store in parallel for faster cold starts."""
+        ssm = boto3.client("ssm")
+
+        async def get_parameter(name: str) -> str:
+            response = await asyncio.to_thread(ssm.get_parameter, Name=name, WithDecryption=True)
+            return response["Parameter"]["Value"]
+
+        # Load both secrets in parallel
+        api_secret, openai_key = await asyncio.gather(
+            get_parameter("/chatbot/api-secret"), get_parameter("/chatbot/openai-api-key")
+        )
+
+        # Set environment variables
+        os.environ["API_SECRET"] = api_secret
+        os.environ["OPENAI_API_KEY"] = openai_key
+
+    # Execute the async function
+    asyncio.run(load_secrets_from_ssm())
+else:
+    # Running locally - load from .env file
+    load_dotenv()
+
+# Now import everything else - environment variables are ready
 from fastapi import FastAPI
 from mangum import Mangum
 

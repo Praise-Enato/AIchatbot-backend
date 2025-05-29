@@ -50,7 +50,7 @@ test-all: ## Run all tests with DynamoDB Local
 run: ## Run the FastAPI application with auto-reload
 	@echo "🚀 Starting API server with auto-reload"
 	@./setup/start_dynamodb_local.sh status || (echo "❌ DynamoDB Local is not running. Please run 'make dynamodb-start' first." && exit 1)
-	@uv run uvicorn src.chatbot_backend.local:app --reload --host 0.0.0.0 --port 8080
+	@uv run uvicorn src.chatbot_backend.app:app --reload --host 0.0.0.0 --port 8080
 
 .PHONY: dev
 dev: ## Start DynamoDB in-memory and run the server for frontend testing
@@ -65,7 +65,7 @@ dev: ## Start DynamoDB in-memory and run the server for frontend testing
 		echo "✅ DynamoDB Local is already running"; \
 	fi;
 	@echo "🚀 Starting API server";
-	@uv run uvicorn src.chatbot_backend.local:app --reload --host 0.0.0.0 --port 8080 || ($$STARTED_DYNAMODB && ./setup/start_dynamodb_local.sh stop; exit 1); \
+	@uv run uvicorn src.chatbot_backend.app:app --reload --host 0.0.0.0 --port 8080 || ($$STARTED_DYNAMODB && ./setup/start_dynamodb_local.sh stop; exit 1); \
 	$$STARTED_DYNAMODB && echo "🛑 Stopping DynamoDB Local that was started for dev" && ./setup/start_dynamodb_local.sh stop
 
 .PHONY: dynamodb-start
