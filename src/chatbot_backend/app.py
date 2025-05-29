@@ -5,7 +5,6 @@ This module initializes the FastAPI application, configures middleware,
 and includes all routes.
 """
 
-import asyncio
 import os
 
 import boto3
@@ -14,25 +13,23 @@ from dotenv import load_dotenv
 # Initialize secrets before any other imports that might use environment variables
 if "AWS_LAMBDA_FUNCTION_NAME" in os.environ:
     # Running in Lambda - load secrets from SSM Parameter Store
-    async def load_secrets_from_ssm() -> None:
-        """Load secrets from SSM Parameter Store in parallel for faster cold starts."""
-        ssm = boto3.client("ssm")
+    import concurrent.futures
 
-        async def get_parameter(name: str) -> str:
-            response = await asyncio.to_thread(ssm.get_parameter, Name=name, WithDecryption=True)
-            return response["Parameter"]["Value"]
+    ssm = boto3.client("ssm")
 
-        # Load both secrets in parallel
-        api_secret, openai_key = await asyncio.gather(
-            get_parameter("/chatbot/api-secret"), get_parameter("/chatbot/openai-api-key")
-        )
+    def get_parameter(name: str) -> str:
+        """Get a parameter from SSM Parameter Store."""
+        response = ssm.get_parameter(Name=name, WithDecryption=True)
+        return response["Parameter"]["Value"]
 
-        # Set environment variables
-        os.environ["API_SECRET"] = api_secret
-        os.environ["OPENAI_API_KEY"] = openai_key
+    # Load both secrets in parallel using ThreadPoolExecutor
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+        future_api_secret = executor.submit(get_parameter, "/chatbot/api-secret")
+        future_openai_key = executor.submit(get_parameter, "/chatbot/openai-api-key")
 
-    # Execute the async function
-    asyncio.run(load_secrets_from_ssm())
+        # Get results
+        os.environ["API_SECRET"] = future_api_secret.result()
+        os.environ["OPENAI_API_KEY"] = future_openai_key.result()
 else:
     # Running locally - load from .env file
     load_dotenv()

@@ -106,5 +106,8 @@ node_modules/
 /dynamodb-local/
 dynamodb-local-metadata.json
 
+# Bruno
+/bruno/prod/
+
 # data
 data/
