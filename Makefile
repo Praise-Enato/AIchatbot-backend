@@ -114,7 +114,7 @@ data-down: ## Download data from S3
 		exit 1; \
 	fi
 	@echo "🚀 Downloading data from $(DATA_S3_BUCKET)"
-	@aws s3 sync $(DATA_S3_BUCKET) data --delete
+	@aws s3 sync $(DATA_S3_BUCKET) data
 	@echo "✅ Data sync complete: $$(du -sh data | cut -f1)"
 
 .PHONY: data-up
