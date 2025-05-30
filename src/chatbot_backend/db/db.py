@@ -15,7 +15,12 @@ logger = get_logger("db")
 # Use local DynamoDB when DYNAMODB_URL is set
 dynamodb_url = os.environ.get("DYNAMODB_URL")
 logger.info(f"DynamoDB URL: {dynamodb_url}")
-dynamodb = boto3.resource("dynamodb", endpoint_url=dynamodb_url) if dynamodb_url else boto3.resource("dynamodb")
+if dynamodb_url:
+    # For local DynamoDB, we need to specify a region (any region works)
+    dynamodb = boto3.resource("dynamodb", endpoint_url=dynamodb_url, region_name="us-east-1")
+else:
+    # For AWS DynamoDB, use default region from environment
+    dynamodb = boto3.resource("dynamodb")
 
 # Get table names from environment variables with defaults
 users_table = dynamodb.Table(os.environ.get("USERS_TABLE", "Users"))

@@ -36,7 +36,6 @@ else:
 
 # Now import everything else - environment variables are ready
 from fastapi import FastAPI
-from mangum import Mangum
 
 from chatbot_backend.custom_logger import get_logger
 from chatbot_backend.middleware.auth import auth_middleware
@@ -62,5 +61,7 @@ app.include_router(title.router)
 app.include_router(user.router)
 app.include_router(health.router)
 
-# AWS Lambda handler - integrates FastAPI with AWS Lambda
-handler = Mangum(app)
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(app, host="0.0.0.0", port=8080)

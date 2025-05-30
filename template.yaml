@@ -9,7 +9,7 @@ Description: >
 
 Globals:
   Function:
-    Timeout: 3
+    Timeout: 120 # 120 seconds for LLM streaming responses
     MemorySize: 256
 
     # You can add LoggingConfig parameters such as the Logformat, Log Group, and SystemLogLevel or ApplicationLogLevel. Learn more here https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html#sam-function-loggingconfig.
@@ -19,16 +19,16 @@ Resources:
   ChatbotBackendFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      CodeUri: src/
-      Handler: chatbot_backend.app.handler
-      Runtime: python3.12
+      PackageType: Image
       Architectures:
         - x86_64
-      PackageType: Zip
       FunctionUrlConfig:
         AuthType: NONE
+        InvokeMode: RESPONSE_STREAM
         Cors:
           AllowOrigins:
+            - "*"
+          AllowMethods:
             - "*"
       Policies:
         - DynamoDBCrudPolicy:
@@ -47,6 +47,11 @@ Resources:
             Ref: ChatsTable
           PROVIDER_NAME: openai
           LOG_LEVEL: INFO
+          AWS_LWA_INVOKE_MODE: RESPONSE_STREAM
+    Metadata:
+      Dockerfile: Dockerfile
+      DockerContext: .
+      DockerTag: v1
 
   ApplicationResourceGroup:
     Type: AWS::ResourceGroups::Group

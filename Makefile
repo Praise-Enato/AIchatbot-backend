@@ -95,7 +95,6 @@ dynamodb-stop: ## Stop DynamoDB Local
 dynamodb-status: ## Check DynamoDB Local status
 	@./setup/start_dynamodb_local.sh status
 
-
 .PHONY: dynamodb-reset
 dynamodb-reset: ## Reset DynamoDB Local (delete data, restart, create tables)
 	@echo "🔄 Resetting DynamoDB Local"
@@ -143,12 +142,38 @@ data-size: ## Check data directory size
 		echo "❌ No data directory found"; \
 	fi
 
+.PHONY: docker-run
+docker-run: ## Run the application in Docker container locally
+	@echo "🚀 Running Docker container with DynamoDB Local"
+	@STARTED_DYNAMODB=false; \
+	if ! ./setup/start_dynamodb_local.sh status > /dev/null 2>&1; then \
+		echo "🚀 Starting DynamoDB Local in-memory for Docker testing"; \
+		./setup/start_dynamodb_local.sh start --mode inmemory; \
+		./setup/create_tables.sh; \
+		STARTED_DYNAMODB=true; \
+	else \
+		echo "✅ DynamoDB Local is already running"; \
+	fi;
+	@echo "🚀 Building Docker image"
+	@docker build -t chatbot-backend:local .
+	@echo "🚀 Running Docker container"
+	@if [ "$$(uname)" = "Linux" ] && [ ! -f /.dockerenv ]; then \
+		echo "🐧 Detected Linux - using host network mode"; \
+		docker run --rm --network host --env-file .env chatbot-backend:local || ($$STARTED_DYNAMODB && ./setup/start_dynamodb_local.sh stop; exit 1); \
+	else \
+		echo "🍎 Detected Mac/Windows/WSL - using host.docker.internal"; \
+		docker run --rm -p 8080:8080 --env-file .env -e DYNAMODB_URL=http://host.docker.internal:8000 chatbot-backend:local || ($$STARTED_DYNAMODB && ./setup/start_dynamodb_local.sh stop; exit 1); \
+	fi; \
+	$$STARTED_DYNAMODB && echo "🛑 Stopping DynamoDB Local that was started for Docker testing" && ./setup/start_dynamodb_local.sh stop
+
 .PHONY: build
 build: ## Generate requirements.txt and build the SAM application
 	@echo "🚀 Generating requirements.txt from pyproject.toml"
-	@uv pip compile pyproject.toml -o src/requirements.txt
-	@echo "🚀 Building SAM application"
-	@sam build
+	@uv pip compile pyproject.toml -o requirements.txt
+	@echo "🔐 Authenticating with AWS ECR Public Registry"
+	@aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
+	@echo "🚀 Building SAM application (container mode)"
+	@sam build --use-container
 
 .PHONY: deploy-guided
 deploy-guided: build ## Deploy the SAM application to AWS with guided setup
@@ -167,6 +192,13 @@ logs: ## Get the logs of the SAM application
 
 .PHONY: delete
 delete: ## Delete the CloudFormation stack
+	@echo "⚠️  WARNING: This will delete the CloudFormation stack 'chatbot-backend' and all its resources"
+	@read -p "Are you sure you want to continue? [y/N] " -n 1 -r; \
+	echo; \
+	if [[ ! $$REPLY =~ ^[Yy]$$ ]]; then \
+		echo "❌ Deletion cancelled"; \
+		exit 1; \
+	fi
 	@echo "🧹 Deleting stack"
 	@sam delete --stack-name chatbot-backend --no-prompts
 
