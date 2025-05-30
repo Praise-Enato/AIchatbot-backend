@@ -8,11 +8,11 @@ retrieval, and OAuth user management.
 from fastapi import APIRouter, HTTPException, Query, status
 from pydantic import ValidationError
 
-from chatbot_backend.custom_logger import get_logger
-from chatbot_backend.db.chat import get_chats_by_user_id, get_message_count_by_user_id
-from chatbot_backend.db.user import create_guest_user, create_user, get_or_create_user_from_oauth, get_user
-from chatbot_backend.models.chat import ChatListResponse, MessageCountResponse
-from chatbot_backend.models.user import (
+from app.custom_logger import get_logger
+from app.db.chat import get_chats_by_user_id, get_message_count_by_user_id
+from app.db.user import create_guest_user, create_user, get_or_create_user_from_oauth, get_user
+from app.models.chat import ChatListResponse, MessageCountResponse
+from app.models.user import (
     CreateEmailUserRequest,
     CreateOAuthUserRequest,
     User,

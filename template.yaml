@@ -7,6 +7,12 @@ Description: >
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 
+Parameters:
+  ProjectName:
+    Type: String
+    Default: chatbot-backend
+    Description: Name of the project (used for stack naming)
+
 Globals:
   Function:
     Timeout: 120 # 120 seconds for LLM streaming responses

@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 
-from chatbot_backend.app import app
+from app.main import app
 
 client = TestClient(app)
 

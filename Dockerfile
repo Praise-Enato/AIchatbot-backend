@@ -11,4 +11,4 @@ RUN pip install -r requirements.txt
 COPY src/ .
 
 # Start the FastAPI app (Lambda Web Adapter will intercept)
-CMD ["python", "-m", "uvicorn", "chatbot_backend.app:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]

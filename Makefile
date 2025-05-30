@@ -1,3 +1,6 @@
+# Project configuration
+PROJECT_NAME := chatbot-backend
+
 # Load environment variables from .env file
 include .env
 export
@@ -50,7 +53,7 @@ test-all: ## Run all tests with DynamoDB Local
 run: ## Run the FastAPI application with auto-reload
 	@echo "🚀 Starting API server with auto-reload"
 	@./setup/start_dynamodb_local.sh status || (echo "❌ DynamoDB Local is not running. Please run 'make dynamodb-start' first." && exit 1)
-	@uv run uvicorn src.chatbot_backend.app:app --reload --host 0.0.0.0 --port 8080
+	@uv run uvicorn src.app.main:app --reload --host 0.0.0.0 --port 8080
 
 .PHONY: dev
 dev: ## Start DynamoDB in-memory and run the server for frontend testing
@@ -65,7 +68,7 @@ dev: ## Start DynamoDB in-memory and run the server for frontend testing
 		echo "✅ DynamoDB Local is already running"; \
 	fi;
 	@echo "🚀 Starting API server";
-	@uv run uvicorn src.chatbot_backend.app:app --reload --host 0.0.0.0 --port 8080 || ($$STARTED_DYNAMODB && ./setup/start_dynamodb_local.sh stop; exit 1); \
+	@uv run uvicorn src.app.main:app --reload --host 0.0.0.0 --port 8080 || ($$STARTED_DYNAMODB && ./setup/start_dynamodb_local.sh stop; exit 1); \
 	$$STARTED_DYNAMODB && echo "🛑 Stopping DynamoDB Local that was started for dev" && ./setup/start_dynamodb_local.sh stop
 
 .PHONY: dynamodb-start
@@ -155,7 +158,7 @@ docker-run: ## Run the application in Docker container locally
 		echo "✅ DynamoDB Local is already running"; \
 	fi;
 	@echo "🚀 Building Docker image"
-	@docker build -t chatbot-backend:local .
+	@docker build -t $(PROJECT_NAME):local .
 	@echo "🚀 Running Docker container"
 	@if [ "$$(uname)" = "Linux" ] && [ ! -f /.dockerenv ]; then \
 		echo "🐧 Detected Linux - using host network mode"; \
@@ -188,11 +191,11 @@ deploy: build ## Deploy the SAM application to AWS
 .PHONY: logs
 logs: ## Get the logs of the SAM application
 	@echo "🚀 Getting logs"
-	@sam logs --stack-name chatbot-backend --tail
+	@sam logs --stack-name $(PROJECT_NAME) --tail
 
 .PHONY: delete
 delete: ## Delete the CloudFormation stack
-	@echo "⚠️  WARNING: This will delete the CloudFormation stack 'chatbot-backend' and all its resources"
+	@echo "⚠️  WARNING: This will delete the CloudFormation stack '$(PROJECT_NAME)' and all its resources"
 	@read -p "Are you sure you want to continue? [y/N] " -n 1 -r; \
 	echo; \
 	if [[ ! $$REPLY =~ ^[Yy]$$ ]]; then \
@@ -200,7 +203,7 @@ delete: ## Delete the CloudFormation stack
 		exit 1; \
 	fi
 	@echo "🧹 Deleting stack"
-	@sam delete --stack-name chatbot-backend --no-prompts
+	@sam delete --stack-name $(PROJECT_NAME) --no-prompts
 
 .PHONY: help
 help:

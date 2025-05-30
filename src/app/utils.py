@@ -8,8 +8,8 @@ from collections.abc import AsyncGenerator
 from fastapi import Request, status
 from fastapi.responses import JSONResponse, StreamingResponse
 
-from chatbot_backend.config import API_PREFIX, get_api_secret
-from chatbot_backend.custom_logger import get_logger
+from app.config import API_PREFIX, get_api_secret
+from app.custom_logger import get_logger
 
 # Configure logging
 logger = get_logger("utils")

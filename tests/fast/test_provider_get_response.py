@@ -4,7 +4,7 @@ Tests for the get_response method in the LLM provider.
 
 import pytest
 
-from chatbot_backend.providers.factory import default_provider
+from app.providers.factory import default_provider
 
 
 @pytest.mark.slow

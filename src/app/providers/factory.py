@@ -7,8 +7,8 @@ based on configuration.
 
 import os
 
-from chatbot_backend.providers.base import LLMProvider
-from chatbot_backend.providers.openai import OpenAIProvider
+from app.providers.base import LLMProvider
+from app.providers.openai import OpenAIProvider
 
 # Global provider cache
 _providers: dict[str, LLMProvider] = {}

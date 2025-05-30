@@ -8,7 +8,7 @@ from collections.abc import Awaitable, Callable
 
 from fastapi import Request, Response
 
-from chatbot_backend.custom_logger import get_logger
+from app.custom_logger import get_logger
 
 # Configure logging
 logger = get_logger("middleware")

@@ -11,8 +11,8 @@ from fastapi import APIRouter, HTTPException, Query, Request, status
 from fastapi.responses import StreamingResponse
 from pydantic import ValidationError
 
-from chatbot_backend.custom_logger import get_logger
-from chatbot_backend.db.chat import (
+from app.custom_logger import get_logger
+from app.db.chat import (
     create_stream_id,
     delete_chat_by_id,
     delete_messages_by_chat_id_after_timestamp,
@@ -26,7 +26,7 @@ from chatbot_backend.db.chat import (
     update_chat_visibility_by_id,
     vote_message,
 )
-from chatbot_backend.models.chat import (
+from app.models.chat import (
     Chat,
     ChatRequest,
     CreateChatRequest,
@@ -39,11 +39,11 @@ from chatbot_backend.models.chat import (
     Vote,
     VoteMessageRequest,
 )
-from chatbot_backend.models.common import ErrorResponse
-from chatbot_backend.prompts import CHAT_SYSTEM_PROMPT
-from chatbot_backend.providers.factory import default_provider
-from chatbot_backend.providers.test import is_test_prompt, test_provider
-from chatbot_backend.utils import stream_chat_chunks
+from app.models.common import ErrorResponse
+from app.prompts import CHAT_SYSTEM_PROMPT
+from app.providers.factory import default_provider
+from app.providers.test import is_test_prompt, test_provider
+from app.utils import stream_chat_chunks
 
 # Configure logging
 logger = get_logger("chat_route")

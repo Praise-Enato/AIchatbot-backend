@@ -10,9 +10,9 @@ from typing import Any
 from boto3.dynamodb.conditions import Attr, Key
 from botocore.exceptions import ClientError
 
-from chatbot_backend.custom_logger import get_logger
-from chatbot_backend.db.db import chats_table
-from chatbot_backend.models.chat import Chat, ChatListResponse, Message, Stream, Vote
+from app.custom_logger import get_logger
+from app.db.db import chats_table
+from app.models.chat import Chat, ChatListResponse, Message, Stream, Vote
 
 # Configure logging
 logger = get_logger("db.chat")

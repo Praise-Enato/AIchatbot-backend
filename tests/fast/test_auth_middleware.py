@@ -8,7 +8,7 @@ from unittest.mock import patch
 import pytest
 from fastapi.testclient import TestClient
 
-from chatbot_backend.app import app
+from app.main import app
 
 
 @pytest.fixture
@@ -61,7 +61,7 @@ def test_api_route_invalid_token(test_client):
 def test_api_route_valid_token(test_client, api_secret):
     """Test API route with valid token."""
     # Mock the default_provider.get_response method to avoid making real API calls
-    with patch("chatbot_backend.providers.factory.default_provider.get_response", return_value="Test Title"):
+    with patch("app.providers.factory.default_provider.get_response", return_value="Test Title"):
         response = test_client.post(
             "/api/titles/generate", headers={"Authorization": f"Bearer {api_secret}"}, json={"text": "Test message"}
         )

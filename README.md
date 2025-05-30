@@ -18,6 +18,7 @@ Developers can use this as a foundation for building their own serverless API ap
 
 - **FastAPI Backend**: Fast, modern Python web framework
 - **AWS Lambda Deployment**: Serverless deployment using AWS SAM and Lambda Function URLs
+- **Streaming Support**: Real-time streaming responses using AWS Lambda Web Adapter
 - **Dependency Management**: Modern `uv` package manager for fast, deterministic installs
 - **Strict Type Checking**: Comprehensive static type checking with mypy
 - **Code Quality Tools**: Pre-commit hooks, ruff formatter/linter, and more
@@ -29,6 +30,7 @@ Developers can use this as a foundation for building their own serverless API ap
 ### Prerequisites
 
 - [uv](https://github.com/astral-sh/uv) - Modern Python package manager
+- [Docker](https://www.docker.com/get-started) - For building container images
 - [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html) - For deployment
 - [Java Runtime Environment (JRE)](https://www.oracle.com/java/technologies/downloads/) - Required for DynamoDB Local testing
 - [yq](https://github.com/mikefarah/yq) - YAML processor for extracting table schemas
@@ -96,6 +98,21 @@ make dev
 
 # Stop when done
 make dynamodb-stop
+```
+
+### Docker Development
+
+You can also run the application in a Docker container locally:
+
+```bash
+# Run the application in Docker (automatically manages DynamoDB Local)
+make docker-run
+
+# This will:
+# - Start DynamoDB Local if not already running
+# - Build the Docker image
+# - Run the container with proper networking for your OS
+# - Stop DynamoDB Local when done (if it started it)
 ```
 
 To manage DynamoDB Local:
@@ -376,6 +393,7 @@ make help
 | `make test-all`      | Run all tests including slow integration tests with DynamoDB Local |
 | `make run`           | Run the FastAPI application locally with auto-reload               |
 | `make dev`           | Start DynamoDB in-memory and run server (ideal for frontend tests) |
+| `make docker-run`    | Run the application in Docker container locally                    |
 | `make build`         | Generate requirements.txt and build the SAM application            |
 | `make deploy`        | Deploy the application to AWS                                      |
 | `make deploy-guided` | Deploy with interactive prompts (for first deployment)             |
@@ -383,20 +401,31 @@ make help
 
 ## Project Structure
 
-- `src/chatbot_backend/`: Core application code
-  - `app.py`: Main FastAPI application with Lambda handler
+- `src/app/`: Core application code
+  - `main.py`: Main FastAPI application with Lambda handler
 - `dev/lab/`: Development and experimental code (excluded from production)
   - Data processing for RAG systems
   - Usage pattern analysis
   - Prompt testing and experimentation
   - Agentic system development
 - `scripts/`: Utility scripts for testing and development
-- `tests/`: Test suite (covers both `src/chatbot_backend/` and `dev/lab/`)
+- `tests/`: Test suite (covers both `src/app/` and `dev/lab/`)
 - `template.yaml`: AWS SAM template defining infrastructure
+
+## Renaming the Project
+
+To use this codebase as a template for a new project, update the project name in these 4 locations:
+
+1. **`pyproject.toml`** (line 2): Change `name = "chatbot-backend"`
+2. **`template.yaml`** (line 13): Change `Default: chatbot-backend`
+3. **`Makefile`** (line 2): Change `PROJECT_NAME := chatbot-backend`
+4. **`src/app/main.py`** (line 14): Change `PROJECT_NAME = "chatbot"` (for SSM parameter paths)
+
+Note: The project name in `main.py` is used for AWS SSM parameter paths (`/chatbot/api-secret`), so it should typically be a short, lowercase name without hyphens.
 
 ## Adding Your Own Routes
 
-To add a new endpoint, modify `src/chatbot_backend/app.py`:
+To add a new endpoint, modify `src/app/main.py`:
 
 ```python
 @app.get("/my-new-endpoint", response_model=YourResponseModel)
@@ -409,12 +438,12 @@ async def my_new_endpoint(request: Request) -> YourResponseModel:
 
 ## AWS Lambda Integration
 
-The application uses [Mangum](https://github.com/jordaneremieff/mangum) to adapt the FastAPI app to AWS Lambda:
+The application uses Docker containers with the [AWS Lambda Web Adapter](https://github.com/awslabs/aws-lambda-web-adapter) to enable streaming responses:
 
-```python
-# AWS Lambda handler - integrates FastAPI with AWS Lambda
-handler = Mangum(app)
-```
+- **Container-based deployment**: Uses Docker images for consistent environments
+- **Streaming support**: Real-time response streaming via Lambda Function URLs
+- **Web framework compatibility**: Works with any web framework (FastAPI, Flask, etc.)
+- **Local development**: Same container runs locally and in Lambda
 
 ## License
 

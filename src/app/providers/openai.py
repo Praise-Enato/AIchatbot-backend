@@ -12,7 +12,7 @@ from typing import Any
 
 from openai import OpenAI
 
-from chatbot_backend.custom_logger import get_logger
+from app.custom_logger import get_logger
 
 # OpenAI-specific configuration
 DEFAULT_MODEL = "gpt-4o-mini"

@@ -7,7 +7,7 @@ This module contains a simple endpoint for health checks and monitoring.
 from fastapi import APIRouter, Request, status
 from pydantic import BaseModel
 
-from chatbot_backend.custom_logger import get_logger
+from app.custom_logger import get_logger
 
 # Configure logging
 logger = get_logger("health_route")

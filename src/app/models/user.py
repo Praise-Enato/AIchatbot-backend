@@ -8,7 +8,7 @@ from typing import Literal
 
 from pydantic import Field
 
-from chatbot_backend.models.common import SnakeOrAliasModel
+from app.models.common import SnakeOrAliasModel
 
 
 class User(SnakeOrAliasModel):

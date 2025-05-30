@@ -9,8 +9,8 @@ import re
 from collections.abc import Generator
 from typing import Any
 
-from chatbot_backend.custom_logger import get_logger
-from chatbot_backend.models.chat import ChatRequest
+from app.custom_logger import get_logger
+from app.models.chat import ChatRequest
 
 STREAM_CHUNK_DELAY = 0.2
 

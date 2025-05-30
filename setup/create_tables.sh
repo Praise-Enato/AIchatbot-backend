@@ -26,14 +26,14 @@ create_tables() {
     # Create Users table
     echo "Creating Users table..."
     aws dynamodb create-table \
-        --cli-input-yaml "$(cat template.yaml | yq .Resources.UsersTable.Properties)" \
+        --cli-input-yaml "$(cat template.yaml | yq 'del(.Resources.UsersTable.Properties.PointInTimeRecoverySpecification) | .Resources.UsersTable.Properties')" \
         --no-cli-pager \
         --endpoint-url http://localhost:8000 > /dev/null
 
     # Create Chats table
     echo "Creating Chats table..."
     aws dynamodb create-table \
-        --cli-input-yaml "$(cat template.yaml | yq .Resources.ChatsTable.Properties)" \
+        --cli-input-yaml "$(cat template.yaml | yq 'del(.Resources.ChatsTable.Properties.PointInTimeRecoverySpecification) | .Resources.ChatsTable.Properties')" \
         --no-cli-pager \
         --endpoint-url http://localhost:8000 > /dev/null
 

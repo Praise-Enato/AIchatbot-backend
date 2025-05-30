@@ -31,8 +31,8 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/chatbot_backend"]
-include = ["src/chatbot_backend/py.typed"]  # Include py.typed marker
+packages = ["src/app"]
+include = ["src/app/py.typed"]  # Include py.typed marker
 
 [dependency-groups]
 dev = [
@@ -86,7 +86,7 @@ ignore = [
  ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["chatbot_backend", "lab"]
+known-first-party = ["app", "dev"]
 force-single-line = false  # Prevent splitting into single lines
 combine-as-imports = true  # combine aliased members into one import statement
 
@@ -94,11 +94,11 @@ combine-as-imports = true  # combine aliased members into one import statement
 "tests/*" = ["ANN"]  # Ignore all annotation rules in test files
 
 [tool.mypy]
-files = ["src", "dev", "scripts"]
+files = ["src", "src-dev", "scripts"]
 plugins = ["pydantic.mypy"]
 namespace_packages = true
 explicit_package_bases = true
-mypy_path = ["src", "dev"]
+mypy_path = ["src", "src-dev"]
 exclude = [".aws-sam"]
 disallow_untyped_defs = true          # Keep this for good practice
 disallow_any_unimported = false       # Allow Any in imports for simplicity
@@ -134,7 +134,7 @@ ignore_missing_imports = true
 
 [tool.deptry]
 exclude = [".venv", ".aws-sam"]
-known_first_party = ["chatbot_backend", "lab"]  # Treats chatbot_backend and lab as part of your project
+known_first_party = ["app", "dev"]  # Treats app and dev as part of your project
 
 [tool.deptry.per_rule_ignores]
 DEP004 = [

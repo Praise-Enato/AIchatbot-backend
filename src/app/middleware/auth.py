@@ -8,8 +8,8 @@ from collections.abc import Awaitable, Callable
 
 from fastapi import Request, Response
 
-from chatbot_backend.config import API_PREFIX
-from chatbot_backend.utils import create_error_response, verify_api_key
+from app.config import API_PREFIX
+from app.utils import create_error_response, verify_api_key
 
 
 async def auth_middleware(request: Request, call_next: Callable[[Request], Awaitable[Response]]) -> Response:

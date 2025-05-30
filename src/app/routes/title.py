@@ -6,12 +6,12 @@ This module contains the routes for title generation endpoints.
 
 from fastapi import APIRouter, HTTPException, status
 
-from chatbot_backend.custom_logger import get_logger
-from chatbot_backend.models.common import ErrorResponse, TextResponse
-from chatbot_backend.models.title import GenerateTitleRequest
-from chatbot_backend.prompts import GENERATE_TITLE_PROMPT
-from chatbot_backend.providers.factory import default_provider
-from chatbot_backend.providers.test import is_test_prompt, test_provider
+from app.custom_logger import get_logger
+from app.models.common import ErrorResponse, TextResponse
+from app.models.title import GenerateTitleRequest
+from app.prompts import GENERATE_TITLE_PROMPT
+from app.providers.factory import default_provider
+from app.providers.test import is_test_prompt, test_provider
 
 # Configure logging
 logger = get_logger("title_route")

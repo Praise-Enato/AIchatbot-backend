@@ -12,7 +12,7 @@ from datetime import UTC, datetime, timedelta
 import pytest
 from fastapi.testclient import TestClient
 
-from chatbot_backend.app import app
+from app.main import app
 
 
 @pytest.fixture

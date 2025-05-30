@@ -6,7 +6,7 @@ import os
 
 import boto3
 
-from chatbot_backend.custom_logger import get_logger
+from app.custom_logger import get_logger
 
 # Configure logging
 logger = get_logger("db")
