@@ -445,6 +445,90 @@ The application uses Docker containers with the [AWS Lambda Web Adapter](https:/
 - **Web framework compatibility**: Works with any web framework (FastAPI, Flask, etc.)
 - **Local development**: Same container runs locally and in Lambda
 
+### Simplifying for Non-Streaming Responses
+
+If your application doesn't need streaming responses, you can simplify the deployment by using Mangum and zip file uploads instead of Docker containers. Here's how:
+
+#### 1. Modify `template.yaml`
+
+Replace the current Lambda function configuration with a simpler version:
+
+```yaml
+ChatbotBackendFunction:
+  Type: AWS::Serverless::Function
+  Properties:
+    CodeUri: ./
+    Handler: app.main.handler # Mangum handler
+    Runtime: python3.12
+    Architectures:
+      - x86_64
+    FunctionUrlConfig:
+      AuthType: NONE
+      # Remove InvokeMode: RESPONSE_STREAM
+      Cors:
+        AllowOrigins:
+          - "*"
+        AllowMethods:
+          - "*"
+    # Keep the same policies and environment variables
+```
+
+Key changes:
+
+- Change `PackageType: Image` to using `CodeUri` and `Handler`
+- Add `Runtime: python3.12`
+- Remove `InvokeMode: RESPONSE_STREAM` from FunctionUrlConfig
+- Remove the `Metadata` section with Docker configuration
+- Remove `AWS_LWA_INVOKE_MODE` from environment variables
+
+#### 2. Modify `src/app/main.py`
+
+Add Mangum handler at the bottom of the file:
+
+```python
+# At the top, add mangum import
+from mangum import Mangum
+
+# ... existing code ...
+
+# At the bottom, add the handler for Lambda
+handler = Mangum(app)
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8080)
+```
+
+#### 3. Update Dependencies
+
+Add Mangum to your project dependencies:
+
+```bash
+uv add mangum
+```
+
+#### 4. Remove Docker Files (Optional)
+
+Since you're no longer using container deployment, you can remove:
+
+- `Dockerfile`
+- Docker-related commands from `Makefile`
+
+#### Benefits of Non-Streaming Setup
+
+- **Simpler deployment**: No need to build and push Docker images
+- **Faster deployments**: Zip file uploads are quicker than container images
+- **Lower costs**: Zip deployments have less overhead than containers
+- **Easier debugging**: Standard Lambda logs without container layers
+
+#### Trade-offs
+
+- **No streaming**: Responses are buffered and sent all at once
+- **Response size limits**: Lambda has a 6MB response payload limit
+- **Timeout considerations**: Long-running LLM responses might hit Lambda timeout limits
+
+This simplified setup is ideal for applications that don't require real-time streaming of AI responses or when response sizes are predictable and within Lambda's limits.
+
 ## License
 
 This project is licensed under the Apache License, Version 2.0 - see the [LICENSE](LICENSE) file for details.
