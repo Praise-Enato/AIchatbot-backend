@@ -1,11 +1,7 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  chatbot-backend
-
-  Example AI chatbot
-
-# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+  AI chatbot IQ test backend
 
 Parameters:
   ProjectName:
@@ -15,15 +11,14 @@ Parameters:
 
 Globals:
   Function:
-    Timeout: 120 # 120 seconds for LLM streaming responses
+    Timeout: 120
     MemorySize: 256
-
-    # You can add LoggingConfig parameters such as the Logformat, Log Group, and SystemLogLevel or ApplicationLogLevel. Learn more here https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html#sam-function-loggingconfig.
     LoggingConfig:
       LogFormat: JSON
+
 Resources:
   ChatbotBackendFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Type: AWS::Serverless::Function
     Properties:
       PackageType: Image
       Architectures:
@@ -32,10 +27,8 @@ Resources:
         AuthType: NONE
         InvokeMode: RESPONSE_STREAM
         Cors:
-          AllowOrigins:
-            - "*"
-          AllowMethods:
-            - "*"
+          AllowOrigins: ["*"]
+          AllowMethods: ["*"]
       Policies:
         - DynamoDBCrudPolicy:
             TableName:
@@ -43,6 +36,9 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName:
               Ref: ChatsTable
+        - DynamoDBCrudPolicy:
+            TableName:
+              Ref: AnswersTable
         - SSMParameterReadPolicy:
             ParameterName: chatbot/*
       Environment:
@@ -54,24 +50,26 @@ Resources:
           PROVIDER_NAME: openai
           LOG_LEVEL: INFO
           AWS_LWA_INVOKE_MODE: RESPONSE_STREAM
-    Metadata:
-      Dockerfile: Dockerfile
-      DockerContext: .
-      DockerTag: v1
+      Metadata:
+        Dockerfile: Dockerfile
+        DockerContext: .
+        DockerTag: v1
 
-  ApplicationResourceGroup:
-    Type: AWS::ResourceGroups::Group
+  AnswersTable:
+    Type: AWS::DynamoDB::Table
     Properties:
-      Name:
-        Fn::Sub: ApplicationInsights-SAM-${AWS::StackName}
-      ResourceQuery:
-        Type: CLOUDFORMATION_STACK_1_0
-  ApplicationInsightsMonitoring:
-    Type: AWS::ApplicationInsights::Application
-    Properties:
-      ResourceGroupName:
-        Ref: ApplicationResourceGroup
-      AutoConfigurationEnabled: "true"
+      TableName: quiz-answers
+      AttributeDefinitions:
+        - AttributeName: user_id
+          AttributeType: S
+        - AttributeName: timestamp
+          AttributeType: S
+      KeySchema:
+        - AttributeName: user_id
+          KeyType: HASH
+        - AttributeName: timestamp
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
 
   UsersTable:
     Type: AWS::DynamoDB::Table
@@ -195,10 +193,25 @@ Resources:
         PointInTimeRecoveryEnabled: true
         RecoveryPeriodInDays: 35
 
+  ApplicationResourceGroup:
+    Type: AWS::ResourceGroups::Group
+    Properties:
+      Name:
+        Fn::Sub: ApplicationInsights-SAM-${AWS::StackName}
+      ResourceQuery:
+        Type: CLOUDFORMATION_STACK_1_0
+
+  ApplicationInsightsMonitoring:
+    Type: AWS::ApplicationInsights::Application
+    Properties:
+      ResourceGroupName:
+        Ref: ApplicationResourceGroup
+      AutoConfigurationEnabled: "true"
+
 Outputs:
   ChatbotBackendFunctionUrl:
     Description: URL for the Chatbot Backend Lambda function
     Value:
       Fn::GetAtt:
-        - ChatbotBackendFunctionUrl
+        - ChatbotBackendFunction
         - FunctionUrl
