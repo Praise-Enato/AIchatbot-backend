@@ -43,7 +43,7 @@ from fastapi import FastAPI
 
 from app.custom_logger import get_logger
 from app.middleware.auth import auth_middleware
-from app.routes import chat, health, title, user
+from app.routes import chat, health, quiz, title, user
 
 # Configure logging
 logger = get_logger("app")
@@ -64,6 +64,8 @@ app.include_router(chat.router)
 app.include_router(title.router)
 app.include_router(user.router)
 app.include_router(health.router)
+app.include_router(quiz.router)
+
 
 if __name__ == "__main__":
     import uvicorn
