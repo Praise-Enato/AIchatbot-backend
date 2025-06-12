@@ -1,0 +1,507 @@
+[
+  {
+    "id": "prog-easy-001",
+    "difficulty": "easy",
+    "question": "What does the 'print' function do in Python?",
+    "choices": [
+      "Displays output",
+      "Takes input",
+      "Defines a variable",
+      "Ends the program"
+    ],
+    "answer": "Displays output",
+    "explanation": "'print' displays output to the console."
+  },
+  {
+    "id": "prog-easy-002",
+    "difficulty": "easy",
+    "question": "Which symbol is used for comments in Python?",
+    "choices": ["#", "//", "--", "/* */"],
+    "answer": "#",
+    "explanation": "'#' is used for single-line comments in Python."
+  },
+  {
+    "id": "prog-easy-003",
+    "difficulty": "easy",
+    "question": "How do you create a variable with value 5 in Python?",
+    "choices": ["x = 5", "int x = 5", "x := 5", "var x = 5"],
+    "answer": "x = 5",
+    "explanation": "Variables are created by assignment: x = 5."
+  },
+  {
+    "id": "prog-easy-004",
+    "difficulty": "easy",
+    "question": "Which data type is used for text in Python?",
+    "choices": ["str", "int", "float", "bool"],
+    "answer": "str",
+    "explanation": "'str' is the data type for text (strings)."
+  },
+  {
+    "id": "prog-easy-005",
+    "difficulty": "easy",
+    "question": "What is the output of print(2 + 2)?",
+    "choices": ["4", "22", "'2 + 2'", "Error"],
+    "answer": "4",
+    "explanation": "2 + 2 evaluates to 4."
+  },
+  {
+    "id": "prog-easy-006",
+    "difficulty": "easy",
+    "question": "Which keyword is used to define a function in Python?",
+    "choices": ["def", "func", "function", "define"],
+    "answer": "def",
+    "explanation": "'def' is used to define a function."
+  },
+  {
+    "id": "prog-easy-007",
+    "difficulty": "easy",
+    "question": "How do you start a for loop in Python?",
+    "choices": [
+      "for i in range(5):",
+      "for (i = 0; i < 5; i++)",
+      "foreach i in range(5)",
+      "loop i in range(5)"
+    ],
+    "answer": "for i in range(5):",
+    "explanation": "Python uses 'for i in range(5):' for loops."
+  },
+  {
+    "id": "prog-easy-008",
+    "difficulty": "easy",
+    "question": "Which of these is a list in Python?",
+    "choices": ["[1, 2, 3]", "(1, 2, 3)", "{1, 2, 3}", "<1, 2, 3>"],
+    "answer": "[1, 2, 3]",
+    "explanation": "Lists use square brackets: [1, 2, 3]."
+  },
+  {
+    "id": "prog-easy-009",
+    "difficulty": "easy",
+    "question": "What does 'len([1, 2, 3])' return?",
+    "choices": ["3", "2", "1", "Error"],
+    "answer": "3",
+    "explanation": "'len' returns the number of elements in a list."
+  },
+  {
+    "id": "prog-easy-010",
+    "difficulty": "easy",
+    "question": "Which operator is used for exponentiation in Python?",
+    "choices": ["**", "^", "exp", "pow"],
+    "answer": "**",
+    "explanation": "'**' is the exponentiation operator."
+  },
+  {
+    "id": "prog-easy-011",
+    "difficulty": "easy",
+    "question": "How do you import a module in Python?",
+    "choices": ["import math", "include math", "require math", "using math"],
+    "answer": "import math",
+    "explanation": "'import' is used to import modules."
+  },
+  {
+    "id": "prog-easy-012",
+    "difficulty": "easy",
+    "question": "What is the boolean value for true in Python?",
+    "choices": ["True", "true", "TRUE", "1"],
+    "answer": "True",
+    "explanation": "'True' is the boolean value for true."
+  },
+  {
+    "id": "prog-easy-013",
+    "difficulty": "easy",
+    "question": "Which function gets user input in Python?",
+    "choices": ["input()", "get()", "scan()", "read()"],
+    "answer": "input()",
+    "explanation": "'input()' gets user input."
+  },
+  {
+    "id": "prog-easy-014",
+    "difficulty": "easy",
+    "question": "How do you write a comment in Python?",
+    "choices": ["# comment", "// comment", "-- comment", "/* comment */"],
+    "answer": "# comment",
+    "explanation": "'#' starts a comment in Python."
+  },
+  {
+    "id": "prog-easy-015",
+    "difficulty": "easy",
+    "question": "Which of these is a tuple in Python?",
+    "choices": ["(1, 2, 3)", "[1, 2, 3]", "{1, 2, 3}", "<1, 2, 3>"],
+    "answer": "(1, 2, 3)",
+    "explanation": "Tuples use parentheses: (1, 2, 3)."
+  },
+  {
+    "id": "prog-easy-016",
+    "difficulty": "easy",
+    "question": "What is the output of print('Hello' + 'World')?",
+    "choices": ["HelloWorld", "Hello World", "Hello+World", "Error"],
+    "answer": "HelloWorld",
+    "explanation": "String concatenation with '+'."
+  },
+  {
+    "id": "prog-easy-017",
+    "difficulty": "easy",
+    "question": "Which function converts a string to an integer?",
+    "choices": ["int()", "str()", "float()", "bool()"],
+    "answer": "int()",
+    "explanation": "'int()' converts a string to an integer."
+  },
+  {
+    "id": "prog-easy-018",
+    "difficulty": "easy",
+    "question": "What is the output of print(type(5))?",
+    "choices": ["<class 'int'>", "int", "'int'", "5"],
+    "answer": "<class 'int'>",
+    "explanation": "type(5) returns <class 'int'>."
+  },
+  {
+    "id": "prog-easy-019",
+    "difficulty": "easy",
+    "question": "Which of these is a dictionary in Python?",
+    "choices": ["{'a': 1, 'b': 2}", "[1, 2, 3]", "(1, 2, 3)", "{1, 2, 3}"],
+    "answer": "{'a': 1, 'b': 2}",
+    "explanation": "Dictionaries use curly braces with key-value pairs."
+  },
+  {
+    "id": "prog-easy-020",
+    "difficulty": "easy",
+    "question": "Which keyword is used to start a class in Python?",
+    "choices": ["class", "def", "struct", "object"],
+    "answer": "class",
+    "explanation": "'class' is used to define a class."
+  },
+  {
+    "id": "prog-medium-001",
+    "difficulty": "medium",
+    "question": "What is the output of print(3 * 'ab')?",
+    "choices": ["ababab", "ab3", "Error", "3ab"],
+    "answer": "ababab",
+    "explanation": "String multiplication repeats the string."
+  },
+  {
+    "id": "prog-medium-002",
+    "difficulty": "medium",
+    "question": "Which method adds an item to a list?",
+    "choices": ["append()", "add()", "insert()", "push()"],
+    "answer": "append()",
+    "explanation": "'append()' adds an item to the end of a list."
+  },
+  {
+    "id": "prog-medium-003",
+    "difficulty": "medium",
+    "question": "What is the output of print([1,2,3][1])?",
+    "choices": ["2", "1", "3", "Error"],
+    "answer": "2",
+    "explanation": "Lists are zero-indexed, so [1] is the second element."
+  },
+  {
+    "id": "prog-medium-004",
+    "difficulty": "medium",
+    "question": "Which keyword is used for exception handling?",
+    "choices": ["try", "catch", "except", "finally"],
+    "answer": "try",
+    "explanation": "'try' is used to start a try-except block."
+  },
+  {
+    "id": "prog-medium-005",
+    "difficulty": "medium",
+    "question": "How do you open a file for reading in Python?",
+    "choices": [
+      "open('file.txt', 'r')",
+      "open('file.txt', 'w')",
+      "open('file.txt', 'a')",
+      "open('file.txt')"
+    ],
+    "answer": "open('file.txt', 'r')",
+    "explanation": "'r' mode opens a file for reading."
+  },
+  {
+    "id": "prog-medium-006",
+    "difficulty": "medium",
+    "question": "Which function returns the length of a string?",
+    "choices": ["len()", "length()", "count()", "size()"],
+    "answer": "len()",
+    "explanation": "'len()' returns the length of a string or list."
+  },
+  {
+    "id": "prog-medium-007",
+    "difficulty": "medium",
+    "question": "What is the output of print(10 // 3)?",
+    "choices": ["3", "3.33", "4", "Error"],
+    "answer": "3",
+    "explanation": "'//' is integer division."
+  },
+  {
+    "id": "prog-medium-008",
+    "difficulty": "medium",
+    "question": "Which method removes the last item from a list?",
+    "choices": ["pop()", "remove()", "del()", "discard()"],
+    "answer": "pop()",
+    "explanation": "'pop()' removes and returns the last item."
+  },
+  {
+    "id": "prog-medium-009",
+    "difficulty": "medium",
+    "question": "How do you check if 'a' is in the list ['a', 'b', 'c']?",
+    "choices": [
+      "'a' in ['a', 'b', 'c']",
+      "['a', 'b', 'c'].has('a')",
+      "'a' == ['a', 'b', 'c']",
+      "find('a')"
+    ],
+    "answer": "'a' in ['a', 'b', 'c']",
+    "explanation": "Use 'in' to check membership."
+  },
+  {
+    "id": "prog-medium-010",
+    "difficulty": "medium",
+    "question": "Which of these is a set in Python?",
+    "choices": ["{1, 2, 3}", "[1, 2, 3]", "(1, 2, 3)", "<1, 2, 3>"],
+    "answer": "{1, 2, 3}",
+    "explanation": "Sets use curly braces: {1, 2, 3}."
+  },
+  {
+    "id": "prog-medium-011",
+    "difficulty": "medium",
+    "question": "What is the output of print(bool(''))?",
+    "choices": ["False", "True", "''", "Error"],
+    "answer": "False",
+    "explanation": "Empty strings are False in boolean context."
+  },
+  {
+    "id": "prog-medium-012",
+    "difficulty": "medium",
+    "question": "Which function converts a number to a string?",
+    "choices": ["str()", "int()", "float()", "bool()"],
+    "answer": "str()",
+    "explanation": "'str()' converts a number to a string."
+  },
+  {
+    "id": "prog-medium-013",
+    "difficulty": "medium",
+    "question": "How do you write a multi-line string in Python?",
+    "choices": ["Triple quotes", "Double quotes", "Single quotes", "Backticks"],
+    "answer": "Triple quotes",
+    "explanation": "Use triple quotes for multi-line strings."
+  },
+  {
+    "id": "prog-medium-014",
+    "difficulty": "medium",
+    "question": "Which method returns the index of an item in a list?",
+    "choices": ["index()", "find()", "locate()", "search()"],
+    "answer": "index()",
+    "explanation": "'index()' returns the index of an item."
+  },
+  {
+    "id": "prog-medium-015",
+    "difficulty": "medium",
+    "question": "What is the output of print(type([1,2,3]))?",
+    "choices": ["<class 'list'>", "list", "'list'", "[1,2,3]"],
+    "answer": "<class 'list'>",
+    "explanation": "type([1,2,3]) returns <class 'list'>."
+  },
+  {
+    "id": "prog-medium-016",
+    "difficulty": "medium",
+    "question": "Which keyword is used to inherit a class in Python?",
+    "choices": ["class", "extends", "inherits", "super"],
+    "answer": "class",
+    "explanation": "Use 'class NewClass(ParentClass):' to inherit."
+  },
+  {
+    "id": "prog-medium-017",
+    "difficulty": "medium",
+    "question": "What is the output of print(5 % 2)?",
+    "choices": ["1", "2", "0", "2.5"],
+    "answer": "1",
+    "explanation": "'%' is the modulus operator."
+  },
+  {
+    "id": "prog-medium-018",
+    "difficulty": "medium",
+    "question": "Which function sorts a list in place?",
+    "choices": ["sort()", "sorted()", "order()", "arrange()"],
+    "answer": "sort()",
+    "explanation": "'sort()' sorts a list in place."
+  },
+  {
+    "id": "prog-medium-019",
+    "difficulty": "medium",
+    "question": "How do you create a dictionary with keys 'a' and 'b'?",
+    "choices": ["{'a': 1, 'b': 2}", "['a', 'b']", "('a', 'b')", "{a, b}"],
+    "answer": "{'a': 1, 'b': 2}",
+    "explanation": "Dictionaries use curly braces with key-value pairs."
+  },
+  {
+    "id": "prog-medium-020",
+    "difficulty": "medium",
+    "question": "Which method returns a copy of a list?",
+    "choices": ["copy()", "clone()", "duplicate()", "replicate()"],
+    "answer": "copy()",
+    "explanation": "'copy()' returns a shallow copy of a list."
+  },
+  {
+    "id": "prog-hard-001",
+    "difficulty": "hard",
+    "question": "What is a lambda function in Python?",
+    "choices": ["An anonymous function", "A class", "A module", "A variable"],
+    "answer": "An anonymous function",
+    "explanation": "A lambda is an anonymous function."
+  },
+  {
+    "id": "prog-hard-002",
+    "difficulty": "hard",
+    "question": "Which method is used to read all lines from a file?",
+    "choices": ["readlines()", "read()", "readline()", "lines()"],
+    "answer": "readlines()",
+    "explanation": "'readlines()' reads all lines from a file."
+  },
+  {
+    "id": "prog-hard-003",
+    "difficulty": "hard",
+    "question": "What is the output of print(list(map(lambda x: x*2, [1,2,3])))?",
+    "choices": ["[2, 4, 6]", "[1, 2, 3]", "[1, 4, 9]", "Error"],
+    "answer": "[2, 4, 6]",
+    "explanation": "map applies the lambda to each element."
+  },
+  {
+    "id": "prog-hard-004",
+    "difficulty": "hard",
+    "question": "Which keyword is used to create a generator in Python?",
+    "choices": ["yield", "return", "gen", "generate"],
+    "answer": "yield",
+    "explanation": "'yield' is used in generator functions."
+  },
+  {
+    "id": "prog-hard-005",
+    "difficulty": "hard",
+    "question": "What is the output of print({x: x**2 for x in range(3)} )?",
+    "choices": [
+      "{0: 0, 1: 1, 2: 4}",
+      "[0, 1, 4]",
+      "{1: 1, 2: 4, 3: 9}",
+      "Error"
+    ],
+    "answer": "{0: 0, 1: 1, 2: 4}",
+    "explanation": "Dictionary comprehension creates a dict."
+  },
+  {
+    "id": "prog-hard-006",
+    "difficulty": "hard",
+    "question": "Which built-in function returns the memory address of an object?",
+    "choices": ["id()", "address()", "mem()", "loc()"],
+    "answer": "id()",
+    "explanation": "'id()' returns the memory address."
+  },
+  {
+    "id": "prog-hard-007",
+    "difficulty": "hard",
+    "question": "What is the output of print([i for i in range(3) if i%2==0])?",
+    "choices": ["[0, 2]", "[1, 2]", "[0, 1, 2]", "[2, 0]"],
+    "answer": "[0, 2]",
+    "explanation": "List comprehension with condition."
+  },
+  {
+    "id": "prog-hard-008",
+    "difficulty": "hard",
+    "question": "Which method is used to add a key-value pair to a dictionary?",
+    "choices": ["update()", "add()", "append()", "insert()"],
+    "answer": "update()",
+    "explanation": "'update()' adds or updates key-value pairs."
+  },
+  {
+    "id": "prog-hard-009",
+    "difficulty": "hard",
+    "question": "What is the output of print('hello'.capitalize())?",
+    "choices": ["Hello", "hello", "HELLO", "hELLO"],
+    "answer": "Hello",
+    "explanation": "'capitalize()' capitalizes the first letter."
+  },
+  {
+    "id": "prog-hard-010",
+    "difficulty": "hard",
+    "question": "Which function returns the absolute value of a number?",
+    "choices": ["abs()", "absolute()", "fabs()", "mod()"],
+    "answer": "abs()",
+    "explanation": "'abs()' returns the absolute value."
+  },
+  {
+    "id": "prog-hard-011",
+    "difficulty": "hard",
+    "question": "What is the output of print({1,2,2,3})?",
+    "choices": ["{1, 2, 3}", "{1, 2, 2, 3}", "[1, 2, 3]", "Error"],
+    "answer": "{1, 2, 3}",
+    "explanation": "Sets do not allow duplicate elements."
+  },
+  {
+    "id": "prog-hard-012",
+    "difficulty": "hard",
+    "question": "Which method returns all keys of a dictionary?",
+    "choices": ["keys()", "values()", "items()", "get()"],
+    "answer": "keys()",
+    "explanation": "'keys()' returns all keys."
+  },
+  {
+    "id": "prog-hard-013",
+    "difficulty": "hard",
+    "question": "What is the output of print(type(lambda x: x))?",
+    "choices": ["<class 'function'>", "<class 'lambda'>", "function", "lambda"],
+    "answer": "<class 'function'>",
+    "explanation": "Lambdas are of type 'function'."
+  },
+  {
+    "id": "prog-hard-014",
+    "difficulty": "hard",
+    "question": "Which function returns the largest item in a list?",
+    "choices": ["max()", "largest()", "biggest()", "top()"],
+    "answer": "max()",
+    "explanation": "'max()' returns the largest item."
+  },
+  {
+    "id": "prog-hard-015",
+    "difficulty": "hard",
+    "question": "What is the output of print([1,2,3][-1])?",
+    "choices": ["3", "1", "2", "Error"],
+    "answer": "3",
+    "explanation": "Negative index -1 gives the last element."
+  },
+  {
+    "id": "prog-hard-016",
+    "difficulty": "hard",
+    "question": "Which method removes a key from a dictionary?",
+    "choices": ["pop()", "remove()", "del()", "discard()"],
+    "answer": "pop()",
+    "explanation": "'pop()' removes a key and returns its value."
+  },
+  {
+    "id": "prog-hard-017",
+    "difficulty": "hard",
+    "question": "What is the output of print(2 ** 3 ** 2)?",
+    "choices": ["512", "64", "36", "256"],
+    "answer": "512",
+    "explanation": "Exponentiation is right-associative: 2 ** (3 ** 2) = 512."
+  },
+  {
+    "id": "prog-hard-018",
+    "difficulty": "hard",
+    "question": "Which function returns the smallest item in a list?",
+    "choices": ["min()", "smallest()", "least()", "bottom()"],
+    "answer": "min()",
+    "explanation": "'min()' returns the smallest item."
+  },
+  {
+    "id": "prog-hard-019",
+    "difficulty": "hard",
+    "question": "What is the output of print('Python'.lower())?",
+    "choices": ["python", "PYTHON", "Python", "error"],
+    "answer": "python",
+    "explanation": "'lower()' converts to lowercase."
+  },
+  {
+    "id": "prog-hard-020",
+    "difficulty": "hard",
+    "question": "Which method returns the value for a given key in a dictionary?",
+    "choices": ["get()", "find()", "search()", "lookup()"],
+    "answer": "get()",
+    "explanation": "'get()' returns the value for a key."
+  }
+]

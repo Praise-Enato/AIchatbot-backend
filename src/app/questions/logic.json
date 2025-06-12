@@ -1,0 +1,482 @@
+[
+  {
+    "id": "logic-easy-001",
+    "difficulty": "easy",
+    "question": "If today is Monday, what day comes after?",
+    "choices": ["Tuesday", "Sunday", "Friday", "Wednesday"],
+    "answer": "Tuesday",
+    "explanation": "The day after Monday is Tuesday."
+  },
+  {
+    "id": "logic-easy-002",
+    "difficulty": "easy",
+    "question": "If today is Monday, what day comes after?",
+    "choices": ["Tuesday", "Sunday", "Friday", "Wednesday"],
+    "answer": "Tuesday",
+    "explanation": "The day after Monday is Tuesday."
+  },
+  {
+    "id": "logic-easy-003",
+    "difficulty": "easy",
+    "question": "If today is Monday, what day comes after?",
+    "choices": ["Tuesday", "Sunday", "Friday", "Wednesday"],
+    "answer": "Tuesday",
+    "explanation": "The day after Monday is Tuesday."
+  },
+  {
+    "id": "logic-easy-004",
+    "difficulty": "easy",
+    "question": "If today is Monday, what day comes after?",
+    "choices": ["Tuesday", "Sunday", "Friday", "Wednesday"],
+    "answer": "Tuesday",
+    "explanation": "The day after Monday is Tuesday."
+  },
+  {
+    "id": "logic-easy-005",
+    "difficulty": "easy",
+    "question": "If today is Monday, what day comes after?",
+    "choices": ["Tuesday", "Sunday", "Friday", "Wednesday"],
+    "answer": "Tuesday",
+    "explanation": "The day after Monday is Tuesday."
+  },
+  {
+    "id": "logic-easy-006",
+    "difficulty": "easy",
+    "question": "If today is Monday, what day comes after?",
+    "choices": ["Tuesday", "Sunday", "Friday", "Wednesday"],
+    "answer": "Tuesday",
+    "explanation": "The day after Monday is Tuesday."
+  },
+  {
+    "id": "logic-easy-007",
+    "difficulty": "easy",
+    "question": "If today is Monday, what day comes after?",
+    "choices": ["Tuesday", "Sunday", "Friday", "Wednesday"],
+    "answer": "Tuesday",
+    "explanation": "The day after Monday is Tuesday."
+  },
+  {
+    "id": "logic-easy-008",
+    "difficulty": "easy",
+    "question": "If today is Monday, what day comes after?",
+    "choices": ["Tuesday", "Sunday", "Friday", "Wednesday"],
+    "answer": "Tuesday",
+    "explanation": "The day after Monday is Tuesday."
+  },
+  {
+    "id": "logic-easy-009",
+    "difficulty": "easy",
+    "question": "If today is Monday, what day comes after?",
+    "choices": ["Tuesday", "Sunday", "Friday", "Wednesday"],
+    "answer": "Tuesday",
+    "explanation": "The day after Monday is Tuesday."
+  },
+  {
+    "id": "logic-easy-010",
+    "difficulty": "easy",
+    "question": "If today is Monday, what day comes after?",
+    "choices": ["Tuesday", "Sunday", "Friday", "Wednesday"],
+    "answer": "Tuesday",
+    "explanation": "The day after Monday is Tuesday."
+  },
+  {
+    "id": "logic-easy-011",
+    "difficulty": "easy",
+    "question": "If today is Monday, what day comes after?",
+    "choices": ["Tuesday", "Sunday", "Friday", "Wednesday"],
+    "answer": "Tuesday",
+    "explanation": "The day after Monday is Tuesday."
+  },
+  {
+    "id": "logic-easy-012",
+    "difficulty": "easy",
+    "question": "If today is Monday, what day comes after?",
+    "choices": ["Tuesday", "Sunday", "Friday", "Wednesday"],
+    "answer": "Tuesday",
+    "explanation": "The day after Monday is Tuesday."
+  },
+  {
+    "id": "logic-easy-013",
+    "difficulty": "easy",
+    "question": "If today is Monday, what day comes after?",
+    "choices": ["Tuesday", "Sunday", "Friday", "Wednesday"],
+    "answer": "Tuesday",
+    "explanation": "The day after Monday is Tuesday."
+  },
+  {
+    "id": "logic-easy-014",
+    "difficulty": "easy",
+    "question": "If today is Monday, what day comes after?",
+    "choices": ["Tuesday", "Sunday", "Friday", "Wednesday"],
+    "answer": "Tuesday",
+    "explanation": "The day after Monday is Tuesday."
+  },
+  {
+    "id": "logic-easy-015",
+    "difficulty": "easy",
+    "question": "If today is Monday, what day comes after?",
+    "choices": ["Tuesday", "Sunday", "Friday", "Wednesday"],
+    "answer": "Tuesday",
+    "explanation": "The day after Monday is Tuesday."
+  },
+  {
+    "id": "logic-easy-016",
+    "difficulty": "easy",
+    "question": "If today is Monday, what day comes after?",
+    "choices": ["Tuesday", "Sunday", "Friday", "Wednesday"],
+    "answer": "Tuesday",
+    "explanation": "The day after Monday is Tuesday."
+  },
+  {
+    "id": "logic-easy-017",
+    "difficulty": "easy",
+    "question": "If today is Monday, what day comes after?",
+    "choices": ["Tuesday", "Sunday", "Friday", "Wednesday"],
+    "answer": "Tuesday",
+    "explanation": "The day after Monday is Tuesday."
+  },
+  {
+    "id": "logic-easy-018",
+    "difficulty": "easy",
+    "question": "If today is Monday, what day comes after?",
+    "choices": ["Tuesday", "Sunday", "Friday", "Wednesday"],
+    "answer": "Tuesday",
+    "explanation": "The day after Monday is Tuesday."
+  },
+  {
+    "id": "logic-easy-019",
+    "difficulty": "easy",
+    "question": "If today is Monday, what day comes after?",
+    "choices": ["Tuesday", "Sunday", "Friday", "Wednesday"],
+    "answer": "Tuesday",
+    "explanation": "The day after Monday is Tuesday."
+  },
+  {
+    "id": "logic-easy-020",
+    "difficulty": "easy",
+    "question": "If today is Monday, what day comes after?",
+    "choices": ["Tuesday", "Sunday", "Friday", "Wednesday"],
+    "answer": "Tuesday",
+    "explanation": "The day after Monday is Tuesday."
+  },
+  {
+    "id": "logic-medium-001",
+    "difficulty": "medium",
+    "question": "If John is taller than Mike, and Mike is taller than Sarah, who is the shortest?",
+    "choices": ["Yes", "No", "Cannot tell", "Maybe"],
+    "answer": "Sarah",
+    "explanation": "Sarah is shorter than Mike who is shorter than John."
+  },
+  {
+    "id": "logic-medium-002",
+    "difficulty": "medium",
+    "question": "Tom always lies. If Tom says 'I am lying', is he telling the truth?",
+    "choices": ["Yes", "No", "Cannot tell", "Maybe"],
+    "answer": "No",
+    "explanation": "It's a paradox but by definition he always lies."
+  },
+  {
+    "id": "logic-medium-003",
+    "difficulty": "medium",
+    "question": "Which word does not belong: Apple, Banana, Carrot, Mango?",
+    "choices": ["Yes", "No", "Cannot tell", "Maybe"],
+    "answer": "Carrot",
+    "explanation": "Carrot is a vegetable, others are fruits."
+  },
+  {
+    "id": "logic-medium-004",
+    "difficulty": "medium",
+    "question": "A train leaves at 3 PM and arrives at 5 PM. How long is the trip?",
+    "choices": ["Yes", "No", "Cannot tell", "Maybe"],
+    "answer": "2 hours",
+    "explanation": "From 3 PM to 5 PM is 2 hours."
+  },
+  {
+    "id": "logic-medium-005",
+    "difficulty": "medium",
+    "question": "All cats are animals. Some animals are dogs. Are all cats dogs?",
+    "choices": ["Yes", "No", "Cannot tell", "Maybe"],
+    "answer": "No",
+    "explanation": "The statement only says some animals are dogs."
+  },
+  {
+    "id": "logic-medium-006",
+    "difficulty": "medium",
+    "question": "If John is taller than Mike, and Mike is taller than Sarah, who is the shortest?",
+    "choices": ["Yes", "No", "Cannot tell", "Maybe"],
+    "answer": "Sarah",
+    "explanation": "Sarah is shorter than Mike who is shorter than John."
+  },
+  {
+    "id": "logic-medium-007",
+    "difficulty": "medium",
+    "question": "Tom always lies. If Tom says 'I am lying', is he telling the truth?",
+    "choices": ["Yes", "No", "Cannot tell", "Maybe"],
+    "answer": "No",
+    "explanation": "It's a paradox but by definition he always lies."
+  },
+  {
+    "id": "logic-medium-008",
+    "difficulty": "medium",
+    "question": "Which word does not belong: Apple, Banana, Carrot, Mango?",
+    "choices": ["Yes", "No", "Cannot tell", "Maybe"],
+    "answer": "Carrot",
+    "explanation": "Carrot is a vegetable, others are fruits."
+  },
+  {
+    "id": "logic-medium-009",
+    "difficulty": "medium",
+    "question": "A train leaves at 3 PM and arrives at 5 PM. How long is the trip?",
+    "choices": ["Yes", "No", "Cannot tell", "Maybe"],
+    "answer": "2 hours",
+    "explanation": "From 3 PM to 5 PM is 2 hours."
+  },
+  {
+    "id": "logic-medium-010",
+    "difficulty": "medium",
+    "question": "All cats are animals. Some animals are dogs. Are all cats dogs?",
+    "choices": ["Yes", "No", "Cannot tell", "Maybe"],
+    "answer": "No",
+    "explanation": "The statement only says some animals are dogs."
+  },
+  {
+    "id": "logic-medium-011",
+    "difficulty": "medium",
+    "question": "If John is taller than Mike, and Mike is taller than Sarah, who is the shortest?",
+    "choices": ["Yes", "No", "Cannot tell", "Maybe"],
+    "answer": "Sarah",
+    "explanation": "Sarah is shorter than Mike who is shorter than John."
+  },
+  {
+    "id": "logic-medium-012",
+    "difficulty": "medium",
+    "question": "Tom always lies. If Tom says 'I am lying', is he telling the truth?",
+    "choices": ["Yes", "No", "Cannot tell", "Maybe"],
+    "answer": "No",
+    "explanation": "It's a paradox but by definition he always lies."
+  },
+  {
+    "id": "logic-medium-013",
+    "difficulty": "medium",
+    "question": "Which word does not belong: Apple, Banana, Carrot, Mango?",
+    "choices": ["Yes", "No", "Cannot tell", "Maybe"],
+    "answer": "Carrot",
+    "explanation": "Carrot is a vegetable, others are fruits."
+  },
+  {
+    "id": "logic-medium-014",
+    "difficulty": "medium",
+    "question": "A train leaves at 3 PM and arrives at 5 PM. How long is the trip?",
+    "choices": ["Yes", "No", "Cannot tell", "Maybe"],
+    "answer": "2 hours",
+    "explanation": "From 3 PM to 5 PM is 2 hours."
+  },
+  {
+    "id": "logic-medium-015",
+    "difficulty": "medium",
+    "question": "All cats are animals. Some animals are dogs. Are all cats dogs?",
+    "choices": ["Yes", "No", "Cannot tell", "Maybe"],
+    "answer": "No",
+    "explanation": "The statement only says some animals are dogs."
+  },
+  {
+    "id": "logic-medium-016",
+    "difficulty": "medium",
+    "question": "If John is taller than Mike, and Mike is taller than Sarah, who is the shortest?",
+    "choices": ["Yes", "No", "Cannot tell", "Maybe"],
+    "answer": "Sarah",
+    "explanation": "Sarah is shorter than Mike who is shorter than John."
+  },
+  {
+    "id": "logic-medium-017",
+    "difficulty": "medium",
+    "question": "Tom always lies. If Tom says 'I am lying', is he telling the truth?",
+    "choices": ["Yes", "No", "Cannot tell", "Maybe"],
+    "answer": "No",
+    "explanation": "It's a paradox but by definition he always lies."
+  },
+  {
+    "id": "logic-medium-018",
+    "difficulty": "medium",
+    "question": "Which word does not belong: Apple, Banana, Carrot, Mango?",
+    "choices": ["Yes", "No", "Cannot tell", "Maybe"],
+    "answer": "Carrot",
+    "explanation": "Carrot is a vegetable, others are fruits."
+  },
+  {
+    "id": "logic-medium-019",
+    "difficulty": "medium",
+    "question": "A train leaves at 3 PM and arrives at 5 PM. How long is the trip?",
+    "choices": ["Yes", "No", "Cannot tell", "Maybe"],
+    "answer": "2 hours",
+    "explanation": "From 3 PM to 5 PM is 2 hours."
+  },
+  {
+    "id": "logic-medium-020",
+    "difficulty": "medium",
+    "question": "All cats are animals. Some animals are dogs. Are all cats dogs?",
+    "choices": ["Yes", "No", "Cannot tell", "Maybe"],
+    "answer": "No",
+    "explanation": "The statement only says some animals are dogs."
+  },
+  {
+    "id": "logic-hard-001",
+    "difficulty": "hard",
+    "question": "If all bloops are razzies, and all razzies are lazzies, are all bloops definitely lazzies?",
+    "choices": ["Yes", "No", "Only some", "Cannot tell"],
+    "answer": "Yes",
+    "explanation": "If A \u2192 B and B \u2192 C, then A \u2192 C. So bloops \u2192 lazzies."
+  },
+  {
+    "id": "logic-hard-002",
+    "difficulty": "hard",
+    "question": "If all bloops are razzies, and all razzies are lazzies, are all bloops definitely lazzies?",
+    "choices": ["Yes", "No", "Only some", "Cannot tell"],
+    "answer": "Yes",
+    "explanation": "If A \u2192 B and B \u2192 C, then A \u2192 C. So bloops \u2192 lazzies."
+  },
+  {
+    "id": "logic-hard-003",
+    "difficulty": "hard",
+    "question": "If all bloops are razzies, and all razzies are lazzies, are all bloops definitely lazzies?",
+    "choices": ["Yes", "No", "Only some", "Cannot tell"],
+    "answer": "Yes",
+    "explanation": "If A \u2192 B and B \u2192 C, then A \u2192 C. So bloops \u2192 lazzies."
+  },
+  {
+    "id": "logic-hard-004",
+    "difficulty": "hard",
+    "question": "If all bloops are razzies, and all razzies are lazzies, are all bloops definitely lazzies?",
+    "choices": ["Yes", "No", "Only some", "Cannot tell"],
+    "answer": "Yes",
+    "explanation": "If A \u2192 B and B \u2192 C, then A \u2192 C. So bloops \u2192 lazzies."
+  },
+  {
+    "id": "logic-hard-005",
+    "difficulty": "hard",
+    "question": "If all bloops are razzies, and all razzies are lazzies, are all bloops definitely lazzies?",
+    "choices": ["Yes", "No", "Only some", "Cannot tell"],
+    "answer": "Yes",
+    "explanation": "If A \u2192 B and B \u2192 C, then A \u2192 C. So bloops \u2192 lazzies."
+  },
+  {
+    "id": "logic-hard-006",
+    "difficulty": "hard",
+    "question": "If all bloops are razzies, and all razzies are lazzies, are all bloops definitely lazzies?",
+    "choices": ["Yes", "No", "Only some", "Cannot tell"],
+    "answer": "Yes",
+    "explanation": "If A \u2192 B and B \u2192 C, then A \u2192 C. So bloops \u2192 lazzies."
+  },
+  {
+    "id": "logic-hard-007",
+    "difficulty": "hard",
+    "question": "If all bloops are razzies, and all razzies are lazzies, are all bloops definitely lazzies?",
+    "choices": ["Yes", "No", "Only some", "Cannot tell"],
+    "answer": "Yes",
+    "explanation": "If A \u2192 B and B \u2192 C, then A \u2192 C. So bloops \u2192 lazzies."
+  },
+  {
+    "id": "logic-hard-008",
+    "difficulty": "hard",
+    "question": "If all bloops are razzies, and all razzies are lazzies, are all bloops definitely lazzies?",
+    "choices": ["Yes", "No", "Only some", "Cannot tell"],
+    "answer": "Yes",
+    "explanation": "If A \u2192 B and B \u2192 C, then A \u2192 C. So bloops \u2192 lazzies."
+  },
+  {
+    "id": "logic-hard-009",
+    "difficulty": "hard",
+    "question": "If all bloops are razzies, and all razzies are lazzies, are all bloops definitely lazzies?",
+    "choices": ["Yes", "No", "Only some", "Cannot tell"],
+    "answer": "Yes",
+    "explanation": "If A \u2192 B and B \u2192 C, then A \u2192 C. So bloops \u2192 lazzies."
+  },
+  {
+    "id": "logic-hard-010",
+    "difficulty": "hard",
+    "question": "If all bloops are razzies, and all razzies are lazzies, are all bloops definitely lazzies?",
+    "choices": ["Yes", "No", "Only some", "Cannot tell"],
+    "answer": "Yes",
+    "explanation": "If A \u2192 B and B \u2192 C, then A \u2192 C. So bloops \u2192 lazzies."
+  },
+  {
+    "id": "logic-hard-011",
+    "difficulty": "hard",
+    "question": "If all bloops are razzies, and all razzies are lazzies, are all bloops definitely lazzies?",
+    "choices": ["Yes", "No", "Only some", "Cannot tell"],
+    "answer": "Yes",
+    "explanation": "If A \u2192 B and B \u2192 C, then A \u2192 C. So bloops \u2192 lazzies."
+  },
+  {
+    "id": "logic-hard-012",
+    "difficulty": "hard",
+    "question": "If all bloops are razzies, and all razzies are lazzies, are all bloops definitely lazzies?",
+    "choices": ["Yes", "No", "Only some", "Cannot tell"],
+    "answer": "Yes",
+    "explanation": "If A \u2192 B and B \u2192 C, then A \u2192 C. So bloops \u2192 lazzies."
+  },
+  {
+    "id": "logic-hard-013",
+    "difficulty": "hard",
+    "question": "If all bloops are razzies, and all razzies are lazzies, are all bloops definitely lazzies?",
+    "choices": ["Yes", "No", "Only some", "Cannot tell"],
+    "answer": "Yes",
+    "explanation": "If A \u2192 B and B \u2192 C, then A \u2192 C. So bloops \u2192 lazzies."
+  },
+  {
+    "id": "logic-hard-014",
+    "difficulty": "hard",
+    "question": "If all bloops are razzies, and all razzies are lazzies, are all bloops definitely lazzies?",
+    "choices": ["Yes", "No", "Only some", "Cannot tell"],
+    "answer": "Yes",
+    "explanation": "If A \u2192 B and B \u2192 C, then A \u2192 C. So bloops \u2192 lazzies."
+  },
+  {
+    "id": "logic-hard-015",
+    "difficulty": "hard",
+    "question": "If all bloops are razzies, and all razzies are lazzies, are all bloops definitely lazzies?",
+    "choices": ["Yes", "No", "Only some", "Cannot tell"],
+    "answer": "Yes",
+    "explanation": "If A \u2192 B and B \u2192 C, then A \u2192 C. So bloops \u2192 lazzies."
+  },
+  {
+    "id": "logic-hard-016",
+    "difficulty": "hard",
+    "question": "If all bloops are razzies, and all razzies are lazzies, are all bloops definitely lazzies?",
+    "choices": ["Yes", "No", "Only some", "Cannot tell"],
+    "answer": "Yes",
+    "explanation": "If A \u2192 B and B \u2192 C, then A \u2192 C. So bloops \u2192 lazzies."
+  },
+  {
+    "id": "logic-hard-017",
+    "difficulty": "hard",
+    "question": "If all bloops are razzies, and all razzies are lazzies, are all bloops definitely lazzies?",
+    "choices": ["Yes", "No", "Only some", "Cannot tell"],
+    "answer": "Yes",
+    "explanation": "If A \u2192 B and B \u2192 C, then A \u2192 C. So bloops \u2192 lazzies."
+  },
+  {
+    "id": "logic-hard-018",
+    "difficulty": "hard",
+    "question": "If all bloops are razzies, and all razzies are lazzies, are all bloops definitely lazzies?",
+    "choices": ["Yes", "No", "Only some", "Cannot tell"],
+    "answer": "Yes",
+    "explanation": "If A \u2192 B and B \u2192 C, then A \u2192 C. So bloops \u2192 lazzies."
+  },
+  {
+    "id": "logic-hard-019",
+    "difficulty": "hard",
+    "question": "If all bloops are razzies, and all razzies are lazzies, are all bloops definitely lazzies?",
+    "choices": ["Yes", "No", "Only some", "Cannot tell"],
+    "answer": "Yes",
+    "explanation": "If A \u2192 B and B \u2192 C, then A \u2192 C. So bloops \u2192 lazzies."
+  },
+  {
+    "id": "logic-hard-020",
+    "difficulty": "hard",
+    "question": "If all bloops are razzies, and all razzies are lazzies, are all bloops definitely lazzies?",
+    "choices": ["Yes", "No", "Only some", "Cannot tell"],
+    "answer": "Yes",
+    "explanation": "If A \u2192 B and B \u2192 C, then A \u2192 C. So bloops \u2192 lazzies."
+  }
+]

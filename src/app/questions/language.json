@@ -1,0 +1,527 @@
+[
+  {
+    "id": "lang-easy-001",
+    "difficulty": "easy",
+    "question": "What is the plural of 'child'?",
+    "choices": ["children", "childs", "childes", "childrens"],
+    "answer": "children",
+    "explanation": "The plural of 'child' is 'children'."
+  },
+  {
+    "id": "lang-easy-002",
+    "difficulty": "easy",
+    "question": "Which word is a noun?",
+    "choices": ["cat", "run", "quickly", "blue"],
+    "answer": "cat",
+    "explanation": "'Cat' is a noun; the others are not."
+  },
+  {
+    "id": "lang-easy-003",
+    "difficulty": "easy",
+    "question": "What is the opposite of 'hot'?",
+    "choices": ["cold", "warm", "cool", "boiling"],
+    "answer": "cold",
+    "explanation": "'Cold' is the opposite of 'hot'."
+  },
+  {
+    "id": "lang-easy-004",
+    "difficulty": "easy",
+    "question": "Which word is a verb?",
+    "choices": ["run", "blue", "cat", "quick"],
+    "answer": "run",
+    "explanation": "'Run' is a verb; the others are not."
+  },
+  {
+    "id": "lang-easy-005",
+    "difficulty": "easy",
+    "question": "What is the past tense of 'go'?",
+    "choices": ["went", "goed", "goes", "gone"],
+    "answer": "went",
+    "explanation": "The past tense of 'go' is 'went'."
+  },
+  {
+    "id": "lang-easy-006",
+    "difficulty": "easy",
+    "question": "Which word is an adjective?",
+    "choices": ["happy", "run", "cat", "quickly"],
+    "answer": "happy",
+    "explanation": "'Happy' is an adjective."
+  },
+  {
+    "id": "lang-easy-007",
+    "difficulty": "easy",
+    "question": "What is the synonym of 'big'?",
+    "choices": ["large", "small", "tiny", "short"],
+    "answer": "large",
+    "explanation": "'Large' is a synonym for 'big'."
+  },
+  {
+    "id": "lang-easy-008",
+    "difficulty": "easy",
+    "question": "Which word is an antonym of 'happy'?",
+    "choices": ["sad", "glad", "joyful", "cheerful"],
+    "answer": "sad",
+    "explanation": "'Sad' is the opposite of 'happy'."
+  },
+  {
+    "id": "lang-easy-009",
+    "difficulty": "easy",
+    "question": "What is the correct article for 'apple'?",
+    "choices": ["an", "a", "the", "no article"],
+    "answer": "an",
+    "explanation": "'An' is used before words starting with a vowel sound."
+  },
+  {
+    "id": "lang-easy-010",
+    "difficulty": "easy",
+    "question": "Which is a pronoun?",
+    "choices": ["he", "cat", "run", "blue"],
+    "answer": "he",
+    "explanation": "'He' is a pronoun."
+  },
+  {
+    "id": "lang-easy-011",
+    "difficulty": "easy",
+    "question": "What is the superlative form of 'good'?",
+    "choices": ["best", "better", "goodest", "most good"],
+    "answer": "best",
+    "explanation": "'Best' is the superlative form of 'good'."
+  },
+  {
+    "id": "lang-easy-012",
+    "difficulty": "easy",
+    "question": "Which is a question word?",
+    "choices": ["what", "cat", "run", "blue"],
+    "answer": "what",
+    "explanation": "'What' is a question word."
+  },
+  {
+    "id": "lang-easy-013",
+    "difficulty": "easy",
+    "question": "What is the opposite of 'up'?",
+    "choices": ["down", "left", "right", "over"],
+    "answer": "down",
+    "explanation": "'Down' is the opposite of 'up'."
+  },
+  {
+    "id": "lang-easy-014",
+    "difficulty": "easy",
+    "question": "Which is a preposition?",
+    "choices": ["in", "cat", "run", "blue"],
+    "answer": "in",
+    "explanation": "'In' is a preposition."
+  },
+  {
+    "id": "lang-easy-015",
+    "difficulty": "easy",
+    "question": "What is the plural of 'mouse'?",
+    "choices": ["mice", "mouses", "mouse", "mices"],
+    "answer": "mice",
+    "explanation": "The plural of 'mouse' is 'mice'."
+  },
+  {
+    "id": "lang-easy-016",
+    "difficulty": "easy",
+    "question": "Which is a conjunction?",
+    "choices": ["and", "cat", "run", "blue"],
+    "answer": "and",
+    "explanation": "'And' is a conjunction."
+  },
+  {
+    "id": "lang-easy-017",
+    "difficulty": "easy",
+    "question": "What is the past tense of 'eat'?",
+    "choices": ["ate", "eated", "eats", "eaten"],
+    "answer": "ate",
+    "explanation": "The past tense of 'eat' is 'ate'."
+  },
+  {
+    "id": "lang-easy-018",
+    "difficulty": "easy",
+    "question": "Which is a possessive pronoun?",
+    "choices": ["his", "cat", "run", "blue"],
+    "answer": "his",
+    "explanation": "'His' is a possessive pronoun."
+  },
+  {
+    "id": "lang-easy-019",
+    "difficulty": "easy",
+    "question": "What is the comparative form of 'fast'?",
+    "choices": ["faster", "fastest", "more fast", "most fast"],
+    "answer": "faster",
+    "explanation": "'Faster' is the comparative form of 'fast'."
+  },
+  {
+    "id": "lang-easy-020",
+    "difficulty": "easy",
+    "question": "Which is a proper noun?",
+    "choices": ["London", "city", "run", "blue"],
+    "answer": "London",
+    "explanation": "'London' is a proper noun."
+  },
+  {
+    "id": "lang-medium-001",
+    "difficulty": "medium",
+    "question": "What is the synonym of 'difficult'?",
+    "choices": ["hard", "easy", "simple", "quick"],
+    "answer": "hard",
+    "explanation": "'Hard' is a synonym for 'difficult'."
+  },
+  {
+    "id": "lang-medium-002",
+    "difficulty": "medium",
+    "question": "Which word is an adverb?",
+    "choices": ["quickly", "cat", "run", "blue"],
+    "answer": "quickly",
+    "explanation": "'Quickly' is an adverb."
+  },
+  {
+    "id": "lang-medium-003",
+    "difficulty": "medium",
+    "question": "What is the antonym of 'ancient'?",
+    "choices": ["modern", "old", "historic", "antique"],
+    "answer": "modern",
+    "explanation": "'Modern' is the opposite of 'ancient'."
+  },
+  {
+    "id": "lang-medium-004",
+    "difficulty": "medium",
+    "question": "Which is a collective noun?",
+    "choices": ["team", "cat", "run", "blue"],
+    "answer": "team",
+    "explanation": "'Team' is a collective noun."
+  },
+  {
+    "id": "lang-medium-005",
+    "difficulty": "medium",
+    "question": "What is the past participle of 'write'?",
+    "choices": ["written", "wrote", "writing", "writes"],
+    "answer": "written",
+    "explanation": "The past participle of 'write' is 'written'."
+  },
+  {
+    "id": "lang-medium-006",
+    "difficulty": "medium",
+    "question": "Which is a demonstrative pronoun?",
+    "choices": ["these", "cat", "run", "blue"],
+    "answer": "these",
+    "explanation": "'These' is a demonstrative pronoun."
+  },
+  {
+    "id": "lang-medium-007",
+    "difficulty": "medium",
+    "question": "What is the superlative form of 'bad'?",
+    "choices": ["worst", "worse", "badder", "most bad"],
+    "answer": "worst",
+    "explanation": "'Worst' is the superlative form of 'bad'."
+  },
+  {
+    "id": "lang-medium-008",
+    "difficulty": "medium",
+    "question": "Which is a reflexive pronoun?",
+    "choices": ["myself", "cat", "run", "blue"],
+    "answer": "myself",
+    "explanation": "'Myself' is a reflexive pronoun."
+  },
+  {
+    "id": "lang-medium-009",
+    "difficulty": "medium",
+    "question": "What is the plural of 'analysis'?",
+    "choices": ["analyses", "analysis", "analysises", "analysiseses"],
+    "answer": "analyses",
+    "explanation": "The plural of 'analysis' is 'analyses'."
+  },
+  {
+    "id": "lang-medium-010",
+    "difficulty": "medium",
+    "question": "Which is a gerund?",
+    "choices": ["swimming", "cat", "run", "blue"],
+    "answer": "swimming",
+    "explanation": "'Swimming' is a gerund (verb + ing used as a noun)."
+  },
+  {
+    "id": "lang-medium-011",
+    "difficulty": "medium",
+    "question": "What is the antonym of 'expand'?",
+    "choices": ["contract", "grow", "increase", "enlarge"],
+    "answer": "contract",
+    "explanation": "'Contract' is the opposite of 'expand'."
+  },
+  {
+    "id": "lang-medium-012",
+    "difficulty": "medium",
+    "question": "Which is an interjection?",
+    "choices": ["wow", "cat", "run", "blue"],
+    "answer": "wow",
+    "explanation": "'Wow' is an interjection."
+  },
+  {
+    "id": "lang-medium-013",
+    "difficulty": "medium",
+    "question": "What is the comparative form of 'little'?",
+    "choices": ["less", "least", "littler", "more little"],
+    "answer": "less",
+    "explanation": "'Less' is the comparative form of 'little'."
+  },
+  {
+    "id": "lang-medium-014",
+    "difficulty": "medium",
+    "question": "Which is a possessive adjective?",
+    "choices": ["my", "cat", "run", "blue"],
+    "answer": "my",
+    "explanation": "'My' is a possessive adjective."
+  },
+  {
+    "id": "lang-medium-015",
+    "difficulty": "medium",
+    "question": "What is the past tense of 'swim'?",
+    "choices": ["swam", "swum", "swims", "swiming"],
+    "answer": "swam",
+    "explanation": "The past tense of 'swim' is 'swam'."
+  },
+  {
+    "id": "lang-medium-016",
+    "difficulty": "medium",
+    "question": "Which is a modal verb?",
+    "choices": ["can", "cat", "run", "blue"],
+    "answer": "can",
+    "explanation": "'Can' is a modal verb."
+  },
+  {
+    "id": "lang-medium-017",
+    "difficulty": "medium",
+    "question": "What is the plural of 'cactus'?",
+    "choices": ["cacti", "cactuses", "cactis", "cactae"],
+    "answer": "cacti",
+    "explanation": "The plural of 'cactus' is 'cacti'."
+  },
+  {
+    "id": "lang-medium-018",
+    "difficulty": "medium",
+    "question": "Which is a relative pronoun?",
+    "choices": ["who", "cat", "run", "blue"],
+    "answer": "who",
+    "explanation": "'Who' is a relative pronoun."
+  },
+  {
+    "id": "lang-medium-019",
+    "difficulty": "medium",
+    "question": "What is the antonym of 'accept'?",
+    "choices": ["reject", "receive", "admit", "allow"],
+    "answer": "reject",
+    "explanation": "'Reject' is the opposite of 'accept'."
+  },
+  {
+    "id": "lang-medium-020",
+    "difficulty": "medium",
+    "question": "Which is a countable noun?",
+    "choices": ["apple", "water", "sand", "rice"],
+    "answer": "apple",
+    "explanation": "'Apple' is a countable noun."
+  },
+  {
+    "id": "lang-hard-001",
+    "difficulty": "hard",
+    "question": "What is the meaning of the idiom 'break the ice'?",
+    "choices": [
+      "start a conversation",
+      "break something cold",
+      "make ice",
+      "end a relationship"
+    ],
+    "answer": "start a conversation",
+    "explanation": "'Break the ice' means to start a conversation in a social setting."
+  },
+  {
+    "id": "lang-hard-002",
+    "difficulty": "hard",
+    "question": "Which is a subjunctive verb form?",
+    "choices": ["were", "was", "is", "are"],
+    "answer": "were",
+    "explanation": "'Were' is used in the subjunctive mood (e.g., 'If I were you')."
+  },
+  {
+    "id": "lang-hard-003",
+    "difficulty": "hard",
+    "question": "What is the antonym of 'scarce'?",
+    "choices": ["abundant", "rare", "few", "limited"],
+    "answer": "abundant",
+    "explanation": "'Abundant' is the opposite of 'scarce'."
+  },
+  {
+    "id": "lang-hard-004",
+    "difficulty": "hard",
+    "question": "Which is a past perfect tense sentence?",
+    "choices": ["I had eaten", "I eat", "I am eating", "I will eat"],
+    "answer": "I had eaten",
+    "explanation": "'I had eaten' is in the past perfect tense."
+  },
+  {
+    "id": "lang-hard-005",
+    "difficulty": "hard",
+    "question": "What is the plural of 'phenomenon'?",
+    "choices": ["phenomena", "phenomenons", "phenomenas", "phenomenae"],
+    "answer": "phenomena",
+    "explanation": "The plural of 'phenomenon' is 'phenomena'."
+  },
+  {
+    "id": "lang-hard-006",
+    "difficulty": "hard",
+    "question": "Which is a sentence in the passive voice?",
+    "choices": [
+      "The cake was eaten",
+      "I eat cake",
+      "She eats cake",
+      "They are eating cake"
+    ],
+    "answer": "The cake was eaten",
+    "explanation": "'The cake was eaten' is in the passive voice."
+  },
+  {
+    "id": "lang-hard-007",
+    "difficulty": "hard",
+    "question": "What is the meaning of the idiom 'hit the sack'?",
+    "choices": ["go to bed", "hit something", "work hard", "eat food"],
+    "answer": "go to bed",
+    "explanation": "'Hit the sack' means to go to bed."
+  },
+  {
+    "id": "lang-hard-008",
+    "difficulty": "hard",
+    "question": "Which is a sentence with a dangling participle?",
+    "choices": [
+      "Walking down the street, the trees were beautiful.",
+      "I walked down the street.",
+      "The street was beautiful.",
+      "Walking is fun."
+    ],
+    "answer": "Walking down the street, the trees were beautiful.",
+    "explanation": "This sentence has a dangling participle."
+  },
+  {
+    "id": "lang-hard-009",
+    "difficulty": "hard",
+    "question": "What is the antonym of 'opaque'?",
+    "choices": ["transparent", "cloudy", "frosted", "milky"],
+    "answer": "transparent",
+    "explanation": "'Transparent' is the opposite of 'opaque'."
+  },
+  {
+    "id": "lang-hard-010",
+    "difficulty": "hard",
+    "question": "Which is a sentence in the future perfect tense?",
+    "choices": [
+      "I will have finished",
+      "I finish",
+      "I am finishing",
+      "I will finish"
+    ],
+    "answer": "I will have finished",
+    "explanation": "'I will have finished' is in the future perfect tense."
+  },
+  {
+    "id": "lang-hard-011",
+    "difficulty": "hard",
+    "question": "What is the plural of 'criterion'?",
+    "choices": ["criteria", "criterions", "criterias", "criteriae"],
+    "answer": "criteria",
+    "explanation": "The plural of 'criterion' is 'criteria'."
+  },
+  {
+    "id": "lang-hard-012",
+    "difficulty": "hard",
+    "question": "Which is a sentence with an appositive?",
+    "choices": [
+      "My friend, a doctor, lives in Paris.",
+      "I have a friend.",
+      "The doctor lives in Paris.",
+      "Paris is a city."
+    ],
+    "answer": "My friend, a doctor, lives in Paris.",
+    "explanation": "'A doctor' is an appositive in this sentence."
+  },
+  {
+    "id": "lang-hard-013",
+    "difficulty": "hard",
+    "question": "What is the antonym of 'expand'?",
+    "choices": ["contract", "grow", "increase", "enlarge"],
+    "answer": "contract",
+    "explanation": "'Contract' is the opposite of 'expand'."
+  },
+  {
+    "id": "lang-hard-014",
+    "difficulty": "hard",
+    "question": "Which is a sentence with a relative clause?",
+    "choices": [
+      "The man who called is my uncle.",
+      "The man called.",
+      "My uncle is here.",
+      "Who called?"
+    ],
+    "answer": "The man who called is my uncle.",
+    "explanation": "'Who called' is a relative clause."
+  },
+  {
+    "id": "lang-hard-015",
+    "difficulty": "hard",
+    "question": "What is the meaning of the idiom 'let the cat out of the bag'?",
+    "choices": [
+      "reveal a secret",
+      "let a cat escape",
+      "buy a bag",
+      "hide something"
+    ],
+    "answer": "reveal a secret",
+    "explanation": "'Let the cat out of the bag' means to reveal a secret."
+  },
+  {
+    "id": "lang-hard-016",
+    "difficulty": "hard",
+    "question": "Which is a sentence with a conditional clause?",
+    "choices": [
+      "If it rains, we will stay inside.",
+      "It rains.",
+      "We will stay inside.",
+      "If it rains."
+    ],
+    "answer": "If it rains, we will stay inside.",
+    "explanation": "'If it rains' is a conditional clause."
+  },
+  {
+    "id": "lang-hard-017",
+    "difficulty": "hard",
+    "question": "What is the plural of 'datum'?",
+    "choices": ["data", "datums", "datumes", "datumae"],
+    "answer": "data",
+    "explanation": "The plural of 'datum' is 'data'."
+  },
+  {
+    "id": "lang-hard-018",
+    "difficulty": "hard",
+    "question": "Which is a sentence with an infinitive?",
+    "choices": ["I want to eat.", "I eat.", "I am eating.", "I will eat."],
+    "answer": "I want to eat.",
+    "explanation": "'To eat' is an infinitive."
+  },
+  {
+    "id": "lang-hard-019",
+    "difficulty": "hard",
+    "question": "What is the antonym of 'scarce'?",
+    "choices": ["abundant", "rare", "few", "limited"],
+    "answer": "abundant",
+    "explanation": "'Abundant' is the opposite of 'scarce'."
+  },
+  {
+    "id": "lang-hard-020",
+    "difficulty": "hard",
+    "question": "Which is a sentence with an indirect object?",
+    "choices": [
+      "She gave him a gift.",
+      "She gave a gift.",
+      "He received a gift.",
+      "A gift was given."
+    ],
+    "answer": "She gave him a gift.",
+    "explanation": "'Him' is the indirect object in this sentence."
+  }
+]
