@@ -50,10 +50,10 @@ Resources:
           PROVIDER_NAME: openai
           LOG_LEVEL: INFO
           AWS_LWA_INVOKE_MODE: RESPONSE_STREAM
-      Metadata:
-        Dockerfile: Dockerfile
-        DockerContext: .
-        DockerTag: v1
+    Metadata:
+      Dockerfile: Dockerfile
+      DockerContext: .
+      DockerTag: v1
 
   AnswersTable:
     Type: AWS::DynamoDB::Table
@@ -213,5 +213,5 @@ Outputs:
     Description: URL for the Chatbot Backend Lambda function
     Value:
       Fn::GetAtt:
-        - ChatbotBackendFunction
+        - ChatbotBackendFunctionUrl
         - FunctionUrl
