@@ -21,8 +21,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       PackageType: Image
-      Architectures:
-        - x86_64
+      Architectures: [ x86_64 ]
       FunctionUrlConfig:
         AuthType: NONE
         InvokeMode: RESPONSE_STREAM
@@ -30,26 +29,20 @@ Resources:
           AllowOrigins: ["*"]
           AllowMethods: ["*"]
       Policies:
-        - DynamoDBCrudPolicy:
-            TableName:
-              Ref: UsersTable
-        - DynamoDBCrudPolicy:
-            TableName:
-              Ref: ChatsTable
-        - DynamoDBCrudPolicy:
-            TableName:
-              Ref: AnswersTable
-        - SSMParameterReadPolicy:
-            ParameterName: chatbot/*
+        - DynamoDBCrudPolicy: { TableName: { Ref: UsersTable } }
+        - DynamoDBCrudPolicy: { TableName: { Ref: ChatsTable } }
+        - DynamoDBCrudPolicy: { TableName: { Ref: AnswersTable } }
+        - SSMParameterReadPolicy: { ParameterName: chatbot/* }
       Environment:
         Variables:
-          USERS_TABLE:
-            Ref: UsersTable
-          CHATS_TABLE:
-            Ref: ChatsTable
+          AWS_LAMBDA_EXEC_WRAPPER: /opt/extensions/lambda-adapter
+          AWS_LWA_INVOKE_MODE: RESPONSE_STREAM
+          PORT: "8080"
+          LWA_PORT: "8080"
+          USERS_TABLE: { Ref: UsersTable }
+          CHATS_TABLE: { Ref: ChatsTable }
           PROVIDER_NAME: openai
           LOG_LEVEL: INFO
-          AWS_LWA_INVOKE_MODE: RESPONSE_STREAM
     Metadata:
       Dockerfile: Dockerfile
       DockerContext: .
